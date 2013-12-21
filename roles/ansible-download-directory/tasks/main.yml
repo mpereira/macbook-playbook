@@ -1,0 +1,5 @@
+---
+- name: Ensure the Ansible downloads directory exists
+  file: >
+    path={{ downloads_directory }}
+    state=directory

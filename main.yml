@@ -1,0 +1,54 @@
+---
+- hosts: 0.0.0.0
+  connection: local
+  vars:
+    home_directory: /Users/{{ ansible_user_id }}
+    downloads_directory: /{{ home_directory }}/.ansible/downloads
+  roles:
+    - ansible-download-directory
+    - ssh-directory
+    - caps-lock-remapped-to-control
+    - iterm
+    - known-hosts
+    - dropbox
+    - dropbox-ssh-key
+    - jre
+    - jdk
+    - skype
+    - xquartz
+    - r
+    - skitch
+    - silverlight
+    - hangouts
+    - google-chrome
+    - firefox
+    - firefox-pentadactyl
+    - virtualbox
+    - vagrant
+    - vagrant-vbguest
+    - tmuxinator
+    - powerline
+    - oh-my-zsh
+    - zsh
+    - homebrew
+    - reattach-to-user-namespace
+    - fontforge
+    - monaco-for-powerline
+    - irssi
+    - mpd
+    - mpc
+    - mpdscribble
+    - vimpc
+    - tree
+    - wget
+    - htop
+    - node
+    - tree
+    - tmux
+    - ctags
+    - the-silver-searcher
+    - vault
+    - jshint
+    - bundler
+    - dotfiles
+    - vimfiles

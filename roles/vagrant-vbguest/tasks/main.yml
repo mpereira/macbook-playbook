@@ -1,0 +1,2 @@
+- name: Install the vagrant-vbguest Vagrant plugin
+  command: vagrant plugin install --plugin-source https://rubygems.org --plugin-prerelease vagrant-vbguest

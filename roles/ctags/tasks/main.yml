@@ -1,0 +1,3 @@
+---
+- name: Install ctags
+  homebrew: name=ctags state=present

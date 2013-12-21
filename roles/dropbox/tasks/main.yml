@@ -1,0 +1,19 @@
+---
+- name: Download Dropbox
+  get_url: >
+    url=https://www.dropbox.com/download?plat=mac
+    dest={{ downloads_directory }}/Dropbox.dmg
+
+- name: Mount Dropbox image
+  command: >
+    chdir={{ downloads_directory }}
+    hdiutil attach Dropbox.dmg
+    creates=/Volumes/Dropbox
+
+- name: Copy Dropbox application directory to the applications directory
+  command: >
+    cp -R /Volumes/Dropbox\ Installer/Dropbox.app /Applications
+    creates=/Applications/Dropbox.app
+
+- name: Unmount Dropbox image
+  command: hdiutil detach /Volumes/Dropbox\ Installer

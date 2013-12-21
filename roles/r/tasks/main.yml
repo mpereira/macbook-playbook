@@ -1,0 +1,12 @@
+---
+- name: Download R
+  get_url: >
+    url=http://cran.r-project.org/bin/macosx/R-3.0.2.pkg
+    dest={{ downloads_directory }}/R-3.0.2.pkg
+
+- name: Install R
+  command: >
+    chdir={{ downloads_directory }}
+    installer -package R-3.0.2.pkg -target /
+    creates=/Applications/R.app
+  sudo: yes

@@ -1,0 +1,21 @@
+---
+- name: Download JDK
+  command: >
+    chdir={{ downloads_directory }}
+    curl -L --cookie "gpw_e24=http%3A%2F%2Fwww.oracle.com%2F" http://download.oracle.com/otn-pub/java/jdk/7u45-b18/jdk-7u45-macosx-x64.dmg -o jdk-7u45-macosx-x64.dmg
+    creates={{ downloads_directory }}/jdk-7u45-macosx-x64.dmg
+
+- name: Mount JDK image
+  command: >
+    chdir={{ downloads_directory }}
+    hdiutil attach jdk-7u45-macosx-x64.dmg
+    creates=/Volumes/JDK\ 7\ Update\ 45
+
+- name: Install JDK
+  command: >
+    installer -package /Volumes/JDK\ 7\ Update\ 45/JDK\ 7\ Update\ 45.pkg -target /
+    creates=/usr/bin/java
+  sudo: yes
+
+- name: Unmount JDK image
+  command: hdiutil detach /Volumes/JDK\ 7\ Update\ 45

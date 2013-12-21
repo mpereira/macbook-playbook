@@ -1,0 +1,23 @@
+---
+- name: Check whether the .vim directory is a git repository or not
+  command: >
+    chdir=/Users/{{ ansible_user_id }}/.vim
+    git rev-parse
+  register: dotvim_is_a_git_repository
+  ignore_errors: yes
+
+- name: Remove .vim directory if it is not a git repository
+  file: >
+    path=/Users/{{ ansible_user_id }}/.vim
+    state=absent
+  when: dotvim_is_a_git_repository|failed
+
+- name: Check out the vimfiles GitHub repository
+  git: >
+    repo=git@github.com:mpereira/.vim.git
+    dest=/Users/{{ ansible_user_id }}/.vim
+
+- name: Set up vimproc
+  command: >
+    chdir=/Users/{{ ansible_user_id }}/.vim
+    make vimproc.vim

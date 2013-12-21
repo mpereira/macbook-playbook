@@ -1,0 +1,20 @@
+---
+- name: Download Hangouts
+  get_url: >
+    url=https://dl.google.com/googletalk/googletalkplugin/GoogleVoiceAndVideoSetup.dmg
+    dest={{ downloads_directory }}/GoogleVoiceAndVideoSetup.dmg
+
+- name: Mount Hangouts image
+  command: >
+    chdir={{ downloads_directory }}
+    hdiutil attach GoogleVoiceAndVideoSetup.dmg
+    creates=/Volumes/GoogleVoiceAndVideoAccelSetup_4.9.1.16010
+
+- name: Install Hangouts
+  command: >
+    installer -package /Volumes/GoogleVoiceAndVideoAccelSetup_4.9.1.16010/Google\ Voice\ and\ Video.pkg -target /
+    creates=Library/Application\ Support/Google/GoogleTalkPlugin.app
+  sudo: yes
+
+- name: Unmount Hangouts image
+  command: hdiutil detach /Volumes/GoogleVoiceAndVideoAccelSetup_4.9.1.16010

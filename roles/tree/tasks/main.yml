@@ -1,0 +1,3 @@
+---
+- name: Install tree
+  homebrew: name=tree state=present

@@ -1,0 +1,12 @@
+---
+- name: Copy private SSH key
+  copy: >
+    src=/Users/{{ ansible_user_id }}/Dropbox/ssh/id_rsa
+    dest=/Users/{{ ansible_user_id }}/.ssh/id_rsa
+    mode=0400
+
+- name: Copy public SSH key
+  copy: >
+    src=/Users/{{ ansible_user_id }}/Dropbox/ssh/id_rsa.pub
+    dest=/Users/{{ ansible_user_id }}/.ssh/id_rsa.pub
+    mode=0444

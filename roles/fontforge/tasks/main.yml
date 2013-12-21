@@ -1,0 +1,3 @@
+---
+- name: Install fontforge
+  homebrew: name=fontforge state=present

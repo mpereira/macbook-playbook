@@ -1,0 +1,20 @@
+---
+- name: Download Google Chrome
+  get_url: >
+    url=https://dl.google.com/chrome/mac/stable/CHFA/googlechrome.dmg
+    dest={{ downloads_directory }}/googlechrome.dmg
+
+- name: Mount Google Chrome image
+  command: >
+    chdir={{ downloads_directory }}
+    hdiutil attach googlechrome.dmg
+    creates=/Volumes/Google\ Chrome
+
+- name: Copy Google Chrome.app to Applications directory
+  command: >
+    cp -R /Volumes/Google\ Chrome/Google\ Chrome.app /Applications
+    creates=/Applications/Google\ Chrome.app
+  sudo: yes
+
+- name: Unmount Google Chrome image
+  command: hdiutil detach /Volumes/Google\ Chrome

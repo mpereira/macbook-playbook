@@ -1,0 +1,4 @@
+---
+- name: Install htop
+  homebrew: name=htop state=present
+  ignore_errors: yes

@@ -1,0 +1,3 @@
+---
+- name: Remap Caps Lock to Control
+  command: osascript roles/caps-lock-remapped-to-control/files/remap_caps_lock_to_control.scpt

@@ -1,0 +1,3 @@
+---
+- name: Install mpd
+  homebrew: name=mpd state=present install_options=with-libshout,with-lame,with-flac

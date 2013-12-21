@@ -1,0 +1,5 @@
+---
+- name: Check out the oh-my-zsh GitHub repository
+  git: >
+    repo=git@github.com:mpereira/oh-my-zsh.git
+    dest=/Users/{{ ansible_user_id }}/.oh-my-zsh

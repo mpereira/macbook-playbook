@@ -1,0 +1,3 @@
+---
+- name: Install irssi
+  homebrew: name=irssi state=present

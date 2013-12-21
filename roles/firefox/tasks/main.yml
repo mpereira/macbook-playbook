@@ -1,0 +1,19 @@
+---
+- name: Download Firefox
+  get_url: >
+    url=https://download.mozilla.org/?product=firefox-25.0.1&os=osx
+    dest={{ downloads_directory }}/Firefox\ 25.0.1.dmg
+
+- name: Mount Firefox image
+  command: >
+    chdir={{ downloads_directory }}
+    hdiutil attach Firefox\ 25.0.1.dmg
+    creates=/Volumes/Firefox
+
+- name: Copy Firefox application directory to the applications directory
+  command: >
+    cp -R /Volumes/Firefox/Firefox.app /Applications
+    creates=/Applications/Firefox.app
+
+- name: Unmount Firefox image
+  command: hdiutil detach /Volumes/Firefox

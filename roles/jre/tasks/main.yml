@@ -1,0 +1,21 @@
+---
+- name: Download JRE
+  command: >
+    chdir={{ downloads_directory }}
+    curl -L --cookie "gpw_e24=http%3A%2F%2Fwww.oracle.com%2F" http://download.oracle.com/otn-pub/java/jdk/7u45-b18/jre-7u45-macosx-x64.dmg -o jre-7u45-macosx-x64.dmg
+    creates={{ downloads_directory }}/jre-7u45-macosx-x64.dmg
+
+- name: Mount JRE image
+  command: >
+    chdir={{ downloads_directory }}
+    hdiutil attach jre-7u45-macosx-x64.dmg
+    creates=/Volumes/Java\ 7\ Update\ 45
+
+- name: Install JRE
+  command: >
+    installer -package /Volumes/Java\ 7\ Update\ 45/Java\ 7\ Update\ 45.pkg -target /
+    creates=/Library/Application\ Support/Oracle/Java
+  sudo: yes
+
+- name: Unmount JRE image
+  command: hdiutil detach /Volumes/Java\ 7\ Update\ 45
