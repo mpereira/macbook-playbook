@@ -95,6 +95,7 @@ Automatically prepare a Macbook for development and desktop tasks using Ansible.
 ## TODO
 
 - Add user in the sudoers list in `script/bootstrap`.
+- Add notes regarding encrypting and storing SSH keys on Dropbox.
 - Fix [Irssi notify.pl error](https://gist.github.com/mpereira/8071720).
 - Integrate https://github.com/mathiasbynens/dotfiles/blob/master/.osx?
 - Configure iTerm to use Monaco For Powerline.
