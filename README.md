@@ -35,6 +35,7 @@ Automatically prepare a Macbook for development and desktop tasks using Ansible.
 - Firefox (with pentadactyl plugin)
 - Google Chrome
 - iTerm
+- LICEcap
 - Skitch
 - Skype
 - XQuartz

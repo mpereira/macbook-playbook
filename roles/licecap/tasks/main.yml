@@ -1,0 +1,24 @@
+---
+- name: Download LICEcap
+  get_url: >
+    url=http://www.cockos.com/licecap/licecap123.dmg
+    dest={{ downloads_directory }}/licecap123.dmg
+
+- name: Convert LICEcap image to a format that does not require an EULA
+  command: >
+    chdir={{ downloads_directory }}
+    hdiutil convert -quiet licecap123.dmg -format UDTO -o licecap123
+    creates=licecap123.cdr
+
+- name: Mount LICEcap image
+  command: >
+    chdir={{ downloads_directory }}
+    hdiutil attach -quiet licecap123.cdr
+
+- name: Copy LICEcap application directory to the applications directory
+  command: >
+    cp -R /Volumes/LICECAP_INSTALL/LICEcap.app /Applications
+    creates=/Applications/LICEcap.app
+
+- name: Unmount LICEcap image
+  command: hdiutil detach /Volumes/LICECAP_INSTALL
