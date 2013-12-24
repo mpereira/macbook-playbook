@@ -49,6 +49,7 @@ Automatically prepare a Macbook for development and desktop tasks using Ansible.
 
 - Homebrew
 - JDK
+- MacPorts
 - oh-my-zsh
 - Powerline
 - R
