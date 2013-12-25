@@ -1,0 +1,19 @@
+---
+- name: Download YNAB
+  get_url: >
+    url=http://www.youneedabudget.com/CDNOrigin/download/ynab4/liveCaptive/Mac/YNAB4_LiveCaptive_4.3.351.dmg
+    dest={{ downloads_directory }}/YNAB4_LiveCaptive_4.3.351.dmg
+
+- name: Mount YNAB image
+  command: >
+    chdir={{ downloads_directory }}
+    hdiutil attach YNAB4_LiveCaptive_4.3.351.dmg
+    creates=/Volumes/YNAB\ 4
+
+- name: Copy YNAB application directory to the applications directory
+  command: >
+    cp -R /Volumes/YNAB\ 4/YNAB\ 4.app /Applications
+    creates=/Applications/YNAB\ 4.app
+
+- name: Unmount YNAB image
+  command: hdiutil detach /Volumes/YNAB\ 4

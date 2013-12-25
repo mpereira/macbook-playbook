@@ -39,6 +39,7 @@ Automatically prepare a Macbook for development and desktop tasks using Ansible.
 - Skitch
 - Skype
 - XQuartz
+- YNAB
 
 ### Plugins
 
