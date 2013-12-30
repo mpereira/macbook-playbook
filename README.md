@@ -75,6 +75,7 @@ Automatically prepare a Macbook for development and desktop tasks using Ansible.
 - mpc
 - mpd
 - mpdscribble
+- mplayer
 - node
 - reattach-to-user-namespace
 - the-silver-searcher
