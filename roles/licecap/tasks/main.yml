@@ -14,6 +14,7 @@
   command: >
     chdir={{ downloads_directory }}
     hdiutil attach -quiet licecap123.cdr
+    creates=/Volumes/LICECAP_INSTALL
 
 - name: Copy LICEcap application directory to the applications directory
   command: >
