@@ -1,0 +1,25 @@
+---
+- name: Download Steam
+  get_url: >
+    url=http://media.steampowered.com/client/installer/steam.dmg
+    dest={{ downloads_directory }}/steam.dmg
+
+- name: Convert Steam image to a format that does not require an EULA
+  command: >
+    chdir={{ downloads_directory }}
+    hdiutil convert -quiet steam.dmg -format UDTO -o steam
+    creates=steam.cdr
+
+- name: Mount Steam image
+  command: >
+    chdir={{ downloads_directory }}
+    hdiutil attach -quiet steam.cdr
+    creates=/Volumes/Steam
+
+- name: Copy Steam application directory to the applications directory
+  command: >
+    cp -R /Volumes/Steam/Steam.app /Applications
+    creates=/Applications/Steam.app
+
+- name: Unmount Steam image
+  command: hdiutil detach /Volumes/Steam
