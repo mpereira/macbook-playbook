@@ -40,6 +40,7 @@
     - fontforge
     - monaco-for-powerline
     - irssi
+    - leiningen
     - mplayer
     - mpd
     - mpc
