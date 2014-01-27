@@ -36,6 +36,7 @@ Automatically prepare a Macbook for development and desktop tasks using Ansible.
 - Google Chrome
 - iTerm
 - LICEcap
+- LightTable
 - Skitch
 - Skype
 - Steam
@@ -73,6 +74,7 @@ Automatically prepare a Macbook for development and desktop tasks using Ansible.
 - htop
 - irssi
 - jshint
+- leiningen
 - mpc
 - mpd
 - mpdscribble
