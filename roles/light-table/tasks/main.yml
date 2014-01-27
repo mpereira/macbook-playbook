@@ -1,0 +1,17 @@
+---
+- name: Download LightTable
+  get_url: >
+    url=http://d35ac8ww5dfjyg.cloudfront.net/playground/bins/0.6.2/LightTableMac.zip
+    dest={{ downloads_directory }}/LightTableMac.zip
+
+- name: Extract LightTable zip archive
+  command: >
+    chdir={{ downloads_directory }}
+    unzip LightTableMac.zip -d LightTableMac
+    creates=LightTableMac
+
+- name: Copy LightTable.app to Applications directory
+  command: >
+    cp -R {{ downloads_directory }}/LightTableMac/LightTable/LightTable.app /Applications
+    creates=/Applications/LightTable.app
+  sudo: yes
