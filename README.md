@@ -41,6 +41,7 @@ Automatically prepare a Macbook for development and desktop tasks using Ansible.
 - Skype
 - Steam
 - Theremin
+- VLC
 - XQuartz
 - YNAB
 

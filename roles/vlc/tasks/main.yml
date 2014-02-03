@@ -1,0 +1,20 @@
+---
+- name: Download VLC
+  get_url: >
+    url=http://get.videolan.org/vlc/2.1.2/macosx/vlc-2.1.2.dmg
+    dest={{ downloads_directory }}/vlc-2.1.2.dmg
+
+- name: Mount VLC image
+  command: >
+    chdir={{ downloads_directory }}
+    hdiutil attach vlc-2.1.2.dmg
+    creates=/Volumes/vlc-2.1.2
+
+- name: Copy VLC.app to Applications directory
+  command: >
+    cp -R /Volumes/vlc-2.1.2/VLC.app /Applications
+    creates=/Applications/VLC.app
+  sudo: yes
+
+- name: Unmount VLC image
+  command: hdiutil detach /Volumes/vlc-2.1.2
