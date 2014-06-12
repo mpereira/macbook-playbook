@@ -1,0 +1,11 @@
+---
+- name: Download Boot2Docker
+  command: >
+    url=https://github.com/boot2docker/osx-installer/releases/download/v1.0.0/Boot2Docker-1.0.0.pkg
+    creates={{ downloads_directory }}/Boot2Docker-1.0.0.pkg
+
+- name: Install Boot2Docker
+  command: >
+    installer -package {{ downloads_directory }}/Boot2Docker-1.0.0.pkg -target /
+    creates=/Applications/boot2docker.app
+  sudo: yes
