@@ -32,7 +32,6 @@
     - firefox
     - firefox-pentadactyl
     - boot2docker
-    - virtualbox
     - vagrant
     - vagrant-vbguest
     - tmuxinator
