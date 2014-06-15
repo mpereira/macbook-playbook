@@ -69,6 +69,7 @@ Automatically prepare a Macbook for development and desktop tasks using Ansible.
 #### Ruby gems
 
 - bundler
+- heroku
 - tmuxinator
 
 #### Homebrew packages
