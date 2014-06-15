@@ -77,6 +77,7 @@ Automatically prepare a Macbook for development and desktop tasks using Ansible.
 - fontforge
 - htop
 - irssi
+- jmeter
 - jshint
 - leiningen
 - mpc
