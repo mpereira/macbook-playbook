@@ -2,20 +2,23 @@
 - name: Download JDK
   command: >
     chdir={{ downloads_directory }}
-    curl -L --cookie "gpw_e24=http%3A%2F%2Fwww.oracle.com%2F" http://download.oracle.com/otn-pub/java/jdk/7u45-b18/jdk-7u45-macosx-x64.dmg -o jdk-7u45-macosx-x64.dmg
-    creates={{ downloads_directory }}/jdk-7u45-macosx-x64.dmg
+    curl -L --cookie "gpw_e24=http%3A%2F%2Fwww.oracle.com%2Ftechnetwork%2Fjava%2Fjavase%2Fdownloads%2Fjre8-downloads-2133155.html; oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/8u5-b13/jdk-8u5-macosx-x64.dmg -o jdk-8u5-macosx-x64.dmg
+    creates={{ downloads_directory }}/jdk-8u5-macosx-x64.dmg
 
 - name: Mount JDK image
   command: >
     chdir={{ downloads_directory }}
-    hdiutil attach jdk-7u45-macosx-x64.dmg
-    creates=/Volumes/JDK\ 7\ Update\ 45
+    hdiutil attach jdk-8u5-macosx-x64.dmg
+    creates=/Volumes/JDK\ 8\ Update\ 05
+
+- shell: java -version 2>&1
+  register: java_version
 
 - name: Install JDK
   command: >
-    installer -package /Volumes/JDK\ 7\ Update\ 45/JDK\ 7\ Update\ 45.pkg -target /
-    creates=/usr/bin/java
+    installer -package /Volumes/JDK\ 8\ Update\ 05/JDK\ 8\ Update\ 05.pkg -target /
   sudo: yes
+  when: java_version.stdout.find('java version "1.8.0_05"') == -1
 
 - name: Unmount JDK image
-  command: hdiutil detach /Volumes/JDK\ 7\ Update\ 45
+  command: hdiutil detach /Volumes/JDK\ 8\ Update\ 05
