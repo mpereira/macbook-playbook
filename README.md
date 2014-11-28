@@ -119,6 +119,7 @@ Automatically prepare a Macbook for development and desktop tasks using Ansible.
 - Disable annoying bell sound.
 - Fix [Irssi notify.pl error](https://gist.github.com/mpereira/8071720).
 - Integrate https://github.com/mathiasbynens/dotfiles/blob/master/.osx?
+- Leverage some of this: https://gist.github.com/brandonb927/3195465
 - Configure iTerm to use Monaco For Powerline.
 - Move hard coded values to configurable variables.
 - Make it more portable, so that it can be useful to more people.
