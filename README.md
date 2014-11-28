@@ -87,6 +87,7 @@ Automatically prepare a Macbook for development and desktop tasks using Ansible.
 - mplayer
 - node
 - reattach-to-user-namespace
+- terminal-notifier
 - the-silver-searcher
 - tmux
 - tree

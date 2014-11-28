@@ -41,6 +41,7 @@
     - oh-my-zsh
     - zsh
     - homebrew
+    - terminal-notifier
     - reattach-to-user-namespace
     - fontforge
     - monaco-for-powerline

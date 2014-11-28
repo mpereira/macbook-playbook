@@ -1,0 +1,3 @@
+---
+- name: Install terminal-notifier
+  homebrew: name=terminal-notifier state=present
