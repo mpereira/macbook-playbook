@@ -61,6 +61,7 @@ Automatically prepare a Macbook for development and desktop tasks using Ansible.
 - MacPorts
 - oh-my-zsh
 - Powerline
+- Python 3
 - R
 - Vagrant (with vagrant-vbguest plugin)
 - Boot2Docker

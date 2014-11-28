@@ -24,6 +24,7 @@
     - r
     - lua
     - luajit
+    - python3
     - skitch
     - vlc
     - light-table
