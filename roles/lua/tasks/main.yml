@@ -1,0 +1,17 @@
+---
+- name: Download lua
+  get_url:
+    url=http://www.lua.org/ftp/lua-5.2.3.tar.gz
+    dest={{ downloads_directory }}/lua-5.2.3.tar.gz
+
+- name: Extract lua
+  unarchive:
+    src={{ downloads_directory }}/lua-5.2.3.tar.gz
+    dest={{ downloads_directory }}
+    creates={{ downloads_directory }}/lua-5.2.3
+
+- name: Build lua
+  shell: >
+    chdir={{ downloads_directory }}/lua-5.2.3
+    make macosx install INSTALL_TOP=/usr
+  sudo: yes

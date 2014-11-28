@@ -56,6 +56,7 @@ Automatically prepare a Macbook for development and desktop tasks using Ansible.
 - GNU Octave
 - Homebrew
 - JDK
+- Lua
 - MacPorts
 - oh-my-zsh
 - Powerline

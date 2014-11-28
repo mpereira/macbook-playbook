@@ -22,6 +22,7 @@
     - mac-ports
     - xquartz
     - r
+    - lua
     - skitch
     - vlc
     - light-table
