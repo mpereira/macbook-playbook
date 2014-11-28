@@ -23,6 +23,7 @@
     - xquartz
     - r
     - lua
+    - luajit
     - skitch
     - vlc
     - light-table

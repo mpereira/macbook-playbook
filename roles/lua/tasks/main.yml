@@ -10,7 +10,7 @@
     dest={{ downloads_directory }}
     creates={{ downloads_directory }}/lua-5.2.3
 
-- name: Build lua
+- name: Build and install lua
   shell: >
     chdir={{ downloads_directory }}/lua-5.2.3
     make macosx install INSTALL_TOP=/usr
