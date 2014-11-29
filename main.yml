@@ -44,6 +44,7 @@
     - oh-my-zsh
     - zsh
     - homebrew
+    - hadoop
     - terminal-notifier
     - reattach-to-user-namespace
     - fontforge

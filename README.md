@@ -54,6 +54,7 @@ Automatically prepare a Macbook for development and desktop tasks using Ansible.
 ### Development programs
 
 - GNU Octave
+- Hadoop
 - Homebrew
 - JDK
 - Lua
