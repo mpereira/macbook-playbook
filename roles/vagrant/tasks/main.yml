@@ -1,13 +1,13 @@
 ---
 - name: Download Vagrant
   get_url: >
-    url=https://dl.bintray.com/mitchellh/vagrant/vagrant_1.6.3.dmg
-    dest={{ downloads_directory }}/vagrant_1.6.3.dmg
+    url=https://dl.bintray.com/mitchellh/vagrant/vagrant_1.6.5.dmg
+    dest={{ downloads_directory }}/vagrant_1.6.5.dmg
 
 - name: Mount Vagrant image
   command: >
     chdir={{ downloads_directory }}
-    hdiutil attach vagrant_1.6.3.dmg
+    hdiutil attach vagrant_1.6.5.dmg
     creates=/Volumes/Vagrant
 
 - name: Install Vagrant
