@@ -90,6 +90,7 @@ Automatically prepare a Macbook for development and desktop tasks using Ansible.
 - mpdscribble
 - mplayer
 - node
+- p7zip
 - reattach-to-user-namespace
 - terminal-notifier
 - the-silver-searcher

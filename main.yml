@@ -61,6 +61,7 @@
     - wget
     - htop
     - node
+    - p7zip
     - tree
     - tmux
     - ctags
