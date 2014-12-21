@@ -1,0 +1,3 @@
+---
+- name: Install hdevtools
+  command: cabal install hdevtools

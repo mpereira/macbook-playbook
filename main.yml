@@ -30,6 +30,11 @@
     - light-table
     - octave
     - haskell
+    - ghc-mod
+    - hoogle
+    - hdevtools
+    - hlint
+    - pointfree
     - silverlight
     - hangouts
     - google-chrome
@@ -41,10 +46,11 @@
     - bundler
     - tmuxinator
     - heroku
-    - powerline
-    - oh-my-zsh
     - zsh
     - homebrew
+    - git
+    - powerline
+    - oh-my-zsh
     - hadoop
     - terminal-notifier
     - reattach-to-user-namespace

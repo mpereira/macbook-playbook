@@ -32,9 +32,8 @@ Automatically prepare a Macbook for development and desktop tasks using Ansible.
 ### Desktop applications
 
 - Dropbox
-- Firefox (with pentadactyl plugin)
+- Firefox
 - Google Chrome
-- iTerm
 - LICEcap
 - LightTable
 - Skitch
@@ -45,61 +44,72 @@ Automatically prepare a Macbook for development and desktop tasks using Ansible.
 - XQuartz
 - YNAB
 
-### Plugins
+### Command line applications
 
-- Hangouts
-- JRE
-- Silverlight
-
-### Development programs
-
-- GNU Octave
-- Hadoop
-- Haskell Platform
-- Homebrew
-- JDK
-- Lua
-- LuaJIT
-- MacPorts
-- oh-my-zsh
-- Powerline
-- Python 3
-- R
-- Vagrant (with vagrant-vbguest plugin)
-- Boot2Docker
-- VirtualBox
-- Docker
-- Zsh
-
-#### Ruby gems
-
-- bundler
-- heroku
-- tmuxinator
-
-#### Homebrew packages
-
-- ctags
-- fontforge
-- htop
 - irssi
-- jmeter
-- jshint
-- leiningen
 - mpc
 - mpd
 - mpdscribble
 - mplayer
-- node
+- vault
+- vimpc
+
+### Browser Plugins
+
+- Pentadactyl
+- Hangouts
+- JRE
+- Silverlight
+
+### Programming Languages
+
+- GNU Octave
+- Haskell Platform
+- Java (JDK)
+- Lua
+- Node.js
+- Python 3
+- R
+
+### Virtualization
+
+- Boot2Docker
+- Docker
+- Vagrant (with vagrant-vbguest plugin)
+- VirtualBox
+
+### Shell
+
+- iTerm
+- oh-my-zsh
+- Powerline
+- tmux
+- Zsh
+
+### Utilities
+
+- bundler
+- ctags
+- fontforge
+- ghc-mod
+- Hadoop
+- heroku
+- hlint
+- Homebrew
+- hoogle
+- htop
+- jmeter
+- jshint
+- leiningen
+- LuaJIT
+- MacPorts
 - p7zip
+- pointfree
 - reattach-to-user-namespace
 - terminal-notifier
 - the-silver-searcher
-- tmux
+- tmuxinator
 - tree
-- tree
-- vault
-- vimpc
 - wget
 
 ### Git repositories

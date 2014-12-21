@@ -1,0 +1,3 @@
+---
+- name: Install ghc-mod
+  command: cabal install ghc-mod
