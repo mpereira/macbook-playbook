@@ -34,6 +34,7 @@
     - hoogle
     - hdevtools
     - hlint
+    - hindent
     - pointfree
     - silverlight
     - hangouts

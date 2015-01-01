@@ -1,0 +1,3 @@
+---
+- name: Install hindent
+  command: cabal install hindent
