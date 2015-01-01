@@ -86,17 +86,21 @@ Automatically prepare a Macbook for development and desktop tasks using Ansible.
 - tmux
 - Zsh
 
+### Haskell Utilities
+
+- ghc-mod
+- hlint
+- hoogle
+- pointfree
+
 ### Utilities
 
 - bundler
 - ctags
 - fontforge
-- ghc-mod
 - Hadoop
 - heroku
-- hlint
 - Homebrew
-- hoogle
 - htop
 - jmeter
 - jshint
@@ -104,7 +108,6 @@ Automatically prepare a Macbook for development and desktop tasks using Ansible.
 - LuaJIT
 - MacPorts
 - p7zip
-- pointfree
 - reattach-to-user-namespace
 - terminal-notifier
 - the-silver-searcher
