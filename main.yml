@@ -50,6 +50,7 @@
     - zsh
     - homebrew
     - git
+    - node
     - powerline
     - oh-my-zsh
     - hadoop
@@ -68,7 +69,6 @@
     - tree
     - wget
     - htop
-    - node
     - p7zip
     - tree
     - tmux
