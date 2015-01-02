@@ -109,6 +109,7 @@ Automatically prepare a Macbook for development and desktop tasks using Ansible.
 - LuaJIT
 - MacPorts
 - p7zip
+- pulp
 - reattach-to-user-namespace
 - terminal-notifier
 - the-silver-searcher
