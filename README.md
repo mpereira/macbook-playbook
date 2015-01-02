@@ -68,6 +68,7 @@ Automatically prepare a Macbook for development and desktop tasks using Ansible.
 - Java (JDK)
 - Lua
 - Node.js
+- PureScript
 - Python 3
 - R
 

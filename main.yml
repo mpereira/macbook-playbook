@@ -36,6 +36,7 @@
     - hlint
     - hindent
     - pointfree
+    - purescript
     - silverlight
     - hangouts
     - google-chrome
