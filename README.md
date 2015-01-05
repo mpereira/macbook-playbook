@@ -46,6 +46,7 @@ Automatically prepare a Macbook for development and desktop tasks using Ansible.
 
 ### Command line applications
 
+- Chef Development Kit
 - irssi
 - mpc
 - mpd

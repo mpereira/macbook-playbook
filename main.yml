@@ -21,6 +21,7 @@
     - licecap
     - mac-ports
     - xquartz
+    - chef
     - r
     - lua
     - luajit
