@@ -1,20 +1,3 @@
 ---
-- name: Download the Chef Development Kit
-  get_url: >
-    url=https://opscode-omnibus-packages.s3.amazonaws.com/mac_os_x/10.8/x86_64/chefdk-0.3.5-1.dmg
-    dest={{ downloads_directory }}/chefdk-0.3.5-1.dmg
-
-- name: Mount the Chef Development Kit image
-  command: >
-    chdir={{ downloads_directory }}
-    hdiutil attach chefdk-0.3.5-1.dmg
-    creates=/Volumes/Chef\ Development\ Kit
-
-- name: Install Chef Development Kit
-  command: >
-    installer -package /Volumes/Chef\ Development\ Kit/chefdk-0.3.5-1.pkg -target /
-    creates=/usr/bin/chef
-  sudo: yes
-#
-- name: Unmount the Chef Development Kit image
-  command: hdiutil detach /Volumes/Chef\ Installer
+- name: Install chef gem
+  gem: name=chef state=present
