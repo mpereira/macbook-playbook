@@ -46,7 +46,7 @@ Automatically prepare a Macbook for development and desktop tasks using Ansible.
 
 ### Command line applications
 
-- irssi
+- irssi (with IrssiNotifier)
 - mpc
 - mpd
 - mpdscribble

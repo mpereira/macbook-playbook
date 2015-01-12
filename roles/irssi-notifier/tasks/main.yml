@@ -1,0 +1,5 @@
+---
+- name: Check out the IrssiNotifier GitHub repository
+  git: >
+    repo=https://github.com/murgo/IrssiNotifier.git
+    dest=/Users/{{ ansible_user_id }}/.irssi/IrssiNotifier

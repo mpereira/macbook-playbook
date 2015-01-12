@@ -62,6 +62,7 @@
     - fontforge
     - monaco-for-powerline
     - irssi
+    - irssi-notifier
     - leiningen
     - jmeter
     - mplayer
