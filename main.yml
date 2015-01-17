@@ -28,6 +28,7 @@
     - luajit
     - python3
     - skitch
+    - divvy
     - unity
     - vlc
     - light-table

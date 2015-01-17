@@ -31,6 +31,7 @@ Automatically prepare a Macbook for development and desktop tasks using Ansible.
 
 ### Desktop applications
 
+- Divvy
 - Dropbox
 - Firefox
 - Google Chrome

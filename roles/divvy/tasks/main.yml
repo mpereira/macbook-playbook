@@ -1,0 +1,17 @@
+---
+- name: Download Divvy
+  get_url: >
+    url=http://mizage.com/downloads/Divvy.zip
+    dest={{ downloads_directory }}/Divvy.zip
+
+- name: Extract Divvy zip archive
+  command: >
+    chdir={{ downloads_directory }}
+    unzip Divvy.zip -d Divvy
+    creates=Divvy
+
+- name: Copy Divvy.app to Applications directory
+  command: >
+    cp -R {{ downloads_directory }}/Divvy/Divvy.app /Applications
+    creates=/Applications/Divvy.app
+  sudo: yes
