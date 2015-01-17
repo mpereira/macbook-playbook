@@ -1,0 +1,20 @@
+---
+- name: Download Unity
+  get_url: >
+    url=http://netstorage.unity3d.com/unity/unity-4.6.1.dmg
+    dest={{ downloads_directory }}/unity-4.6.1.dmg
+
+- name: Mount Unity image
+  command: >
+    chdir={{ downloads_directory }}
+    hdiutil attach unity-4.6.1.dmg
+    creates=/Volumes/Unity\ Installer
+
+- name: Install Unity
+  command: >
+    installer -package /Volumes/Unity\ Installer/Unity.pkg -target /
+    creates=/Applications/Unity
+  sudo: yes
+
+- name: Unmount Unity image
+  command: hdiutil detach /Volumes/Unity\ Installer
