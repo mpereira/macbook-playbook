@@ -46,6 +46,7 @@
     - google-chrome
     - firefox
     - firefox-pentadactyl
+    - firefox-adblock-plus
     - boot2docker
     - vagrant
     - vagrant-vbguest

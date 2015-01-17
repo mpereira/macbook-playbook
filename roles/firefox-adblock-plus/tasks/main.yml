@@ -1,0 +1,9 @@
+---
+- name: Download Adblock Plus
+  get_url: >
+    url=https://addons.mozilla.org/firefox/downloads/latest/1865/addon-1865-latest.xpi
+    dest={{ downloads_directory }}/addon-1865-latest.xpi
+
+- name: Install Adblock Plus
+  shell: >
+    cd /Users/{{ ansible_user_id }}/Library/Application\ Support/Firefox/Profiles/*/extensions && unzip -u {{ downloads_directory }}/addon-1865-latest.xpi -d {d10d0bf8-f5b5-c8b4-a8b2-2b9879e08c5d}

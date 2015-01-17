@@ -58,9 +58,10 @@ Automatically prepare a Macbook for development and desktop tasks using Ansible.
 
 ### Browser Plugins
 
-- Pentadactyl
+- Adblock Plus
 - Hangouts
 - JRE
+- Pentadactyl
 - Silverlight
 
 ### Programming Languages
