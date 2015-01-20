@@ -145,7 +145,6 @@ the box.
 - Key mappings for controlling volume, mpd, etc.
 - Make WiFi not be disabled when the machine sleeps and is charging.
 - Disable annoying bell sound.
-- Fix [Irssi notify.pl error](https://gist.github.com/mpereira/8071720).
 - Integrate https://github.com/mathiasbynens/dotfiles/blob/master/.osx?
 - Leverage some of this: https://gist.github.com/brandonb927/3195465
 - Configure iTerm to use Monaco For Powerline.
@@ -154,9 +153,6 @@ the box.
 - Abstract repeated installation tasks.
 - Extract roles to a different project?
 - Improve README with rationale, useful prose, etc.
-- Twitter For Mac?
-- GitHub For Mac?
-- Transmission For Mac?
 
 ## Author
 
