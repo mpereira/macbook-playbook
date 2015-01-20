@@ -4,7 +4,7 @@ Automatically prepare a Macbook for development and desktop tasks using Ansible.
 
 ## Warning
 
-At the current state this project is not usable be people other than me out of
+At the current state this project is not usable by people other than me out of
 the box.
 
 ## Tested on
@@ -119,6 +119,7 @@ the box.
 - LuaJIT
 - MacPorts
 - p7zip
+- pgsanity
 - pulp
 - reattach-to-user-namespace
 - terminal-notifier
