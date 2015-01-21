@@ -119,7 +119,6 @@ the box.
 - LuaJIT
 - MacPorts
 - p7zip
-- pgsanity
 - pulp
 - reattach-to-user-namespace
 - terminal-notifier
