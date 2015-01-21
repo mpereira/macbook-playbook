@@ -119,6 +119,8 @@ the box.
 - LuaJIT
 - MacPorts
 - p7zip
+- pgsanity
+- PostgreSQL 9.4
 - pulp
 - reattach-to-user-namespace
 - terminal-notifier

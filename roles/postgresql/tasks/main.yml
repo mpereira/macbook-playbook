@@ -1,0 +1,17 @@
+---
+- name: Download PostgreSQL
+  get_url: >
+    url=https://github.com/PostgresApp/PostgresApp/releases/download/9.4.0.1/Postgres-9.4.0.1.zip
+    dest={{ downloads_directory }}/Postgres-9.4.0.1.zip
+
+- name: Extract the PostgreSQL zip archive
+  command: >
+    chdir={{ downloads_directory }}
+    unzip Postgres-9.4.0.1.zip -d Postgres-9.4.0.1
+    creates=Postgres-9.4.0.1
+
+- name: Install PostgreSQL
+  command: >
+    cp -R {{ downloads_directory }}/Postgres-9.4.0.1/Postgres.app /Applications
+    creates=/Applications/Postgres.app
+  sudo: yes

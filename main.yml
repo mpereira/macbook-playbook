@@ -21,6 +21,7 @@
     - licecap
     - mac-ports
     - xquartz
+    - postgresql
     # - chefdk
     - chef
     - r
@@ -58,6 +59,7 @@
     - git
     - node
     - powerline
+    - pgsanity
     - oh-my-zsh
     - hadoop
     - terminal-notifier
