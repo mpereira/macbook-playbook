@@ -36,6 +36,7 @@ the box.
 
 ### Desktop applications
 
+- Dash
 - Divvy
 - Dropbox
 - Firefox

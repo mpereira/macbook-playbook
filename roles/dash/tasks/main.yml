@@ -1,0 +1,17 @@
+---
+- name: Download Dash
+  get_url: >
+    url=http://newyork.kapeli.com/Dash.zip
+    dest={{ downloads_directory }}/Dash.zip
+
+- name: Extract Dash zip archive
+  command: >
+    chdir={{ downloads_directory }}
+    unzip Dash.zip -d Dash
+    creates=Dash
+
+- name: Copy Dash.app to Applications directory
+  command: >
+    cp -R {{ downloads_directory }}/Dash/Dash.app /Applications
+    creates=/Applications/Dash.app
+  sudo: yes
