@@ -24,6 +24,7 @@
     - postgresql
     # - chefdk
     - chef
+    - emacs
     - r
     - lua
     - luajit

@@ -39,6 +39,7 @@ the box.
 - Dash
 - Divvy
 - Dropbox
+- Emacs
 - Firefox
 - Google Chrome
 - LICEcap

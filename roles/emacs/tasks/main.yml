@@ -1,0 +1,20 @@
+---
+- name: Download Emacs
+  get_url: >
+    url=http://emacsformacosx.com/emacs-builds/Emacs-24.4-universal.dmg
+    dest={{ downloads_directory }}/Emacs-24.4-universal.dmg
+
+- name: Mount the Emacs image
+  command: >
+    chdir={{ downloads_directory }}
+    hdiutil attach Emacs-24.4-universal.dmg
+    creates=/Volumes/Emacs
+
+- name: Install Emacs
+  command: >
+    cp -R /Volumes/Emacs/Emacs.app /Applications
+    creates=/Applications/Emacs.app
+  sudo: yes
+
+- name: Unmount the Emacs image
+  command: hdiutil detach /Volumes/Emacs
