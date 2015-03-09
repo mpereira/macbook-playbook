@@ -1,19 +1,18 @@
 ---
 - name: Download Vagrant
   get_url: >
-    url=https://dl.bintray.com/mitchellh/vagrant/vagrant_1.6.5.dmg
-    dest={{ downloads_directory }}/vagrant_1.6.5.dmg
+    url=https://dl.bintray.com/mitchellh/vagrant/vagrant_1.7.2.dmg
+    dest={{ downloads_directory }}/vagrant_1.7.2.dmg
 
 - name: Mount Vagrant image
   command: >
     chdir={{ downloads_directory }}
-    hdiutil attach vagrant_1.6.5.dmg
+    hdiutil attach vagrant_1.7.2.dmg
     creates=/Volumes/Vagrant
 
 - name: Install Vagrant
   command: >
     installer -package /Volumes/Vagrant/Vagrant.pkg -target /
-    creates=/Applications/Vagrant
   sudo: yes
 
 - name: Unmount Vagrant image
