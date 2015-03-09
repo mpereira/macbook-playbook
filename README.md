@@ -116,7 +116,7 @@ the box.
 - Homebrew
 - htop
 - jmeter
-- jshint
+- jsxhint
 - leiningen
 - LuaJIT
 - MacPorts

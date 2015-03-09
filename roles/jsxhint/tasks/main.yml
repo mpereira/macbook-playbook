@@ -1,0 +1,3 @@
+---
+- name: Install jsxhint
+  npm: name=jsxhint state=latest global=yes

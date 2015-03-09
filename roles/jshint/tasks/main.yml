@@ -1,3 +1,0 @@
----
-- name: Install jshint
-  npm: name=jshint state=latest global=yes
