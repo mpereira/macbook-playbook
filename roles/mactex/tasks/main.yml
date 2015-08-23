@@ -1,0 +1,12 @@
+---
+- name: Download MacTeX
+  get_url: >
+    url=http://tug.org/cgi-bin/mactex-download/MacTeX.pkg
+    dest={{ downloads_directory }}/MacTeX.pkg
+
+- name: Install MacTeX
+  command: >
+    installer -package {{ downloads_directory }}/MacTeX.pkg -target /
+    creates=/usr/local/texlive/2015
+
+  sudo: yes

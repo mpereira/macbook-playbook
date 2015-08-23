@@ -21,6 +21,7 @@
     - licecap
     - mac-ports
     - xquartz
+    - mactex
     - postgresql
     # - chefdk
     - chef

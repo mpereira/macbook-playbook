@@ -120,6 +120,7 @@ the box.
 - leiningen
 - LuaJIT
 - MacPorts
+- MacTeX
 - p7zip
 - pgsanity
 - PostgreSQL 9.4
