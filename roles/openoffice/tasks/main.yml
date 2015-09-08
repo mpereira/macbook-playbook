@@ -1,0 +1,20 @@
+---
+- name: Download OpenOffice
+  get_url: >
+    url=http://archive.apache.org/dist/openoffice/4.1.1/binaries/en-US/Apache_OpenOffice_4.1.1_MacOS_x86-64_install_en-US.dmg
+    dest={{ downloads_directory }}/Apache_OpenOffice_4.1.1_MacOS_x86-64_install_en-US.dmg
+
+- name: Mount the OpenOffice image
+  command: >
+    chdir={{ downloads_directory }}
+    hdiutil attach Apache_OpenOffice_4.1.1_MacOS_x86-64_install_en-US.dmg
+    creates=/Volumes/OpenOffice
+
+- name: Install Chef Development Kit
+  command: >
+    cp -R /Volumes/OpenOffice/OpenOffice.app /Applications
+    creates=/Applications/OpenOffice.app
+  sudo: yes
+
+- name: Unmount the OpenOffice image
+  command: hdiutil detach /Volumes/OpenOffice

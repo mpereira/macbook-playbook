@@ -44,6 +44,7 @@ the box.
 - Google Chrome
 - LICEcap
 - LightTable
+- OpenOffice
 - Prey
 - Skitch
 - Skype

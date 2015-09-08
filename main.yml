@@ -24,6 +24,7 @@
     - mactex
     - postgresql
     # - chefdk
+    - openoffice
     - chef
     - emacs
     - r
