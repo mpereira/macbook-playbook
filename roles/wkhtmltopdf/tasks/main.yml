@@ -1,0 +1,12 @@
+---
+- name: Download wkhtmltopdf
+  get_url: >
+    url=http://download.gna.org/wkhtmltopdf/0.12/0.12.3/wkhtmltox-0.12.3_osx-cocoa-x86-64.pkg
+    dest={{ downloads_directory }}/wkhtmltox-0.12.3_osx-cocoa-x86-64.pkg
+
+- name: Install wkhtmltopdf
+  command: >
+    installer -package {{ downloads_directory }}/wkhtmltox-0.12.3_osx-cocoa-x86-64.pkg -target /
+    creates=/usr/local/bin/wkhtmltopdf
+  sudo: yes
+

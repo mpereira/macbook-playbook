@@ -64,6 +64,7 @@ the box.
 - mplayer
 - vault
 - vimpc
+- wkhtmltopdf
 
 ### Browser Plugins
 
