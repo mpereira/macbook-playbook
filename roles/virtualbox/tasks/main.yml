@@ -1,0 +1,20 @@
+---
+- name: Download VirtualBox
+  get_url: >
+    url=http://download.virtualbox.org/virtualbox/4.3.4/VirtualBox-4.3.4-91027-OSX.dmg
+    dest={{ downloads_directory }}/VirtualBox-4.3.4-91027-OSX.dmg
+
+- name: Mount VirtualBox image
+  command: >
+    chdir={{ downloads_directory }}
+    hdiutil attach VirtualBox-4.3.4-91027-OSX.dmg
+    creates=/Volumes/VirtualBox
+
+- name: Install VirtualBox
+  command: >
+    installer -package /Volumes/VirtualBox/VirtualBox.pkg -target /
+    creates=/Applications/VirtualBox.app
+  sudo: yes
+
+- name: Unmount VirtualBox image
+  command: hdiutil detach /Volumes/VirtualBox
