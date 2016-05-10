@@ -53,7 +53,6 @@
     - firefox
     - firefox-pentadactyl
     - firefox-adblock-plus
-    - boot2docker
     - virtualbox
     - vagrant
     - vagrant-vbguest
