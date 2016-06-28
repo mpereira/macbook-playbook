@@ -1,0 +1,19 @@
+---
+- name: Download Google Photos
+  get_url: >
+    url=https://dl.google.com/dl/picasa/gpautobackup_setup.dmg
+    dest={{ downloads_directory }}/gpautobackup_setup.dmg
+
+- name: Mount Google Photos image
+  command: >
+    chdir={{ downloads_directory }}
+    hdiutil attach gpautobackup_setup.dmg
+    creates="/Volumes/Install Google Photos Backup"
+
+- name: Copy Google Photos application directory to the applications directory
+  command: >
+    cp -R "/Volumes/Install Google Photos Backup/Google Photos Backup.app" /Applications
+    creates="/Applications/Google Photos Backup.app"
+
+- name: Unmount Google Photos image
+  command: hdiutil detach "/Volumes/Install Google Photos Backup"

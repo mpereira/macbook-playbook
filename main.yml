@@ -30,6 +30,7 @@
     - r
     - lua
     - luajit
+    - google-photos
     - python3
     - skitch
     - divvy

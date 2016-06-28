@@ -42,6 +42,7 @@ the box.
 - Emacs
 - Firefox
 - Google Chrome
+- Google Photos
 - LICEcap
 - LightTable
 - OpenOffice
