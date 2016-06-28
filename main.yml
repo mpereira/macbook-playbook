@@ -30,6 +30,7 @@
     - r
     - lua
     - luajit
+    - macvim
     - google-photos
     - python3
     - skitch

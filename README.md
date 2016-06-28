@@ -59,6 +59,7 @@ the box.
 ### Command line applications
 
 - irssi (with IrssiNotifier)
+- MacVim
 - mpc
 - mpd
 - mpdscribble
