@@ -58,6 +58,7 @@
     - virtualbox
     - vagrant
     - vagrant-vbguest
+    - docker
     - wkhtmltopdf
     - bundler
     - tmuxinator

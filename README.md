@@ -89,7 +89,6 @@ the box.
 
 ### Virtualization
 
-- Boot2Docker
 - Docker
 - Vagrant (with vagrant-vbguest plugin)
 - VirtualBox
