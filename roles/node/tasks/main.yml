@@ -1,3 +1,11 @@
 ---
-- name: Install node
-  homebrew: name=node state=present
+- name: Download Node.js
+  get_url: >
+    url=https://nodejs.org/dist/v4.5.0/node-v4.5.0.pkg
+    dest={{ downloads_directory }}/node-v4.5.0.pkg
+
+- name: Install Node.js
+  command: >
+    chdir={{ downloads_directory }}
+    installer -package node-v4.5.0.pkg -target /
+  sudo: yes
