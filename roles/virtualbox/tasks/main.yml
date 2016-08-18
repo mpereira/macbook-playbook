@@ -1,13 +1,13 @@
 ---
 - name: Download VirtualBox
   get_url: >
-    url=http://download.virtualbox.org/virtualbox/4.3.4/VirtualBox-4.3.4-91027-OSX.dmg
-    dest={{ downloads_directory }}/VirtualBox-4.3.4-91027-OSX.dmg
+    url=http://download.virtualbox.org/virtualbox/5.0.20/VirtualBox-5.0.20-106931-OSX.dmg
+    dest={{ downloads_directory }}/VirtualBox-5.0.20-106931-OSX.dmg
 
 - name: Mount VirtualBox image
   command: >
     chdir={{ downloads_directory }}
-    hdiutil attach VirtualBox-4.3.4-91027-OSX.dmg
+    hdiutil attach VirtualBox-5.0.20-106931-OSX.dmg
     creates=/Volumes/VirtualBox
 
 - name: Install VirtualBox
