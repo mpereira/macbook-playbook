@@ -84,6 +84,7 @@
     - mpc
     - mpdscribble
     - vimpc
+    - s3cmd
     - tree
     - wget
     - htop

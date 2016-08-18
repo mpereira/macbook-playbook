@@ -64,6 +64,7 @@ the box.
 - mpd
 - mpdscribble
 - mplayer
+- s3cmd
 - vault
 - vimpc
 - wkhtmltopdf

@@ -1,0 +1,7 @@
+- name: Install s3cmd
+  pip: >
+    name=s3cmd
+    state=present
+    version=1.6.1
+    extra_args='--install-option="--prefix=/usr/local"'
+  sudo: yes
