@@ -58,6 +58,7 @@ the box.
 
 ### Command line applications
 
+- ffmpeg
 - irssi (with IrssiNotifier)
 - MacVim
 - mpc
