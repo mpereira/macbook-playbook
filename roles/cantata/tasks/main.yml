@@ -8,8 +8,7 @@
   command: >
     chdir={{ downloads_directory }}
     hdiutil attach Cantata-2.0.1.dmg
-    hdiutil attach Cantata-2.0.1.dmg
-    creates="/Volumes/Chef Development Kit"
+    creates=/Volumes/Cantata
 
 - name: Copy Cantata.app to Applications directory
   command: >
