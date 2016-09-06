@@ -1,0 +1,21 @@
+---
+- name: Download Cantata
+  get_url: >
+    url=https://github.com/CDrummond/cantata/releases/download/v2.0.1/Cantata-2.0.1.dmg
+    dest={{ downloads_directory }}/Cantata-2.0.1.dmg
+
+- name: Mount Cantata image
+  command: >
+    chdir={{ downloads_directory }}
+    hdiutil attach Cantata-2.0.1.dmg
+    hdiutil attach Cantata-2.0.1.dmg
+    creates="/Volumes/Chef Development Kit"
+
+- name: Copy Cantata.app to Applications directory
+  command: >
+    cp -R /Volumes/Cantata/Cantata.app /Applications
+    creates=/Applications/Cantata.app
+  become: yes
+
+- name: Unmount Cantata image
+  command: hdiutil detach /Volumes/Cantata

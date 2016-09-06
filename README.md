@@ -36,6 +36,7 @@ the box.
 
 ### Desktop applications
 
+- Cantata
 - Dash
 - Divvy
 - Dropbox
