@@ -1,7 +1,7 @@
 ---
 - name: Download MacVim
   get_url: >
-    url=https://github.com/macvim-dev/macvim/releases/download/snapshot-104/MacVim.dmg
+    url=https://github.com/macvim-dev/macvim/releases/download/snapshot-107/MacVim.dmg
     dest={{ downloads_directory }}/MacVim.dmg
 
 - name: Mount MacVim image
