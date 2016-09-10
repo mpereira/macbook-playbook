@@ -1,3 +1,9 @@
 ---
 - name: Install leiningen
-  homebrew: name=leiningen state=installed
+  get_url: >
+    url=https://raw.githubusercontent.com/technomancy/leiningen/2.7.0/bin/lein
+    dest=/usr/local/bin/lein
+    force=yes
+    mode=755
+
+- command: lein version
