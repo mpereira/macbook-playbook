@@ -5,13 +5,12 @@
     dest={{ downloads_directory }}/LuaJIT-2.0.4.tar.gz
 
 - name: Extract luajit
-  unarchive:
-    src={{ downloads_directory }}/LuaJIT-2.0.4.tar.gz
-    dest={{ downloads_directory }}
+  command: >
+    tar -xvf {{ downloads_directory }}/LuaJIT-2.0.4.tar.gz
+    -C {{ downloads_directory }}
     creates={{ downloads_directory }}/LuaJIT-2.0.4
 
 - name: Build and install luajit
   shell: >
     chdir={{ downloads_directory }}/LuaJIT-2.0.4
-    make install PREFIX=/usr
-  sudo: yes
+    make install

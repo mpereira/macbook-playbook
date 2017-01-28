@@ -1,20 +1,20 @@
 ---
 - name: Download XQuartz
   get_url: >
-    url=http://xquartz.macosforge.org/downloads/SL/XQuartz-2.7.5.dmg
-    dest={{ downloads_directory }}/XQuartz-2.7.5.dmg
+    url=https://dl.bintray.com/xquartz/downloads/XQuartz-2.7.11.dmg
+    dest={{ downloads_directory }}/XQuartz-2.7.11.dmg
 
 - name: Mount XQuartz image
   command: >
     chdir={{ downloads_directory }}
-    hdiutil attach XQuartz-2.7.5.dmg
-    creates=/Volumes/XQuartz-2.7.5
+    hdiutil attach XQuartz-2.7.11.dmg
+    creates=/Volumes/XQuartz-2.7.11
 
 - name: Install XQuartz
   command: >
-    installer -package /Volumes/XQuartz-2.7.5/XQuartz.pkg -target /
+    installer -package /Volumes/XQuartz-2.7.11/XQuartz.pkg -target /
     creates=/Applications/Utilities/XQuartz.app
   sudo: yes
 
 - name: Unmount XQuartz image
-  command: hdiutil detach /Volumes/XQuartz-2.7.5
+  command: hdiutil detach /Volumes/XQuartz-2.7.11

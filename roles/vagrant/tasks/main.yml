@@ -1,13 +1,13 @@
 ---
 - name: Download Vagrant
   get_url: >
-    url=https://releases.hashicorp.com/vagrant/1.8.1/vagrant_1.8.1.dmg
-    dest={{ downloads_directory }}/vagrant_1.8.1.dmg
+    url=https://releases.hashicorp.com/vagrant/1.8.5/vagrant_1.8.5.dmg
+    dest={{ downloads_directory }}/vagrant_1.8.5.dmg
 
 - name: Mount Vagrant image
   command: >
     chdir={{ downloads_directory }}
-    hdiutil attach vagrant_1.8.1.dmg
+    hdiutil attach vagrant_1.8.5.dmg
     creates=/Volumes/Vagrant
 
 - name: Install Vagrant

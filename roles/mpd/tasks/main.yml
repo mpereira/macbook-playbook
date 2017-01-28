@@ -1,3 +1,6 @@
 ---
 - name: Install mpd
-  homebrew: name=mpd state=present install_options=with-libshout,with-lame,with-flac
+  homebrew: name=mpd state=latest install_options=with-libshout,with-lame,with-flac
+
+- name: Make mpd start at login
+  command: ln -sfv /usr/local/opt/mpd/*.plist ~/Library/LaunchAgents

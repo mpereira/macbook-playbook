@@ -13,7 +13,6 @@
 - name: Install VirtualBox
   command: >
     installer -package /Volumes/VirtualBox/VirtualBox.pkg -target /
-    creates=/Applications/VirtualBox.app
   sudo: yes
 
 - name: Unmount VirtualBox image
