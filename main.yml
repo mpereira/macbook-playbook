@@ -24,14 +24,17 @@
     - xquartz
     - mactex
     - postgresql
-    # - chefdk
+    - chefdk
     - openoffice
-    - chef
+    # - chef
     - emacs
     - r
     - lua
     - luajit
     - macvim
+    - neovim
+    - ruby
+    - vim
     - google-photos
     - python3
     - skitch
