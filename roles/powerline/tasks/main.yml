@@ -1,2 +1,2 @@
 - name: Install Powerline
-  command: pip install --user git+git://github.com/Lokaltog/powerline
+  command: pip install --user powerline-status

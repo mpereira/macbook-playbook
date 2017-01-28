@@ -40,7 +40,6 @@ the box.
 - Dash
 - Divvy
 - Dropbox
-- Emacs
 - Firefox
 - Google Chrome
 - Google Photos
@@ -57,11 +56,16 @@ the box.
 - XQuartz
 - YNAB
 
+### Text editors
+- Emacs 25
+- MacVim
+- Neovim 1.5
+- Vim 8.0
+
 ### Command line applications
 
 - ffmpeg
 - irssi (with IrssiNotifier)
-- MacVim
 - mpc
 - mpd
 - mpdscribble

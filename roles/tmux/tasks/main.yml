@@ -1,6 +1,6 @@
 ---
 - name: Install tmux
-  homebrew: name=tmux state=present
+  homebrew: name=tmux state=latest
 
 - name: Install tmux-switch-session
   get_url: >

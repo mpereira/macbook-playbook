@@ -1,13 +1,13 @@
 ---
 - name: Download Emacs
   get_url: >
-    url=http://emacsformacosx.com/emacs-builds/Emacs-24.4-universal.dmg
-    dest={{ downloads_directory }}/Emacs-24.4-universal.dmg
+    url=https://emacsformacosx.com/emacs-builds/Emacs-25.1-1-universal.dmg
+    dest={{ downloads_directory }}/Emacs-25.1-1-universal.dmg
 
 - name: Mount the Emacs image
   command: >
     chdir={{ downloads_directory }}
-    hdiutil attach Emacs-24.4-universal.dmg
+    hdiutil attach Emacs-25.1-1-universal.dmg
     creates=/Volumes/Emacs
 
 - name: Install Emacs
