@@ -67,6 +67,7 @@ the box.
 - ffmpeg
 - irssi (with IrssiNotifier)
 - mpc
+- shpotify
 - mpd
 - mpdscribble
 - mplayer
