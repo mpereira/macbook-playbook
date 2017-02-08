@@ -68,6 +68,7 @@
     - bundler
     - tmuxinator
     - heroku
+    - fish
     - zsh
     - homebrew
     - git

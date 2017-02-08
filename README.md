@@ -102,6 +102,7 @@ the box.
 
 ### Shell
 
+- fish
 - iTerm
 - oh-my-zsh
 - Powerline
