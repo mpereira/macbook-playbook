@@ -1,10 +1,10 @@
 ---
 - name: Download Python 3
   get_url: >
-    url=https://www.python.org/ftp/python/3.4.2/python-3.4.2-macosx10.6.pkg
-    dest={{ downloads_directory }}/python-3.4.2-macosx10.6.pkg
+    url=https://www.python.org/ftp/python/3.6.0/python-3.6.0-macosx10.6.pkg
+    dest={{ downloads_directory }}/python-3.6.0-macosx10.6.pkg
 
 - name: Install Python 3
   command: >
-    installer -package {{ downloads_directory }}/python-3.4.2-macosx10.6.pkg -target /
-  sudo: yes
+    installer -package {{ downloads_directory }}/python-3.6.0-macosx10.6.pkg -target /
+  become: yes
