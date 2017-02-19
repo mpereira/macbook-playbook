@@ -1,0 +1,3 @@
+---
+- name: Install coreutils
+  homebrew: name=coreutils state=present

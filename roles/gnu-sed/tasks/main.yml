@@ -1,0 +1,3 @@
+---
+- name: Install gnu-sed
+  homebrew: name=gnu-sed state=present install_options=with-default-names

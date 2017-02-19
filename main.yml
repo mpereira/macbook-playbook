@@ -75,6 +75,8 @@
     - node
     - powerline
     - pgsanity
+    - coreutils
+    - gnu-sed
     - oh-my-zsh
     - hadoop
     - terminal-notifier

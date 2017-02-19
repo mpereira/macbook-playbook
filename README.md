@@ -117,6 +117,11 @@ the box.
 - hoogle
 - pointfree
 
+### GNU stuff
+
+- coreutils
+- gnu-sed
+
 ### Utilities
 
 - chef
