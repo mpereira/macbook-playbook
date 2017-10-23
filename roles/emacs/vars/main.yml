@@ -1,0 +1,3 @@
+---
+emacs_dmg: Emacs-{{ emacs_version }}-universal.dmg
+emacs_src_archive: emacs-{{ emacs_version }}.tar.xz

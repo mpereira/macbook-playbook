@@ -1,3 +1,5 @@
 ---
 - name: Install mplayer
-  homebrew: name=mplayer state=present
+  homebrew:
+    name: mplayer
+    # name: mplayer@{{ mplayer_version }}

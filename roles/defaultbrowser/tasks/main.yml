@@ -1,0 +1,9 @@
+---
+- name: Check out the defaultbrowser repository
+  git:
+    repo: https://github.com/kerma/defaultbrowser.git
+    dest: "{{ downloads_directory }}/defaultbrowser"
+    version: v{{ defaultbrowser_version }}
+
+- name: Install defaultbrowser
+  command: cp "{{ downloads_directory }}/defaultbrowser/build/defaultbrowser" /usr/local/bin

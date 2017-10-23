@@ -1,0 +1,4 @@
+---
+vlc_name: vlc-{{ vlc_version }}
+vlc_dmg: "{{ vlc_name }}.dmg"
+vlc_volume: "{{ vlc_name }}"

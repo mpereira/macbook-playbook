@@ -1,20 +1,19 @@
 ---
 - name: Download XQuartz
   get_url: >
-    url=https://dl.bintray.com/xquartz/downloads/XQuartz-2.7.11.dmg
-    dest={{ downloads_directory }}/XQuartz-2.7.11.dmg
+    url=https://dl.bintray.com/xquartz/downloads/{{ xquartz_dmg }}
+    dest={{ downloads_directory }}/{{ xquartz_dmg }}
 
 - name: Mount XQuartz image
   command: >
     chdir={{ downloads_directory }}
-    hdiutil attach XQuartz-2.7.11.dmg
-    creates=/Volumes/XQuartz-2.7.11
+    hdiutil attach {{ xquartz_dmg }}
+    creates=/Volumes/{{ xquartz_volume }}
 
 - name: Install XQuartz
   command: >
-    installer -package /Volumes/XQuartz-2.7.11/XQuartz.pkg -target /
-    creates=/Applications/Utilities/XQuartz.app
-  sudo: yes
+    installer -package /Volumes/{{ xquartz_volume }}/XQuartz.pkg -target /
+  become: yes
 
 - name: Unmount XQuartz image
-  command: hdiutil detach /Volumes/XQuartz-2.7.11
+  command: hdiutil detach /Volumes/{{ xquartz_volume }}

@@ -15,7 +15,7 @@
   command: >
     installer -package /Volumes/Chef\ Development\ Kit/chefdk-0.10.0-1.pkg -target /
     creates=/usr/bin/chef
-  sudo: yes
+  become: yes
 
 - name: Unmount the Chef Development Kit image
-  command: hdiutil detach /Volumes/Chef\ Installer
+  command: hdiutil detach /Volumes/Chef\ Development\ Kit

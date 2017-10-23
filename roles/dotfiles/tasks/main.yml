@@ -1,16 +1,20 @@
 ---
-- name: Ensure the mpd directories exist
-  file: path=/Users/{{ ansible_user_id }}/{{ item }} state=directory
-  with_items:
-    - .mpd
-    - .mpd/playlists
+- name: Check out my dotfiles repository
+  git:
+    repo: git@github.com:mpereira/dotfiles.git
+    dest: "{{ home_directory }}/.dotfiles"
+    update: no
 
-- name: Check out the dotfiles GitHub repository
-  git: >
-    repo=git@github.com:mpereira/dotfiles.git
-    dest=/Users/{{ ansible_user_id }}/.dotfiles
+- name: Load environment variables
+  include_vars:
+    file: environment.yml
+    name: environment_variables
+
+- debug: var=environment_variables
 
 - name: Install dotfiles
-  command: >
-    chdir=/Users/{{ ansible_user_id }}/.dotfiles
-    rake install
+  env: environment_variables
+  environment: "{{ environment_variables }}"
+  command: rake sync
+  args:
+    chdir: "{{ home_directory }}/.dotfiles"

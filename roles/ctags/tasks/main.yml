@@ -1,3 +1,5 @@
 ---
 - name: Install ctags
-  homebrew: name=ctags state=present
+  homebrew:
+    name: ctags
+    # name: ctags@{{ ctags_version }}

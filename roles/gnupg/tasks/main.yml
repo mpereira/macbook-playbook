@@ -1,0 +1,19 @@
+---
+- name: Download GnuPG
+  get_url:
+    url: https://downloads.sourceforge.net/project/gpgosx/{{ gnupg_dmg }}
+    dest: "{{ downloads_directory }}/{{ gnupg_dmg }}"
+
+- name: Mount GnuPG image
+  command: >
+    chdir={{ downloads_directory }}
+    hdiutil attach {{ gnupg_dmg }}
+    creates="/Volumes/{{ gnupg_volume }}"
+
+- name: Install GnuPG
+  command: >
+    installer -package "/Volumes/{{ gnupg_volume }}/Install.pkg" -target /
+  become: yes
+
+- name: Unmount GnuPG image
+  command: hdiutil detach "/Volumes/{{ gnupg_volume }}"

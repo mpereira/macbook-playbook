@@ -1,0 +1,3 @@
+#/bin/sh
+
+make encrypt_pre_commit 2> /dev/null && echo "pre-commit info: Sensitive files encrypted successfully" || echo "pre-commit info: Sensitive files already encrypted" && exit 0

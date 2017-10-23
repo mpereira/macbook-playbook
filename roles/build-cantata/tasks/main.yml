@@ -1,0 +1,15 @@
+---
+- name: Clone Cantata repository
+  git:
+    repo: "https://github.com/CDrummond/cantata.git"
+    dest: "{{ downloads_directory }}/cantata"
+
+- name: Ensure build directory exists
+  file: >
+    path="{{ downloads_directory }}/cantata/build"
+    state=directory
+
+- name: Build Cantata
+  shell: >
+    chdir="{{ downloads_directory }}/cantata/build"
+    CMAKE_PREFIX_PATH=/Applications/Qt5.9.0/5.9/clang_64/ cmake ..

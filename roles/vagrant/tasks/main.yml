@@ -1,19 +1,29 @@
 ---
 - name: Download Vagrant
-  get_url: >
-    url=https://releases.hashicorp.com/vagrant/1.8.5/vagrant_1.8.5.dmg
-    dest={{ downloads_directory }}/vagrant_1.8.5.dmg
+  # get_url fails to download because of a bug with SSL handling.
+  # https://github.com/ansible/ansible/issues/23642
+  command: >
+    chdir={{ downloads_directory }}
+    wget -nc -q https://releases.hashicorp.com/vagrant/{{ vagrant_version }}/vagrant_{{ vagrant_version }}_x86_64.dmg
+
+- name: Check existing Vagrant version
+  shell: "vagrant --version 2>&1"
+  register: vagrant_version_output
+  ignore_errors: yes
 
 - name: Mount Vagrant image
   command: >
     chdir={{ downloads_directory }}
-    hdiutil attach vagrant_1.8.5.dmg
+    hdiutil attach vagrant_{{ vagrant_version }}_x86_64.dmg
     creates=/Volumes/Vagrant
+  when: vagrant_version_output.stdout.find('Vagrant ' ~ vagrant_version) == -1
 
 - name: Install Vagrant
   command: >
     installer -package /Volumes/Vagrant/Vagrant.pkg -target /
-  sudo: yes
+  become: yes
+  when: vagrant_version_output.stdout.find('Vagrant ' ~ vagrant_version) == -1
 
 - name: Unmount Vagrant image
   command: hdiutil detach /Volumes/Vagrant
+  when: vagrant_version_output.stdout.find('Vagrant ' ~ vagrant_version) == -1

@@ -17,7 +17,7 @@
 - name: Install JRE
   command: >
     installer -package /Volumes/Java\ 8\ Update\ 05/Java\ 8\ Update\ 05.pkg -target /
-  sudo: yes
+  become: yes
   when: java_version.stdout.find('java version "1.8.0_05"') == -1
 
 - name: Unmount JRE image

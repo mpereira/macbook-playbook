@@ -14,4 +14,4 @@
   command: >
     cp -R {{ downloads_directory }}/LightTableMac/LightTable/LightTable.app /Applications
     creates=/Applications/LightTable.app
-  sudo: yes
+  become: yes

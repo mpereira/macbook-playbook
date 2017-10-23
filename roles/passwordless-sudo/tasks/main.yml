@@ -1,0 +1,9 @@
+---
+- lineinfile:
+    path: "/etc/sudoers.d/{{ user }}"
+    line: "{{ user }} ALL=(ALL) NOPASSWD: ALL"
+    create: yes
+    owner: root
+    mode: 0644
+    validate: 'visudo -cf %s'
+  become: yes

@@ -1,3 +1,5 @@
 ---
 - name: Install tree
-  homebrew: name=tree state=present
+  homebrew:
+    name: tree
+    # name: tree@{{ tree_version }}

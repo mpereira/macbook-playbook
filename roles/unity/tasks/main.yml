@@ -14,7 +14,7 @@
   command: >
     installer -package /Volumes/Unity\ Installer/Unity.pkg -target /
     creates=/Applications/Unity
-  sudo: yes
+  become: yes
 
 - name: Unmount Unity image
   command: hdiutil detach /Volumes/Unity\ Installer

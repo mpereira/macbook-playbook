@@ -1,0 +1,3 @@
+---
+xquartz_dmg: XQuartz-{{ xquartz_version }}.dmg
+xquartz_volume: XQuartz-{{ xquartz_version }}

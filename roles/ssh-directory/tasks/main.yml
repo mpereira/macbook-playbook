@@ -1,5 +1,0 @@
----
-- name: Ensure the user SSH directory exists
-  file: >
-    dest=/Users/{{ ansible_user_id }}/.ssh
-    state=directory

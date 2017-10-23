@@ -1,0 +1,6 @@
+---
+jdk_version: "{{ java_version }}u{{ java_subversion }}"
+jdk_dmg: jdk-{{ jdk_version }}-macosx-x64.dmg
+jdk_url:  "http://download.oracle.com/otn-pub/java/jdk/{{ jdk_version }}-b{{ java_build }}/{{ jdk_hash }}/{{ jdk_dmg }}"
+jdk_image: "JDK {{ java_version }} Update {{ java_subversion }}"
+jdk_pkg: "{{ jdk_image }}.pkg"

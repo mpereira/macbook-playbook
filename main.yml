@@ -1,109 +1,119 @@
 ---
-- hosts: 0.0.0.0
+- hosts: localhost
   connection: local
-  vars:
-    home_directory: /Users/{{ ansible_user_id }}
-    downloads_directory: /{{ home_directory }}/.ansible/downloads
   roles:
     - ansible-download-directory
-    - ssh-directory
-    - caps-lock-remapped-to-control
-    - iterm
-    - known-hosts
-    - dropbox
-    - dropbox-ssh-key
-    - jre
-    - jdk
-    - skype
-    - ynab
-    - steam
-    - theremin
-    - cantata
-    - licecap
-    - mac-ports
-    - xquartz
-    - mactex
-    - postgresql
-    - chefdk
-    - openoffice
-    # - chef
-    - emacs
-    - r
-    - lua
-    - luajit
-    - macvim
-    - neovim
-    - ruby
-    - vim
-    - google-photos
+    - usr-local-src-directory
+    - ssh-keys
+    - passwordless-sudo
+
+    - gnu-command-line-tools
+    - homebrew
+    - leiningen
     - python3
-    - skitch
-    - divvy
-    - unity
-    - dash
-    - vlc
-    - ffmpeg
-    - prey
-    - light-table
-    - octave
-    - haskell
-    - ghc-mod
-    - hoogle
-    - hdevtools
-    - hlint
-    - hindent
-    - pointfree
-    - purescript
-    - silverlight
-    - hangouts
-    - google-chrome
-    - firefox
-    - firefox-pentadactyl
-    - firefox-adblock-plus
+    - git
+    - node
     - virtualbox
     - vagrant
     - vagrant-vbguest
     - docker
-    - wkhtmltopdf
-    - bundler
-    - tmuxinator
-    - heroku
+    - jdk
+    - p7zip
+
+    - emacs
+    - defaultbrowser
+    - ffmpeg
     - fish
-    - zsh
-    - homebrew
-    - git
-    - node
-    - powerline
-    - pgsanity
-    - coreutils
-    - gnu-sed
-    - oh-my-zsh
-    - hadoop
-    - terminal-notifier
-    - reattach-to-user-namespace
-    - fontforge
-    - monaco-for-powerline
-    - irssi
-    - irssi-notifier
-    - leiningen
-    - jmeter
-    - mplayer
+    - fish-foreign-env
+    - jq
+    - wkhtmltopdf
+    - beets
+    - glances
+    - hugo
     - mpd
     - mpc
     - mpdscribble
-    - vimpc
-    - shpotify
     - s3cmd
-    - tree
-    - wget
-    - htop
-    - p7zip
-    - tree
-    - tmux
-    - ctags
+    - shpotify
     - the-silver-searcher
+    - tree
     - vault
-    - jsxhint
-    - pulp
+    - bitbar
+    - divvy
+    - android-file-transfer
+    - dropbox
+    - google-chrome
+    - postgresql
+    - skype
+    - slack
+    - spotify
+    - steam
+    - teensy-loader
+    - ynab
+    - cantata
+    - google-chrome-as-default-browser
+    - gnupg
+    # - caps-lock-remapped-to-control # FIXME: broken on macOS Sierra
+    - licecap
+    - mac-ports
+    - xquartz
+    - mactex
+    - google-photos
+    - skitch
+    - dash
+    - vlc
+    - prey
+    - pgsanity
+    - jmeter
+    - mplayer
+    - vimpc
+    - htop
+    - vtop
+    - ctags
+    - irssi
+    - irssi-notifier
+    - dotemacs
     - dotfiles
-    - vimfiles
+
+    # - build-cantata
+    # - bundler
+    # - chefdk
+    # - firefox
+    # - firefox-adblock-plus
+    # - firefox-pentadactyl
+    # - ghc-mod
+    # - hadoop
+    # - hangouts
+    # - haskell
+    # - hdevtools
+    # - heroku
+    # - hindent
+    # - hlint
+    # - hoogle
+    # - iterm
+    # - jsxhint
+    # - jre
+    # - light-table
+    # - lua
+    # - luajit
+    # - macvim
+    # - monaco-for-powerline
+    # - neovim
+    # - octave
+    # - oh-my-zsh
+    # - openoffice
+    # - pointfree
+    # - powerline
+    # - pulp
+    # - purescript
+    # - r
+    # - reattach-to-user-namespace
+    # - ruby
+    # - silverlight
+    # - terminal-notifier
+    # - theremin
+    # - tmux
+    # - tmuxinator
+    # - unity
+    # - vim
+    # - zsh

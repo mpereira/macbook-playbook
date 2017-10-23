@@ -1,2 +1,6 @@
+---
 - name: Install PgSanity
-  command: sudo pip install pgsanity
+  pip:
+    name: pgsanity
+    version: "{{ pgsanity_version }}"
+    extra_args: --user

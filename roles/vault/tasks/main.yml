@@ -1,3 +1,6 @@
 ---
 - name: Install vault
-  npm: name=vault state=latest global=yes
+  npm:
+    name: vault
+    version: "{{ vault_version }}"
+    global: yes

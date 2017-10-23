@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.mpereira.glances.webserver</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/Users/murilo/Library/Python/2.7/bin/glances</string>
+        <string>--process-short-name</string>
+        <string>--hide-kernel-threads</string>
+        <string>--byte</string>
+        <string>--webserver</string>
+    </array>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>KeepAlive</key>
+    <true/>
+</dict>
+</plist>

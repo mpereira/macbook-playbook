@@ -14,4 +14,4 @@
   command: >
     cp -R {{ downloads_directory }}/iTerm2-1_0_0_20131221-nightly/iTerm.app /Applications
     creates=/Applications/iTerm.app
-  sudo: yes
+  become: yes

@@ -1,3 +1,5 @@
 ---
 - name: Install shpotify
-  homebrew: name=shpotify state=latest
+  homebrew:
+    name: shpotify
+    # name: shpotify@{{ shpotify_version }}

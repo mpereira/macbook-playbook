@@ -1,0 +1,7 @@
+---
+- name: Download and install jq binary
+  get_url:
+    url: https://github.com/stedolan/jq/releases/download/jq-{{ jq_version }}/jq-osx-amd64
+    dest: /usr/local/bin/jq
+    checksum: "{{ jq_checksum }}"
+    mode: u+x

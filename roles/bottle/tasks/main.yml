@@ -1,0 +1,5 @@
+- name: Install bottle
+  pip:
+    name: bottle
+    version: "{{ bottle_version }}"
+    extra_args: --user

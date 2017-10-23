@@ -1,0 +1,30 @@
+---
+- name: Get {{ spotify_installer_path }} stats
+  stat:
+    path: "{{ spotify_installer_path }}"
+  register: spotify_installer_path_stat
+
+- name: Download Spotify installer
+  unarchive:
+    src: "{{ spotify_installer_archive_url }}"
+    dest: "{{ downloads_directory }}"
+    remote_src: yes
+  when: not spotify_installer_path_stat.stat.exists
+
+- name: Get {{ spotify_app_directory }} stats
+  stat:
+    path: "{{ spotify_app_directory }}"
+  register: spotify_app_directory_stat
+
+- name: Create /Applications/{{ spotify_installer_name }}
+  command: >
+    cp -R "{{ downloads_directory }}/{{ spotify_installer_name }}" /Applications
+    creates="/Applications/{{ spotify_installer_name }}"
+  become: yes
+
+- name: Run Spotify installer
+  command: >
+    open -a "Install Spotify"
+    creates="{{ spotify_app_directory }}"
+  become: yes
+  when: not spotify_app_directory_stat.stat.exists

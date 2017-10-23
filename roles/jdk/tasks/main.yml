@@ -1,24 +1,26 @@
 ---
 - name: Download JDK
-  command: >
-    chdir={{ downloads_directory }}
-    curl -L --cookie "gpw_e24=http%3A%2F%2Fwww.oracle.com%2Ftechnetwork%2Fjava%2Fjavase%2Fdownloads%2Fjre8-downloads-2133155.html; oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/8u5-b13/jdk-8u5-macosx-x64.dmg -o jdk-8u5-macosx-x64.dmg
-    creates={{ downloads_directory }}/jdk-8u5-macosx-x64.dmg
+  get_url:
+    dest: "{{ downloads_directory }}/{{ jdk_dmg }}"
+    url: "{{ jdk_url }}"
+    headers: 'Cookie:oraclelicense=accept-securebackup-cookie'
+    checksum: "{{ jdk_checksum }}"
 
 - name: Mount JDK image
   command: >
     chdir={{ downloads_directory }}
-    hdiutil attach jdk-8u5-macosx-x64.dmg
-    creates=/Volumes/JDK\ 8\ Update\ 05
+    hdiutil attach {{ jdk_dmg }}
+    creates=/Volumes/{{ jdk_image }}
 
-- shell: java -version 2>&1
-  register: java_version
+- name: Check existing Java version
+  shell: java -version 2>&1
+  register: java_version_output
+  ignore_errors: yes
 
 - name: Install JDK
   command: >
-    installer -package /Volumes/JDK\ 8\ Update\ 05/JDK\ 8\ Update\ 05.pkg -target /
-  sudo: yes
-  when: java_version.stdout.find('java version "1.8.0_05"') == -1
+    installer -package "/Volumes/{{ jdk_image }}/{{ jdk_pkg }}" -target /
+  become: yes
 
 - name: Unmount JDK image
-  command: hdiutil detach /Volumes/JDK\ 8\ Update\ 05
+  command: hdiutil detach /Volumes/"{{ jdk_image }}"

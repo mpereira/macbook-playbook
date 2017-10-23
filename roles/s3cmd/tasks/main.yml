@@ -1,7 +1,11 @@
+---
 - name: Install s3cmd
-  pip: >
-    name=s3cmd
-    state=present
-    version=1.6.1
-    extra_args='--install-option="--prefix=/usr/local"'
-  sudo: yes
+  homebrew:
+    name: s3cmd
+    # name: s3cmd@{{ s3cmd_version }}
+
+- name: Install .s3cfg
+  copy:
+    src: .s3cfg
+    dest: "{{ home_directory }}/.s3cfg"
+    mode: 0644

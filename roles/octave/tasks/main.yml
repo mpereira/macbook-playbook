@@ -14,7 +14,7 @@
   command: >
     installer -pkg /Volumes/GNU\ Octave\ 3.8.0/Octave-3.8.0-6.mpkg -target /
     creates=/Applications/Octave-cli.app
-  sudo: yes
+  become: yes
 
 - name: Unmount Octave image
   command: hdiutil detach /Volumes/GNU\ Octave\ 3.8.0

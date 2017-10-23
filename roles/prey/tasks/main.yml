@@ -1,10 +1,16 @@
 ---
+# get_url fails to download because of a bug with SSL handling.
+# https://github.com/ansible/ansible/issues/23642
 - name: Download Prey
-  get_url: >
-    url=https://prey-releases.s3.amazonaws.com/node-client/1.6.3/prey-mac-1.6.3-x86.pkg
-    dest={{ downloads_directory }}/prey-mac-1.6.3-x86.pkg
+  command: >
+    chdir={{ downloads_directory }}
+    wget -nc -q https://downloads.preyproject.com/prey-client-releases/node-client/{{ prey_version }}/{{ prey_pkg }}
+- name: Load API key
+  include_vars:
+    file: api_key.yml
+    name: api_key
 
 - name: Install Prey
   shell: >
-    API_KEY=foobar123 installer -package {{ downloads_directory }}/prey-mac-1.6.3-x86.pkg -target /
-  sudo: yes
+    API_KEY={{ api_key.prey_api_key }} installer -package {{ downloads_directory }}/{{ prey_pkg }} -target /
+  become: yes

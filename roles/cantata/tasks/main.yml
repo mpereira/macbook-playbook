@@ -1,20 +1,25 @@
 ---
 - name: Download Cantata
   get_url: >
-    url=https://github.com/CDrummond/cantata/releases/download/v2.0.1/Cantata-2.0.1.dmg
-    dest={{ downloads_directory }}/Cantata-2.0.1.dmg
+    url=https://github.com/CDrummond/cantata/releases/download/v{{ cantata_version }}/{{ cantata_dmg }}
+    dest={{ downloads_directory }}/{{ cantata_dmg }}
+
+- name: Get current Cantata version
+  shell: defaults read /Applications/Cantata.app/Contents/Info.plist CFBundleShortVersionString
+  register: cantata_version_output
 
 - name: Mount Cantata image
   command: >
     chdir={{ downloads_directory }}
-    hdiutil attach Cantata-2.0.1.dmg
-    creates=/Volumes/Cantata
+    hdiutil attach {{ cantata_dmg }}
+  when: cantata_version_output.stdout | version_compare(cantata_version, '<')
 
 - name: Copy Cantata.app to Applications directory
   command: >
     cp -R /Volumes/Cantata/Cantata.app /Applications
-    creates=/Applications/Cantata.app
   become: yes
+  when: cantata_version_output.stdout | version_compare(cantata_version, '<')
 
 - name: Unmount Cantata image
   command: hdiutil detach /Volumes/Cantata
+  when: cantata_version_output.stdout | version_compare(cantata_version, '<')

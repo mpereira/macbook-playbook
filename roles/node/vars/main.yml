@@ -1,0 +1,2 @@
+---
+node_pkg: node-v{{ node_version }}.pkg

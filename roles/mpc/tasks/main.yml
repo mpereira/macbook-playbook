@@ -1,3 +1,5 @@
 ---
 - name: Install mpc
-  homebrew: name=mpc state=present
+  homebrew:
+    name: mpc
+    # name: mpc@{{ mpc_version }}

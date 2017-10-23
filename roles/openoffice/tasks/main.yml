@@ -14,7 +14,7 @@
   command: >
     cp -R /Volumes/OpenOffice/OpenOffice.app /Applications
     creates=/Applications/OpenOffice.app
-  sudo: yes
+  become: yes
 
 - name: Unmount the OpenOffice image
   command: hdiutil detach /Volumes/OpenOffice

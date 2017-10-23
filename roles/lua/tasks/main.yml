@@ -14,4 +14,4 @@
   shell: >
     chdir={{ downloads_directory }}/lua-5.3.2
     make macosx install INSTALL_TOP=/usr
-  become_user: root
+  become: yes

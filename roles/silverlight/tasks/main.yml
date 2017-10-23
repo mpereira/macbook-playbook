@@ -14,7 +14,7 @@
   command: >
     installer -package /Volumes/Silverlight/Silverlight.pkg -target /
     creates=/Applications/Microsoft\ Silverlight
-  sudo: yes
+  become: yes
 
 - name: Unmount Silverlight image
   command: hdiutil detach /Volumes/Silverlight

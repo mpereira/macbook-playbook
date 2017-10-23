@@ -1,10 +1,10 @@
 ---
 - name: Download fish
-  get_url: >
-    url=https://fishshell.com/files/2.5.0/fish-2.5.0.pkg
-    dest={{ downloads_directory }}/fish-2.5.0.pkg
+  get_url:
+    url: https://fishshell.com/files/{{ fish_version }}/{{ fish_pkg }}
+    dest: "{{ downloads_directory }}/{{ fish_pkg }}"
 
 - name: Install fish
   command: >
-    installer -package {{ downloads_directory }}/fish-2.5.0.pkg -target /
-    creates=/usr/local/bin/fish
+    installer -package {{ downloads_directory }}/{{ fish_pkg }} -target /
+  become: yes

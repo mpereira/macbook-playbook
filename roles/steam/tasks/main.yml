@@ -1,8 +1,8 @@
 ---
 - name: Download Steam
-  get_url: >
-    url=http://media.steampowered.com/client/installer/steam.dmg
-    dest={{ downloads_directory }}/steam.dmg
+  get_url:
+    url: http://media.steampowered.com/client/installer/steam.dmg
+    dest: "{{ downloads_directory }}/steam.dmg"
 
 - name: Convert Steam image to a format that does not require an EULA
   command: >
@@ -23,3 +23,6 @@
 
 - name: Unmount Steam image
   command: hdiutil detach /Volumes/Steam
+
+- name: Start Steam
+  command: open -a Steam

@@ -1,17 +1,17 @@
 ---
 - name: Download Dash
-  get_url: >
-    url=http://newyork.kapeli.com/Dash.zip
-    dest={{ downloads_directory }}/Dash.zip
+  get_url:
+    url: http://newyork.kapeli.com/{{ dash_zip }}
+    dest: "{{ downloads_directory }}/{{ dash_zip }}"
 
-- name: Extract Dash zip archive
+- name: Extract {{ dash_zip }} archive
   command: >
     chdir={{ downloads_directory }}
-    unzip Dash.zip -d Dash
-    creates=Dash
+    unzip {{ dash_zip }} -d {{ dash_directory }}
+    creates={{ dash_directory }}
 
-- name: Copy Dash.app to Applications directory
+- name: Copy {{ dash_app }} to Applications directory
   command: >
-    cp -R {{ downloads_directory }}/Dash/Dash.app /Applications
-    creates=/Applications/Dash.app
-  sudo: yes
+    cp -R {{ downloads_directory }}/Dash/{{ dash_app }} /Applications
+    creates=/Applications/{{ dash_app }}
+  become: yes

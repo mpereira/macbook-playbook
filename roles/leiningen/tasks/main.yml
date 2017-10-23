@@ -1,9 +1,10 @@
 ---
-- name: Install leiningen
-  get_url: >
-    url=https://raw.githubusercontent.com/technomancy/leiningen/2.7.0/bin/lein
-    dest=/usr/local/bin/lein
-    force=yes
-    mode=755
+- name: Download leiningen script
+  get_url:
+    url: https://raw.githubusercontent.com/technomancy/leiningen/{{ leiningen_version }}/bin/lein
+    dest: /usr/local/bin/lein
+    mode: u+x
+    checksum: "{{ leiningen_checksum }}"
 
-- command: lein version
+- name: Install leiningen
+  command: lein version

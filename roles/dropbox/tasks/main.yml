@@ -1,14 +1,14 @@
 ---
 - name: Download Dropbox
-  get_url: >
-    url=https://www.dropbox.com/download?plat=mac
-    dest={{ downloads_directory }}/Dropbox.dmg
+  get_url:
+    url: https://www.dropbox.com/download?plat=mac
+    dest: "{{ downloads_directory }}/DropboxInstaller.dmg"
 
 - name: Mount Dropbox image
   command: >
     chdir={{ downloads_directory }}
-    hdiutil attach Dropbox.dmg
-    creates=/Volumes/Dropbox
+    hdiutil attach DropboxInstaller.dmg
+    creates="/Volumes/Dropbox Installer"
 
 - name: Copy Dropbox application directory to the applications directory
   command: >

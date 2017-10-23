@@ -1,0 +1,3 @@
+---
+- name: Install mpg123
+  homebrew: name=mpg123 state=present

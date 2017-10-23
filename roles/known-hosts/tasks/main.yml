@@ -1,5 +1,0 @@
----
-- name: Ensure user known hosts file exists
-  copy: >
-    src=known_hosts
-    dest=/Users/{{ ansible_user_id }}/.ssh/known_hosts

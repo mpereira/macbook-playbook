@@ -14,4 +14,4 @@
   command: >
     cp -R {{ downloads_directory }}/Theremin.app/Theremin.app /Applications
     creates=/Applications/Theremin.app
-  sudo: yes
+  become: yes

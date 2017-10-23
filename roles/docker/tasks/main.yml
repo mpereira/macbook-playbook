@@ -14,7 +14,7 @@
   command: >
     cp -R /Volumes/Docker/Docker.app /Applications
     creates=/Applications/Docker.app
-  sudo: yes
+  become: yes
 
 - name: Unmount the Docker image
   command: hdiutil detach /Volumes/Docker

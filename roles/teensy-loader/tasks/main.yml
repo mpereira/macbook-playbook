@@ -1,0 +1,20 @@
+---
+- name: Download teensy
+  get_url:
+    url: https://www.pjrc.com/teensy/teensy.dmg
+    dest: "{{ downloads_directory }}/teensy.dmg"
+
+- name: Mount teensy image
+  command: >
+    chdir={{ downloads_directory }}
+    hdiutil attach teensy.dmg
+    creates=/Volumes/teensy
+
+- name: Copy teensy.app to Applications directory
+  command: >
+    cp -R /Volumes/teensy/teensy.app /Applications
+    creates=/Applications/teensy.app
+  become: yes
+
+- name: Unmount teensy image
+  command: hdiutil detach /Volumes/teensy

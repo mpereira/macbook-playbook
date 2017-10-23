@@ -1,5 +1,5 @@
 ---
 - name: Install Homebrew
   shell: >
-    ruby -e "$(curl -fsSL https://raw.github.com/mxcl/homebrew/go/install)"
+    ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
     creates=/usr/local/bin/brew

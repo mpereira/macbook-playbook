@@ -1,0 +1,6 @@
+---
+licecap_name: licecap123
+licecap_dmg: "{{ licecap_name }}.dmg"
+licecap_cdr: "{{ licecap_name }}.cdr"
+licecap_volume: LICECAP_INSTALL
+licecap_app: LICEcap.app

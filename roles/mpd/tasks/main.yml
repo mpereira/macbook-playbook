@@ -1,6 +1,11 @@
 ---
 - name: Install mpd
-  homebrew: name=mpd state=latest install_options=with-libshout,with-lame,with-flac
+  homebrew:
+    name: mpd
+    # name: mpd@{{ mpd_version }}
+    install_options: with-libshout,with-lame,with-flac,with-lastfm
 
-- name: Make mpd start at login
-  command: ln -sfv /usr/local/opt/mpd/*.plist ~/Library/LaunchAgents
+# This seems to fail if the service is already started.
+- name: Create mpd service and start mpd
+  command: brew services restart mpd
+  ignore_errors: yes

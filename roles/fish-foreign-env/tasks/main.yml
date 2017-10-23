@@ -1,0 +1,12 @@
+---
+- name: Make sure Fish shell directory exists
+  file:
+    path: "{{ home_directory }}/.config/fish"
+    state: directory
+    mode: 0755
+
+- name: Clone foreign-env repository
+  git:
+    repo: "https://github.com/oh-my-fish/plugin-foreign-env.git"
+    dest: "{{ home_directory }}/.config/fish/plugin-foreign-env"
+    version: "{{ fish_foreign_env_version }}"

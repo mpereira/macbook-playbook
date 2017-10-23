@@ -1,11 +1,11 @@
 ---
 - name: Download Node.js
-  get_url: >
-    url=https://nodejs.org/dist/v4.5.0/node-v4.5.0.pkg
-    dest={{ downloads_directory }}/node-v4.5.0.pkg
+  get_url:
+    url: https://nodejs.org/dist/v{{ node_version }}/{{ node_pkg }}
+    dest: "{{ downloads_directory }}/{{ node_pkg }}"
 
 - name: Install Node.js
   command: >
     chdir={{ downloads_directory }}
-    installer -package node-v4.5.0.pkg -target /
-  sudo: yes
+    installer -package {{ node_pkg }} -target /
+  become: yes

@@ -1,17 +1,17 @@
 ---
 - name: Download Skitch
-  get_url: >
-    url=http://cdn1.evernote.com/skitch/mac/release/Skitch-2.7.1.zip
-    dest={{ downloads_directory }}/Skitch-2.7.1.zip
+  get_url:
+    url: http://cdn1.evernote.com/skitch/mac/release/{{ skitch_zip }}
+    dest: "{{ downloads_directory }}/{{ skitch_zip }}"
 
 - name: Extract Skitch zip archive
   command: >
     chdir={{ downloads_directory }}
-    unzip Skitch-2.7.1.zip -d Skitch-2.7.1/
-    creates=Skitch-2.7.1/
+    unzip {{ skitch_zip }} -d {{ skitch_directory }}
+    creates={{ skitch_directory }}
 
-- name: Copy Skitch.app to Applications directory
+- name: Copy {{ skitch_app }} to Applications directory
   command: >
-    cp -R {{ downloads_directory }}/Skitch-2.7.1//Skitch.app /Applications
-    creates=/Applications/Skitch.app
-  sudo: yes
+    cp -R {{ downloads_directory }}/{{ skitch_directory }}//{{ skitch_app }} /Applications
+    creates=/Applications/{{ skitch_app }}
+  become: yes

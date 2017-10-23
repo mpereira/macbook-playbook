@@ -1,20 +1,42 @@
 ---
 - name: Download Emacs
-  get_url: >
-    url=https://emacsformacosx.com/emacs-builds/Emacs-25.1-1-universal.dmg
-    dest={{ downloads_directory }}/Emacs-25.1-1-universal.dmg
+  get_url:
+    url: https://emacsformacosx.com/emacs-builds/{{ emacs_dmg }}
+    dest: "{{ downloads_directory }}/{{ emacs_dmg }}"
+
+- set_fact:
+    emacs_app: /Applications/Emacs-{{ emacs_version }}.app
+
+- name: Check existing Emacs version
+  shell: "{{ emacs_app }}/Contents/MacOS/Emacs --version 2>&1"
+  register: emacs_version_output
+  ignore_errors: yes
 
 - name: Mount the Emacs image
   command: >
     chdir={{ downloads_directory }}
-    hdiutil attach Emacs-25.1-1-universal.dmg
+    hdiutil attach {{ emacs_dmg }}
     creates=/Volumes/Emacs
+  when: emacs_version_output.stdout.find('GNU Emacs ' ~ emacs_version) == -1
 
 - name: Install Emacs
+    # `copy` hangs for some reason.
   command: >
-    cp -R /Volumes/Emacs/Emacs.app /Applications
-    creates=/Applications/Emacs.app
-  sudo: yes
+    cp -R /Volumes/Emacs/Emacs.app {{ emacs_app }}
+  become: yes
+  when: emacs_version_output.stdout.find('GNU Emacs ' ~ emacs_version) == -1
 
 - name: Unmount the Emacs image
   command: hdiutil detach /Volumes/Emacs
+  when: emacs_version_output.stdout.find('GNU Emacs ' ~ emacs_version) == -1
+
+- name: Download Emacs source archive
+  get_url:
+    url: https://emacsformacosx.com/emacs-sources/{{ emacs_src_archive }}
+    dest: "{{ downloads_directory }}/{{ emacs_src_archive }}"
+    timeout: 30
+
+- name: Install Emacs source
+  unarchive:
+    src: "{{ downloads_directory }}/{{ emacs_src_archive }}"
+    dest: /usr/local/src

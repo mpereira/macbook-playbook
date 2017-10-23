@@ -1,0 +1,7 @@
+---
+google_chrome_image_name: "googlechrome.dmg"
+google_chrome_image_url: "https://dl.google.com/chrome/mac/stable/CHFA/{{ google_chrome_image_name }}"
+google_chrome_image_path: "{{ downloads_directory }}/{{ google_chrome_image_name }}"
+google_chrome_volume_path: "/Volumes/Google Chrome"
+google_chrome_app_name: "Google Chrome.app"
+google_chrome_app_directory: "/Applications/{{ google_chrome_app_name }}"

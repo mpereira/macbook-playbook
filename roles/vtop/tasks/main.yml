@@ -1,3 +1,6 @@
 ---
 - name: Install vtop
-  npm: name=vtop state=latest global=yes
+  npm:
+    name: vtop
+    version: "{{ vtop_version }}"
+    global: yes

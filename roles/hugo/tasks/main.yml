@@ -1,0 +1,5 @@
+---
+- name: Install Hugo
+  homebrew:
+    name: hugo
+    # name: hugo@{{ hugo_version }}

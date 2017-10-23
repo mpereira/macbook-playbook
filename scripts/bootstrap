@@ -1,6 +1,0 @@
-#!/usr/bin/env sh
-
-xcode-select --install
-sudo sudo xcodebuild -license
-sudo easy_install pip
-sudo pip install paramiko PyYAML jinja2 ansible

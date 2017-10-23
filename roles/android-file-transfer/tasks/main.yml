@@ -1,0 +1,31 @@
+---
+- name: Download Android File Transfer
+  get_url:
+    url: "{{ android_file_transfer_image_url }}"
+    dest: "{{ android_file_transfer_image_path }}"
+
+- name: Get {{ android_file_transfer_app_directory }} stats
+  stat:
+    path: "{{ android_file_transfer_app_directory }}"
+  register: android_file_transfer_app_directory_stat
+
+- name: Mount Android File Transfer image
+  command: >
+    hdiutil attach {{ android_file_transfer_image_path }}
+    creates="{{ android_file_transfer_volume_path }}"
+  when: not android_file_transfer_app_directory_stat.stat.exists
+
+- name: Get {{ android_file_transfer_volume_path }} stats
+  stat:
+    path: "{{ android_file_transfer_volume_path }}"
+  register: android_file_transfer_volume_path_stat
+
+- name: Create {{ android_file_transfer_app_directory }}
+  command: >
+    cp -R "{{ android_file_transfer_volume_path }}/{{ android_file_transfer_app_name }}" /Applications
+    creates="{{ android_file_transfer_app_directory }}"
+  become: yes
+
+- name: Unmount Android File Transfer image
+  command: hdiutil detach "{{ android_file_transfer_volume_path }}"
+  when: android_file_transfer_volume_path_stat.stat.exists

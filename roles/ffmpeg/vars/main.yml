@@ -1,0 +1,5 @@
+---
+ffmpeg_directory: Lion_Mountain_Lion_Mavericks_Yosemite_El-Captain_{{ ffmpeg_version }}
+ffmpeg_zip: "{{ ffmpeg_directory }}.zip"
+ffmpeg_url: http://www.ffmpegmac.net/resources/{{ ffmpeg_zip }}
+ffmpeg_checksum: md5:92e3c5a890c6e306d4a5940cee06de27

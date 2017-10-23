@@ -1,3 +1,9 @@
 ---
 - name: Install mpdscribble
-  homebrew: name=mpdscribble state=present
+  homebrew:
+    name: mpdscribble
+    # name: mpdscribble@{{ mpdscribble_version }}
+
+- name: Create mpdscribble service and start mpdscribble
+  command: brew services restart mpdscribble
+  ignore_errors: yes

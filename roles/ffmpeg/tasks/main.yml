@@ -1,15 +1,16 @@
 ---
 - name: Download ffmpeg
-  get_url: >
-    url=http://www.ffmpegmac.net/resources/SnowLeopard_Lion_Mountain_Lion_Mavericks_Yosemite_El-Captain_30.08.2016.zip
-    dest={{ downloads_directory }}/SnowLeopard_Lion_Mountain_Lion_Mavericks_Yosemite_El-Captain_30.08.2016.zip
+  get_url:
+    url: "{{ ffmpeg_url }}"
+    dest: "{{ downloads_directory }}/{{ ffmpeg_zip }}"
+    checksum: "{{ ffmpeg_checksum }}"
 
 - name: Extract ffmpeg archive
   command: >
     chdir={{ downloads_directory }}
-    unzip -u SnowLeopard_Lion_Mountain_Lion_Mavericks_Yosemite_El-Captain_30.08.2016.zip -d SnowLeopard_Lion_Mountain_Lion_Mavericks_Yosemite_El-Captain_30.08.2016
+    unzip -u {{ ffmpeg_zip }} -d {{ ffmpeg_directory }}
 
 - name: Install ffmpeg binaries
   shell: >
-    cp {{ downloads_directory }}/SnowLeopard_Lion_Mountain_Lion_Mavericks_Yosemite_El-Captain_30.08.2016/* /usr/local/bin
-  become: true
+    cp {{ downloads_directory }}/{{ ffmpeg_directory }}/* /usr/local/bin
+  become: yes

@@ -1,0 +1,7 @@
+---
+android_file_transfer_image_name: "androidfiletransfer.dmg"
+android_file_transfer_image_url: "https://dl.google.com/dl/androidjumper/mtp/current/{{ android_file_transfer_image_name }}"
+android_file_transfer_image_path: "{{ downloads_directory }}/{{ android_file_transfer_image_name }}"
+android_file_transfer_volume_path: "/Volumes/Android File Transfer"
+android_file_transfer_app_name: "Android File Transfer.app"
+android_file_transfer_app_directory: "/Applications/{{ android_file_transfer_app_name }}"

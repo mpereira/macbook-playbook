@@ -1,0 +1,2 @@
+---
+fish_pkg: fish-{{ fish_version }}.pkg

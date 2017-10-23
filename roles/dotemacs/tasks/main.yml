@@ -1,0 +1,6 @@
+---
+- name: Check out my .emacs.d repository
+  git:
+    repo: git@github.com:mpereira/.emacs.d.git
+    dest: "{{ home_directory }}/.emacs.d"
+    update: no

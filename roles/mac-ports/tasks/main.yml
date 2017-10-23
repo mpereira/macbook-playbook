@@ -1,12 +1,9 @@
 ---
 - name: Download MacPorts
-  get_url: >
-    url=https://distfiles.macports.org/MacPorts/MacPorts-2.3.4-10.11-ElCapitan.pkg
-    dest={{ downloads_directory }}/MacPorts-2.3.4-10.11-ElCapitan.pkg
-    validate_certs=False
+  get_url:
+    url: https://distfiles.macports.org/MacPorts/{{ macports_pkg }}
+    dest: "{{ downloads_directory }}/{{ macports_pkg }}"
 
 - name: Install MacPorts
-  command: >
-    chdir={{ downloads_directory }}
-    installer -package MacPorts-2.3.4-10.11-ElCapitan.pkg -target /
-  sudo: yes
+  command: installer -package {{ downloads_directory }}/{{ macports_pkg }} -target /
+  become: yes

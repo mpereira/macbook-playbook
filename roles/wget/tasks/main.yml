@@ -1,3 +1,0 @@
----
-- name: Install wget
-  homebrew: name=wget state=present

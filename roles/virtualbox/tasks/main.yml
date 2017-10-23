@@ -1,19 +1,27 @@
 ---
 - name: Download VirtualBox
   get_url: >
-    url=http://download.virtualbox.org/virtualbox/5.0.20/VirtualBox-5.0.20-106931-OSX.dmg
-    dest={{ downloads_directory }}/VirtualBox-5.0.20-106931-OSX.dmg
+    url=http://download.virtualbox.org/virtualbox/{{ virtualbox_version }}/VirtualBox-{{ virtualbox_version }}-{{ virtualbox_build }}-OSX.dmg
+    dest={{ downloads_directory }}/VirtualBox-{{ virtualbox_version }}-{{ virtualbox_build }}-OSX.dmg
+
+- name: Check existing VirtualBox version
+  shell: "VirtualBox --help 2>&1"
+  register: virtualbox_version_output
+  ignore_errors: yes
 
 - name: Mount VirtualBox image
   command: >
     chdir={{ downloads_directory }}
-    hdiutil attach VirtualBox-5.0.20-106931-OSX.dmg
+    hdiutil attach VirtualBox-{{ virtualbox_version }}-{{ virtualbox_build }}-OSX.dmg
     creates=/Volumes/VirtualBox
+  when: virtualbox_version_output.stdout.find('VirtualBox Manager ' ~ virtualbox_version) == -1
 
 - name: Install VirtualBox
   command: >
     installer -package /Volumes/VirtualBox/VirtualBox.pkg -target /
-  sudo: yes
+  become: yes
+  when: virtualbox_version_output.stdout.find('VirtualBox Manager ' ~ virtualbox_version) == -1
 
 - name: Unmount VirtualBox image
   command: hdiutil detach /Volumes/VirtualBox
+  when: virtualbox_version_output.stdout.find('VirtualBox Manager ' ~ virtualbox_version) == -1

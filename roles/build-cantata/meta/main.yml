@@ -1,0 +1,6 @@
+---
+dependencies:
+  - cmake
+  - qt5
+  - taglib
+  - mpg123

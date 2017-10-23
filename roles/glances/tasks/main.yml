@@ -1,0 +1,15 @@
+- name: Install glances
+  pip:
+    name: glances
+    version: "{{ glances_version }}"
+    extra_args: --user
+
+- name: Create glances webserver service plist
+  copy:
+    src: com.mpereira.glances.webserver.plist
+    dest: ~/Library/LaunchAgents
+    validate: 'plutil %s'
+
+- name: Start glances webserver service
+  command: >
+    launchctl load -w ~/Library/LaunchAgents/com.mpereira.glances.webserver.plist

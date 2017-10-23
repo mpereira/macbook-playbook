@@ -1,8 +1,8 @@
 ---
 - name: Download Skype
-  get_url: >
-    url=http://www.skype.com/go/getskype-macosx.dmg
-    dest={{ downloads_directory }}/getskype-macosx.dmg
+  get_url:
+    url: http://www.skype.com/go/getskype-macosx.dmg
+    dest: "{{ downloads_directory }}/getskype-macosx.dmg"
 
 - name: Mount Skype image
   command: >
@@ -14,7 +14,7 @@
   command: >
     cp -R /Volumes/Skype/Skype.app /Applications
     creates=/Applications/Skype.app
-  sudo: yes
+  become: yes
 
 - name: Unmount Skype image
   command: hdiutil detach /Volumes/Skype

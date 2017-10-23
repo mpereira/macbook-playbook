@@ -1,0 +1,37 @@
+---
+- name: Install coreutils
+  homebrew:
+    name: coreutils
+    state: present
+
+- homebrew:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - binutils
+    - diffutils
+    - gawk
+    - gnutls
+    - gzip
+    - screen
+    - watch
+    - wget
+
+- homebrew:
+    name: "{{ item }}"
+    state: present
+    install_options: with-default-names
+  with_items:
+    - ed
+    - findutils
+    - gnu-indent
+    - gnu-sed
+    - gnu-tar
+    - gnu-which
+    - grep
+
+- name: Install coreutils
+  homebrew:
+    name: wdiff
+    state: present
+    install_options: with-default-names,with-gettext

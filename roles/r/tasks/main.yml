@@ -8,4 +8,4 @@
   command: >
     chdir={{ downloads_directory }}
     installer -package R-3.3.1.pkg -target /
-  sudo: yes
+  become: yes

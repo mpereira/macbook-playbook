@@ -1,0 +1,2 @@
+---
+python3_pkg: python-{{ python3_version }}-macosx10.6.pkg

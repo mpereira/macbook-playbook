@@ -1,0 +1,7 @@
+---
+spotify_installer_archive_name: "SpotifyInstaller.zip"
+spotify_installer_archive_url: "https://download.scdn.co/{{ spotify_installer_archive_name }}"
+spotify_installer_name: "Install Spotify.app"
+spotify_installer_path: "{{ downloads_directory }}/{{ spotify_installer_name }}"
+spotify_app_name: "Spotify.app"
+spotify_app_directory: "/Applications/{{ spotify_app_name }}"

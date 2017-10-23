@@ -1,3 +1,5 @@
 ---
 - name: Install vimpc
-  homebrew: name=vimpc state=present
+  homebrew:
+    name: vimpc
+    # name: vimpc@{{ vimpc_version }}

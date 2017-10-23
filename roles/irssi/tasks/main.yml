@@ -1,3 +1,5 @@
 ---
 - name: Install irssi
-  homebrew: name=irssi state=present
+  homebrew:
+    name: irssi
+    # name: irssi@{{ irssi_version }}

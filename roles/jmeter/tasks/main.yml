@@ -1,3 +1,5 @@
 ---
 - name: Install JMeter
-  homebrew: name=jmeter state=present
+  homebrew:
+    name: jmeter
+    # name: jmeter@{{ jmeter_version }}

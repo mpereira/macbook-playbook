@@ -1,0 +1,4 @@
+---
+git_dmg: git-{{ git_version }}-intel-universal-mavericks.dmg
+git_volume: Git {{ git_version }} Mavericks Intel Universal
+git_pkg: git-{{ git_version }}-intel-universal-mavericks.pkg
