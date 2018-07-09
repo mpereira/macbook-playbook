@@ -8,3 +8,7 @@
   command: >
     installer -package {{ downloads_directory }}/{{ python3_pkg }} -target /
   become: yes
+
+- name: Install Python 3 SSL certificates
+  command: >
+    '/Applications/Python 3.6/Install Certificates.command'
