@@ -1,0 +1,5 @@
+---
+- name: Install ripgrep
+  homebrew:
+    name: ripgrep
+    # name: ripgrep@{{ ripgrep_version }}

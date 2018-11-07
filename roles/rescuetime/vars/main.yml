@@ -1,0 +1,7 @@
+---
+rescuetime_image_name: "RescueTimeInstaller.dmg"
+rescuetime_image_url: "https://www.rescuetime.com/installers/{{ rescuetime_image_name }}"
+rescuetime_image_path: "{{ downloads_directory }}/{{ rescuetime_image_name }}"
+rescuetime_volume_path: "/Volumes/RescueTime"
+rescuetime_app_name: "RescueTime.app"
+rescuetime_app_directory: "/Applications/{{ rescuetime_app_name }}"

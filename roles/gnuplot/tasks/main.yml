@@ -1,0 +1,5 @@
+---
+- name: Install gnuplot
+  homebrew:
+    name: gnuplot
+    # name: gnuplot@{{ gnuplot_version }}

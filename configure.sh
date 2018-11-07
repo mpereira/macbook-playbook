@@ -3,8 +3,14 @@
 # Resources:
 # - http://www.defaults-write.com
 
-readonly COMPUTER_NAME="pluto"
-readonly DESKTOP_PICTURE="/Library/Desktop Pictures/Solid Colors/Solid Gray Pro Ultra Dark.png"
+readonly COMPUTER_NAME='balloon'
+readonly DESKTOP_PICTURE="\
+/Library\
+/Desktop Pictures\
+/Solid Colors\
+/Solid Gray Pro Ultra Dark.png"
+readonly LOGIN_WINDOW_TEXT="This computer is attached to an Apple iCloud account \
+and is valueless if lost.\nPlease return it by emailing murilo@murilopereira.com."
 
 # info() {
 #   echo "$(tput setaf 2)•$(tput sgr0) ${1}"
@@ -40,14 +46,19 @@ readonly DESKTOP_PICTURE="/Library/Desktop Pictures/Solid Colors/Solid Gray Pro 
 #   request "${1}" 'System Preferences'
 # }
 
-# Set desktop background picture.
-sqlite3 ~/Library/Application\ Support/Dock/desktoppicture.db "update data set value = '$DESKTOP_PICTURE'"
-
 # Set computer name.
 sudo scutil --set ComputerName "${COMPUTER_NAME}"
 sudo scutil --set HostName "${COMPUTER_NAME}"
 sudo scutil --set LocalHostName "${COMPUTER_NAME}"
 sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.smb.server NetBIOSName -string "${COMPUTER_NAME}"
+
+# Set desktop background picture.
+sqlite3 ~/Library/Application\ Support/Dock/desktoppicture.db "update data set value = '${DESKTOP_PICTURE}'"
+
+sudo defaults write /Library/Preferences/com.apple.loginwindow LoginwindowText "$(echo -e "${LOGIN_WINDOW_TEXT}")"
+
+# Fade transition between workspaces instead of using movement.
+defaults write com.apple.universalaccess reduceMotion -bool true
 
 # Minimization effect: 'genie', 'scale', 'suck'
 defaults write com.apple.dock mineffect -string 'scale'
@@ -74,13 +85,7 @@ defaults write NSGlobalDomain AppleInterfaceStyle -string "Dark"
 # Automatically hide and show the Dock.
 defaults write com.apple.dock autohide -bool true
 
-# Remove the auto-hiding Dock delay.
-defaults write com.apple.dock autohide-delay -float 0
-
-# Remove the animation when hiding/showing the Dock.
-defaults write com.apple.dock autohide-time-modifier -float 0.5
-
-# Make Dock icons of minimized applications translucent.
+# Make Dock icons of hidden applications translucent.
 defaults write com.apple.dock showhidden -bool true
 
 # Move dock to the left.
@@ -91,6 +96,12 @@ defaults write com.apple.dock persistent-apps -array
 
 # Don't rearrange spaces by most recently used.
 defaults write com.apple.dock mru-spaces -bool false
+
+# Remove the auto-hiding Dock delay.
+# defaults write com.apple.dock autohide-delay -float 0
+
+# Remove the animation when hiding/showing the Dock.
+# defaults write com.apple.dock autohide-time-modifier -float 0.5
 
 # Make fish the default shell.
 defaults write com.apple.Terminal Shell -string "/usr/local/bin/fish"

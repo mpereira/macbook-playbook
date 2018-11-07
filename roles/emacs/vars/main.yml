@@ -1,3 +1,6 @@
 ---
-emacs_dmg: Emacs-{{ emacs_version }}-universal.dmg
-emacs_src_archive: emacs-{{ emacs_version }}.tar.xz
+emacs_pretest_prefix: "{{ 'pretest-' if (emacs_pretest is defined and emacs_pretest) else '' }}"
+emacs_full_version: "{{ emacs_pretest_prefix }}{{ emacs_version }}"
+emacs_dmg: "Emacs-{{ emacs_full_version }}-universal.dmg"
+emacs_src_archive: "emacs-{{ emacs_version }}.tar.xz"
+emacs_app: "/Applications/Emacs-{{ emacs_full_version }}.app"

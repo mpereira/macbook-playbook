@@ -1,0 +1,10 @@
+---
+- name: Download Go
+  get_url:
+    url: "{{ go_pkg_url }}"
+    dest: "{{ downloads_directory }}/{{ go_pkg }}"
+
+- name: Install Go
+  command: >
+    installer -package "{{ downloads_directory }}/{{ go_pkg }}" -target /
+  become: yes

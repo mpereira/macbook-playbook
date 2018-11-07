@@ -1,0 +1,5 @@
+---
+- name: Install WordNet
+  homebrew:
+    name: wordnet
+    # name: "wordnet@{{ wordnet_version }}"

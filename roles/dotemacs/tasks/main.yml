@@ -1,5 +1,17 @@
 ---
-- name: Check out my .emacs.d repository
+- pip:
+    name: "{{ item }}"
+    state: latest
+    extra_args: --user
+  with_items:
+    - autopep8    # for elpy.
+    - flake8      # for elpy/flycheck.
+    - importmagic
+    - jedi        # for elpy.
+    - mypy        # for flycheck.
+    - pylint      # for flycheck.
+    - yapf        # for elpy.
+- name: Check out the mpereira/.emacs.d repository
   git:
     repo: git@github.com:mpereira/.emacs.d.git
     dest: "{{ home_directory }}/.emacs.d"

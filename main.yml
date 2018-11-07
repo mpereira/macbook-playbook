@@ -2,78 +2,103 @@
 - hosts: localhost
   connection: local
   roles:
-    - ansible-download-directory
-    - usr-local-src-directory
-    - ssh-keys
-    - passwordless-sudo
+    # - ansible-download-directory
+    # - usr-local-src-directory
+    # - ssh-keys
+    # - passwordless-sudo
 
-    - gnu-command-line-tools
-    - homebrew
-    - leiningen
-    - python3
-    - git
-    - node
-    - virtualbox
-    - vagrant
-    - vagrant-vbguest
-    - docker
-    - jdk
-    - p7zip
+    # - homebrew
+    # - gnu-command-line-tools
+    # - xz
+    # - leiningen
+    # - git
+    # - virtualbox
+    # - vagrant
+    # - vagrant-vbguest
+    # - docker
+    # - terraform
+    # - p7zip
 
-    - emacs
-    - defaultbrowser
-    - ffmpeg
-    - fish
-    - fish-foreign-env
-    - jq
-    - wkhtmltopdf
-    - beets
-    - glances
-    - hugo
-    - mpd
-    - mpc
-    - mpdscribble
-    - s3cmd
-    - shpotify
-    - the-silver-searcher
-    - tree
-    - vault
-    - bitbar
-    - divvy
-    - android-file-transfer
-    - dropbox
-    - google-chrome
-    - postgresql
-    - skype
-    - slack
-    - spotify
-    - steam
-    - teensy-loader
-    - ynab
-    - cantata
-    - google-chrome-as-default-browser
-    - gnupg
+    # - bash
+    - make
+    # - jdk
+    # - python3
+    # - node
+    # - go
+    # - rust
+
+    # - cmake
+    # - maven
+    # - macos
+    # - warsaw
+    # - rescuetime
+
+    # - emacs
+    # - defaultbrowser
+    # - ffmpeg
+    # - fish
+    # - fish-foreign-env
+    # - jq
+    # - wkhtmltopdf
+    # - beets
+    # - glances
+    # - pandoc
+    # - consolas
+    # - hugo
+    # - black
+    # - mpd
+    # - mpc
+    # - mpdscribble
+    # - s3cmd
+    # - shpotify
+    # - the-silver-searcher
+    # - tree
+    # - yapf
+
+    # - dotemacs
+    # - dotfiles
+
+    # - vault
+    # - bitbar
+    # - divvy
+    # - android-file-transfer
+    # - dropbox
+    # - google-chrome
+    # - postgresql
+    # - skype
+    # - slack
+    # - spotify
+    # - steam
+    # - teensy-loader
+    # - ynab
+    # - cantata
+    # - google-chrome-as-default-browser
+    # - gnuplot
+    # - gnupg
     # - caps-lock-remapped-to-control # FIXME: broken on macOS Sierra
-    - licecap
-    - mac-ports
-    - xquartz
-    - mactex
-    - google-photos
-    - skitch
-    - dash
-    - vlc
-    - prey
-    - pgsanity
-    - jmeter
-    - mplayer
-    - vimpc
-    - htop
-    - vtop
-    - ctags
-    - irssi
-    - irssi-notifier
-    - dotemacs
-    - dotfiles
+    # - licecap
+    # - mac-ports
+    # - xquartz
+    # - wordnet # depends on xquartz
+    # - mactex
+    # - google-photos
+    # - skitch
+    # - dash
+    # - vlc
+    # - prey
+    # - pgsanity
+    # - jmeter
+    # - mplayer
+    # - markdown
+    # - shellcheck
+    # - vimpc
+    # - pyre-check
+    # - htop
+    # - vtop
+    # - ctags
+    # - irssi
+    # - irssi-notifier
+    # - ripgrep
 
     # - build-cantata
     # - bundler

@@ -1,0 +1,5 @@
+---
+- name: Install shellcheck
+  homebrew:
+    name: shellcheck
+    # name: shellcheck@{{ shellcheck_version }}

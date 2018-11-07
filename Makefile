@@ -1,3 +1,4 @@
+PIP                             := pip3
 LOCAL_PROJECT_DIRECTORY         := $(shell pwd)
 ANSIBLE_DIRECTORY               := .
 ANSIBLE_PLAYBOOKS_DIRECTORY     := $(ANSIBLE_DIRECTORY)
@@ -37,17 +38,17 @@ VAULT_COMMAND := \
 	encrypt_pre_commit
 
 upgrade_pip:
-	@sudo pip install --upgrade pip
+	@sudo $(PIP) install --upgrade pip
 
 # https://github.com/pypa/pip/issues/3165#issuecomment-146666737
 upgrade_ansible:
-	@sudo -H pip install --upgrade ansible --ignore-installed six
+	@sudo -H $(PIP) install --user --upgrade ansible --ignore-installed six
 
+# Python3 already provides pip3? No need for easy_install pip now?
+# python3 -m pip install ...
 bootstrap:
-	@xcode-select --install
-	@sudo xcodebuild -license
-	@sudo easy_install pip
-	@sudo pip install ansible
+	@sudo -H easy_install pip
+	@sudo -H $(PIP) install --user ansible
 	@$(ANSIBLE_COMMAND_LOCAL_WITH_VAULT) $(ANSIBLE_PLAYBOOKS_DIRECTORY)/bootstrap.yml
 	@test -s $(ANSIBLE_VAULT_PASSWORD_FILE) \
 		|| echo ATTENTION: Please create '$(PWD)/$(ANSIBLE_VAULT_PASSWORD_FILE)' with this project\'s Ansible Vault password

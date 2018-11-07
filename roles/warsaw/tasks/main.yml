@@ -1,0 +1,10 @@
+---
+- name: Download Warsaw
+  get_url:
+    url: https://cloud.gastecnologia.com.br/bb/downloads/ws/{{ warsaw_pkg }}
+    dest: "{{ downloads_directory }}/{{ warsaw_pkg }}"
+
+- name: Install Warsaw
+  command: >
+    installer -package "{{ downloads_directory }}/{{ warsaw_pkg }}" -target /
+  become: yes

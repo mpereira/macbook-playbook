@@ -1,0 +1,3 @@
+---
+hugo_directory: "hugo_{{ hugo_version }}_macOS-64bit"
+hugo_archive: "{{ hugo_directory }}.tar.gz"

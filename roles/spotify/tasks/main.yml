@@ -24,7 +24,7 @@
 
 - name: Run Spotify installer
   command: >
-    open -a "Install Spotify"
+    open -a Install\ Spotify
     creates="{{ spotify_app_directory }}"
   become: yes
   when: not spotify_app_directory_stat.stat.exists

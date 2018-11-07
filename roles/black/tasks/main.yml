@@ -1,0 +1,4 @@
+---
+- name: Install Black
+  command:
+    python3 -m pip install --user "black=={{ black_version }}"

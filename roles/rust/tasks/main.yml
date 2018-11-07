@@ -1,0 +1,60 @@
+---
+- name: Download rustup-init
+  get_url:
+    url: https://static.rust-lang.org/rustup/dist/x86_64-apple-darwin/rustup-init
+    dest: "{{ downloads_directory }}/rustup-init"
+    mode: 0755
+
+- name: Install Rust
+  command: >
+    "{{ downloads_directory }}/rustup-init" -y --no-modify-path
+
+- name: Fetch Rust source code
+  command: >
+    rustup component add rust-src
+
+- name: Install Rust bash completions
+  shell: >
+    rustup completions bash > "$(brew --prefix)/etc/bash_completion.d/rustup.bash-completion"
+
+- name: Install Rust fish completions
+  shell: >
+    rustup completions fish > ~/.config/fish/completions/rustup.fish
+
+- name: Set up nightly Rust (racer dependency)
+  command: >
+    rustup toolchain add nightly
+
+- name: Install cargo-script
+  command: >
+    cargo install --force {{ item }}
+  with_items:
+    - cargo-script
+    - rustfmt
+
+- name: Add rustup components
+  command: >
+    rustup component add rls-preview rust-analysis rust-src --toolchain nightly
+
+- name: Install racer
+  command: >
+    cargo +nightly install --force {{ item }}
+  with_items:
+    - racer
+
+# - name: Download Rust
+#   get_url:
+#     url: "{{ rust_pkg_url }}"
+#     dest: "{{ downloads_directory }}/{{ rust_pkg }}"
+
+# - name: Install Rust
+#   command: >
+#     installer -package "{{ downloads_directory }}/{{ rust_pkg }}" -target /
+#   become: yes
+
+# - name: Install a few Rust crates
+#   command: >
+#     cargo install --force {{ item }}
+#   with_items:
+#     - cargo-script
+#     - racer

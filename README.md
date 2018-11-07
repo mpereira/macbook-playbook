@@ -18,6 +18,9 @@ Automatically prepare a Macbook for development and desktop tasks using Ansible.
 ### Manual steps
 
 1. [Enable assistive access](http://mizage.com/help/accessibility.html)
+2. System preferences -> Keyboard -> Modifier Keys -> "Caps Lock -> Control"
+TODO
+3. Set up Spotify Last.fm connect
 
 ### Clone repository
 
@@ -36,6 +39,43 @@ Automatically prepare a Macbook for development and desktop tasks using Ansible.
     $ make converge
 
 ## Installs
+
+Add:
+- go
+- dcos
+- markdown
+- shellcheck
+- pyre-check
+- cmake
+- xz
+- warsaw (módulo de segurança BB https://seg.bb.com.br/home.html)
+- rescuetime
+- yapf
+- ripgrep
+- terraform
+- hugo
+- black
+- rust
+- wrk
+- bash
+- wn
+- pandoc
+- consolas
+
+TODO:
+- ansible's pip aren't working (pip uses python2.7 under the hood, can't seem to
+find packages on pypy). the black role for example uses `python 3 -m pip install
+...` instead.
+
+- pip install with `--prefix /usr/local` instead of `--user`.
+
+- black can't be installed with `--prefix /usr/local`?
+```
+Traceback (most recent call last):
+  File "/usr/local/bin/black", line 7, in <module>
+    from black import main
+ModuleNotFoundError: No module named 'black'
+```
 
 ### Desktop Applications
 
@@ -78,6 +118,7 @@ Automatically prepare a Macbook for development and desktop tasks using Ansible.
 - [Beets](http://beets.io/)
 - [Cantata](https://github.com/CDrummond/cantata)
 - [FFmpeg](http://www.ffmpegmac.net/)
+- [gnuplot](http://www.gnuplot.info/)
 - [mpc](https://www.musicpd.org/clients/mpc/)
 - [mpd](https://www.musicpd.org/download.html)
 - [mpdscribble](https://www.musicpd.org/clients/mpdscribble/)

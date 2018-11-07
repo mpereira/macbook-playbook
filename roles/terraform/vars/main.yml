@@ -1,0 +1,4 @@
+terraform_binary_name: "terraform"
+terraform_zip: "terraform_{{ terraform_version }}_darwin_amd64.zip"
+terraform_zip_url: "https://releases.hashicorp.com/terraform/{{ terraform_version }}/{{ terraform_zip }}"
+terraform_checksum: "sha256:6514a8fe5a344c5b8819c7f32745cd571f58092ffc9bbe9ea3639799b97ced5f"

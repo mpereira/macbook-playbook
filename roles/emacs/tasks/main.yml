@@ -3,9 +3,7 @@
   get_url:
     url: https://emacsformacosx.com/emacs-builds/{{ emacs_dmg }}
     dest: "{{ downloads_directory }}/{{ emacs_dmg }}"
-
-- set_fact:
-    emacs_app: /Applications/Emacs-{{ emacs_version }}.app
+    validate_certs: no
 
 - name: Check existing Emacs version
   shell: "{{ emacs_app }}/Contents/MacOS/Emacs --version 2>&1"
@@ -35,6 +33,7 @@
     url: https://emacsformacosx.com/emacs-sources/{{ emacs_src_archive }}
     dest: "{{ downloads_directory }}/{{ emacs_src_archive }}"
     timeout: 30
+    validate_certs: no
 
 - name: Install Emacs source
   unarchive:

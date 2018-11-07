@@ -1,7 +1,7 @@
 ---
-cmake_image_name: "cmake-3.9.0-rc4-Darwin-x86_64.dmg"
-cmake_image_url: "https://cmake.org/files/v3.9/{{ cmake_image_name }}"
+cmake_image_name: "cmake-{{ cmake_version }}-Darwin-x86_64.dmg"
+cmake_image_url: "https://cmake.org/files/{{ cmake_version_path }}/{{ cmake_image_name }}"
 cmake_image_path: "{{ downloads_directory }}/{{ cmake_image_name }}"
-cmake_volume_path: "/Volumes/cmake-3.9.0-rc4-Darwin-x86_64"
+cmake_volume_path: "/Volumes/cmake-{{ cmake_version }}-Darwin-x86_64"
 cmake_app_name: "CMake.app"
 cmake_app_directory: "/Applications/{{ cmake_app_name }}"

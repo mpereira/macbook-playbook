@@ -1,0 +1,36 @@
+---
+- name: Download RescueTime
+  get_url:
+    url: "{{ rescuetime_image_url }}"
+    dest: "{{ rescuetime_image_path }}"
+
+- name: Get {{ rescuetime_app_directory }} stats
+  stat:
+    path: "{{ rescuetime_app_directory }}"
+  register: rescuetime_app_directory_stat
+
+- name: Mount RescueTime image
+  command: >
+    hdiutil attach {{ rescuetime_image_path }}
+    creates="{{ rescuetime_volume_path }}"
+  when: not rescuetime_app_directory_stat.stat.exists
+
+- name: Get {{ rescuetime_volume_path }} stats
+  stat:
+    path: "{{ rescuetime_volume_path }}"
+  register: rescuetime_volume_path_stat
+
+- name: Create {{ rescuetime_app_directory }}
+  command: >
+    cp -R "{{ rescuetime_volume_path }}/{{ rescuetime_app_name }}" /Applications
+    creates="{{ rescuetime_app_directory }}"
+  become: yes
+
+- name: Unmount RescueTime image
+  command: hdiutil detach "{{ rescuetime_volume_path }}"
+  when: rescuetime_volume_path_stat.stat.exists
+
+# This will prompt for an email address and also request Accessibility
+# permissions for first installs.
+- name: Open RescueTime
+  command: open /Applications/RescueTime.app

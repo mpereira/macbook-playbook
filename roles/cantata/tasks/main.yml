@@ -7,6 +7,7 @@
 - name: Get current Cantata version
   shell: defaults read /Applications/Cantata.app/Contents/Info.plist CFBundleShortVersionString
   register: cantata_version_output
+  ignore_errors: yes
 
 - name: Mount Cantata image
   command: >

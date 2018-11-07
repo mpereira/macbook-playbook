@@ -1,7 +1,7 @@
 ---
 - name: Download Skitch
   get_url:
-    url: http://cdn1.evernote.com/skitch/mac/release/{{ skitch_zip }}
+    url: https://evernote.s3.amazonaws.com/skitch/mac/release/{{ skitch_zip }}
     dest: "{{ downloads_directory }}/{{ skitch_zip }}"
 
 - name: Extract Skitch zip archive

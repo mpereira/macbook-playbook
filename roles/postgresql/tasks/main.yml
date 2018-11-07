@@ -7,6 +7,7 @@
 - name: Get current PostgreSQL version
   shell: defaults read /Applications/Postgres.app/Contents/Info.plist CFBundleShortVersionString
   register: postgresql_version_output
+  ignore_errors: yes
 
 - name: Mount PostgreSQL image
   command: >

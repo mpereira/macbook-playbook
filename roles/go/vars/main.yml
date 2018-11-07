@@ -1,0 +1,3 @@
+---
+go_pkg: "go{{ go_version }}.darwin-amd64.pkg"
+go_pkg_url: "https://dl.google.com/go/{{ go_pkg }}"

@@ -1,0 +1,11 @@
+---
+- name: Download Pandoc
+  get_url: >
+    url=https://github.com/jgm/pandoc/releases/download/2.2.3.2/pandoc-2.2.3.2-macOS.pkg
+    dest={{ downloads_directory }}/pandoc-2.2.3.2-macOS.pkg
+
+- name: Install Pandoc
+  command: >
+    chdir={{ downloads_directory }}
+    installer -package pandoc-2.2.3.2-macOS.pkg -target /
+  become: yes

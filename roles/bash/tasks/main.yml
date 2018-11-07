@@ -1,0 +1,20 @@
+---
+- name: Install bash
+  homebrew:
+    name: bash
+    # name: "bash@{{ bash_version }}"
+
+- name: Register bash binary path
+  register: bin_bash
+  shell: >
+    echo "$(brew --prefix)/bin/bash"
+
+- name: Add bash to /etc/shells
+  lineinfile:
+    path: /etc/shells
+    line: "{{ bin_bash.stdout }}"
+  become: yes
+
+- name: Install bash-completion@2
+  homebrew:
+    name: "bash-completion@2"

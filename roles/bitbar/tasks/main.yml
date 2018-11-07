@@ -13,11 +13,12 @@
   command: >
     chdir="{{ downloads_directory }}"
     unzip {{ bitbar_zip }} -d {{ bitbar_directory }}
+    creates="{{ bitbar_directory }}"
   when: bitbar_version_output.stdout.find(bitbar_version) == -1
 
 - name: Copy BitBar.app to Applications directory
   command: >
-    cp -R "{{ downloads_directory }}/BitBar.app" /Applications
+    cp -R "{{ downloads_directory }}/{{ bitbar_directory }}/BitBar.app" /Applications
     creates=/Applications/BitBar.app
   become: yes
   when: bitbar_version_output.stdout.find(bitbar_version) == -1
@@ -44,4 +45,3 @@
   with_items:
     - { src: 'Music/mpd-simple.5s.sh', dest: 'mpd-simple.2s.sh' }
     - { src: 'Music/spotify-simple.5s.sh', dest: 'spotify-simple.5s.sh' }
-
