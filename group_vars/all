@@ -28,7 +28,7 @@ go_version: 1.11.1
 
 make_version: 4.2.1
 
-bash_version: 4.4.23
+bash_veusion: 4.4.23
 
 # https://jsok.github.io/docker-for-mac-versions/
 docker_version: stable # not configurable at the moment

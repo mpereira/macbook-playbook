@@ -22,6 +22,10 @@ Automatically prepare a Macbook for development and desktop tasks using Ansible.
 TODO
 3. Set up Spotify Last.fm connect
 
+### Install Developer Tools (xcode-select)
+
+    Open the Terminal app and type `git` into the shell.
+
 ### Clone repository
 
     $ git clone https://github.com/mpereira/macbook-playbook.git
