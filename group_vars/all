@@ -2,7 +2,7 @@
 # Can't specify homebrew package versions until this is fixed:
 # https://github.com/ansible/ansible/issues/22696
 
-user: "{{ ansible_user_id }}"
+user: "{{ lookup('env', 'USER') }}"
 home_directory: "/Users/{{ user }}"
 downloads_directory: "{{ home_directory }}/.ansible/downloads"
 computer_name: baloon

@@ -1,3 +1,4 @@
+BOOTSTRAP_PIP                   := pip
 PIP                             := pip3
 LOCAL_PROJECT_DIRECTORY         := $(shell pwd)
 ANSIBLE_DIRECTORY               := .
@@ -42,16 +43,18 @@ upgrade_pip:
 
 # https://github.com/pypa/pip/issues/3165#issuecomment-146666737
 upgrade_ansible:
-	@sudo -H $(PIP) install --user --upgrade ansible --ignore-installed six
+	@$(PIP) install --user --upgrade --ignore-installed six ansible
 
-# Python3 already provides pip3? No need for easy_install pip now?
-# python3 -m pip install ...
-bootstrap:
-	@sudo -H easy_install pip
-	@sudo -H $(PIP) install --user ansible
-	@$(ANSIBLE_COMMAND_LOCAL_WITH_VAULT) $(ANSIBLE_PLAYBOOKS_DIRECTORY)/bootstrap.yml
+.ansible_vault_password:
 	@test -s $(ANSIBLE_VAULT_PASSWORD_FILE) \
-		|| echo ATTENTION: Please create '$(PWD)/$(ANSIBLE_VAULT_PASSWORD_FILE)' with this project\'s Ansible Vault password
+		|| echo "ATTENTION: Please create '$(PWD)/$(ANSIBLE_VAULT_PASSWORD_FILE)' with this project's Ansible Vault password" && exit 1
+
+# TODO: install Python 3 manually outside Ansible?
+bootstrap: .ansible_vault_password
+	@sudo -H easy_install pip
+	@$(BOOTSTRAP_PIP) install --user --ignore-installed six ansible
+	@export PATH="~/Library/Python/2.7/bin:${PATH}"
+	@$(ANSIBLE_COMMAND_LOCAL_WITH_VAULT) $(ANSIBLE_PLAYBOOKS_DIRECTORY)/bootstrap.yml
 
 converge:
 	@$(ANSIBLE_COMMAND_LOCAL_WITH_VAULT) $(ANSIBLE_PLAYBOOKS_DIRECTORY)/main.yml

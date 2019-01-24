@@ -6,4 +6,4 @@
 
 - name: Install Pentadactyl
   shell: >
-    cd /Users/{{ ansible_user_id }}/Library/Application\ Support/Firefox/Profiles/*/extensions && unzip -u {{ downloads_directory }}/pentadactyl-latest.xpi -d pentadactyl\@dactyl.googlecode.com
+    cd /Users/{{ user }}/Library/Application\ Support/Firefox/Profiles/*/extensions && unzip -u {{ downloads_directory }}/pentadactyl-latest.xpi -d pentadactyl\@dactyl.googlecode.com

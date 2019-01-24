@@ -2,11 +2,6 @@
 - hosts: localhost
   connection: local
   roles:
-    # - ansible-download-directory
-    # - usr-local-src-directory
-    # - ssh-keys
-    # - passwordless-sudo
-
     # - homebrew
     # - gnu-command-line-tools
     # - xz
