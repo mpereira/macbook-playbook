@@ -7,7 +7,7 @@
 - name: Mount Google Photos image
   command: >
     chdir={{ downloads_directory }}
-    hdiutil attach {{ google_photos_dmg }}
+    hdiutil attach -nobrowse {{ google_photos_dmg }}
     creates="/Volumes/{{ google_photos_volume }}"
 
 - name: Copy Google Photos application directory to the applications directory

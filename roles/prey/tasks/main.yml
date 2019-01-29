@@ -1,5 +1,6 @@
 ---
-# get_url fails to download because of a bug with SSL handling.
+# get_url fails to download because of a bug with SSL handling. Using
+# command + wget instead.
 # https://github.com/ansible/ansible/issues/23642
 - name: Download Prey
   command: >
@@ -10,7 +11,13 @@
     file: api_key.yml
     name: api_key
 
+- name: Check if Prey is set up
+  shell: >
+    sudo /usr/local/lib/prey/current/bin/prey config gui
+  register: prey_config_gui
+
 - name: Install Prey
   shell: >
     API_KEY={{ api_key.prey_api_key }} installer -package {{ downloads_directory }}/{{ prey_pkg }} -target /
   become: yes
+  when: prey_config_gui.rc != 0

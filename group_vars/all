@@ -7,89 +7,91 @@ home_directory: "/Users/{{ user }}"
 downloads_directory: "{{ home_directory }}/.ansible/downloads"
 computer_name: baloon
 
-# emacs_version: 25.3
-emacs_version: 26.1
-
-# emacs_version: 26.1-rc1
-# emacs_pretest: yes
+emacs_pre_built_version: "26.1"
+# emacs_pre_built_version: "26.1-rc1"
+# emacs_pre_built_pretest: "yes"
 
 # Wait until Vagrant fixes this issue before upgrading to 5.2
 # https://github.com/hashicorp/vagrant/issues/9090
-# virtualbox_version: 5.2.0
-# virtualbox_build: 118431
-virtualbox_version: 5.1.30
-virtualbox_build: 118389
+# virtualbox_version: "5.2.0"
+# virtualbox_build: "118431"
+virtualbox_version: "6.0.2"
+virtualbox_build: "128162"
 
-vagrant_version: 2.0.0
-vagrant_vbguest_version: 0.15.0
+awscli_version: "1.16.96"
+
+vagrant_version: "2.0.0"
+vagrant_vbguest_version: "0.15.0"
 
 # https://dl.google.com/go/go1.11.1.darwin-amd64.pkg
-go_version: 1.11.1
+go_version: "1.11.1"
 
-make_version: 4.2.1
+make_version: "4.2.1"
 
-bash_veusion: 4.4.23
+bash_version: "4.4.23"
+
+wrk_version: "4.1.0"
 
 # https://jsok.github.io/docker-for-mac-versions/
-docker_version: stable # not configurable at the moment
+docker_version: "stable" # not configurable at the moment
 
-terraform_version: 0.11.7
+terraform_version: "0.11.7"
 
 # http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html
-java_version: 8
-java_subversion: 152
-java_build: 16
-jdk_hash: aa0333dd3019491ca4f6ddbe78cdb6d0
-jdk_checksum: md5:7205cff06dd8ff134f33535ceda0ea96
+java_version: "8"
+java_subversion: "152"
+java_build: "16"
+jdk_hash: "aa0333dd3019491ca4f6ddbe78cdb6d0"
+jdk_checksum: "md5:7205cff06dd8ff134f33535ceda0ea96"
 
-defaultbrowser_version: 1.0
+defaultbrowser_version: "1.0"
 
-ffmpeg_version: 15.05.2017
+ffmpeg_version: "15.05.2017"
 
-fish_version: 2.6.0
-fish_foreign_env_version: baefbd690f0b52cb8746f3e64b326d82834d07c5
+fish_version: "2.6.0"
+fish_foreign_env_version: "baefbd690f0b52cb8746f3e64b326d82834d07c5"
 
-homebrew_version: master # not configurable at the moment
+homebrew_version: "master" # not configurable at the moment
 
-jq_version: 1.5
-jq_checksum: md5:81ff0e3ddd999d2f5bd151b882ce7e18
+jq_version: "1.5"
+jq_checksum: "md5:81ff0e3ddd999d2f5bd151b882ce7e18"
 
-leiningen_version: 2.8.0
-leiningen_checksum: md5:9f90d51bffa55691aa0f4e305249d42b
+leiningen_version: "2.8.0"
+leiningen_checksum: "md5:9f90d51bffa55691aa0f4e305249d42b"
 
-node_version: 8.11.1
+node_version: "8.11.1"
 
 # Wait until https://github.com/wkhtmltopdf/wkhtmltopdf/issues/3241 gets fixed
 # before upgrading from 0.12.3.
-wkhtmltopdf_version: 0.12.3
+wkhtmltopdf_version: "0.12.3"
 
-beets_version: 1.4.5
+beets_version: "1.4.5"
 
-bottle_version: 0.12.13
+bottle_version: "0.12.13"
 
-glances_version: 2.11.1
+glances_version: "2.11.1"
 
-hugo_version: 0.44
+hugo_version: "0.44"
 
-black_version: 18.6b4
+black_version: "18.6b4"
 
-mpc_version: 0.28
+mpc_version: "0.28"
 
-mpd_version: 0.20.11
+mpd_version: "0.20.11"
 
-mpdscribble_version: 0.22
+mpdscribble_version: "0.22"
 
-p7zip_version: 16.02
+p7zip_version: "16.02"
 
-s3cmd_version: 2.0.1
+s3cmd_version: "2.0.1"
 
-the_silver_searcher_version: 2.1.0
+the_silver_searcher_version: "2.1.0"
 
-tree_version: 1.7.0
+tree_version: "1.7.0"
 
-vault_version: 0.3.0
+vault_version: "0.3.0"
 
-bitbar_version: 1.9.2
+bitbar_version: "1.9.2"
 
 divvy_version: "" # not configurable at the moment
 
@@ -99,7 +101,7 @@ dropbox_version: "" # not configurable at the moment
 
 google_chrome_version: "" # not configurable at the moment
 
-postgresql_version: 2.1
+postgresql_version: "2.1"
 
 skype_version: "" # not configurable at the moment
 
@@ -107,67 +109,108 @@ slack_version: "" # not configurable at the moment
 
 spotify_version: "" # not configurable at the moment
 
-ynab_version: 4.3.855
+ynab_version: "4.3.855"
 
-cantata_version: 2.2.0
+# cantata_version: 2.3.3 # for build-cantata
+cantata_version: "2.3.2" # for cantata
 
-cmake_version: 3.10.0-rc4
-cmake_version_path: v3.10
+stack_version: "1.9.3"
 
-maven_version: 3.5.2
+haskell_platform_version: "8.6.3"
 
-# gnuplot_version: 3.5.2
+qt_major_minor_version: "5.12"
+qt_version: "{{ qt_major_minor_version }}.0"
 
-gnupg_version: 2.1.21
-gnupg_volume_version: 2.1
+iterm_version: "3_2_7"
+
+tealdeer_version: "1.1.0"
+
+firefox_version: "64.0.2"
+
+cmake_version: "3.10.0-rc4"
+cmake_version_path: "v3.10"
+
+maven_version: "3.5.2"
+
+# gnuplot_version: "3.5.2"
+
+gnupg_version: "2.1.21"
+gnupg_volume_version: "2.1"
 
 licecap_version: "" # not configurable at the moment
 
-macports_version: 2.4.2
-macports_mac_release: 10.12-Sierra
+# https://www.macports.org/install.php
+macports_version: "2.5.4"
+macports_mac_release: "10.14-Mojave"
 
-xquartz_version: 2.7.11
+xquartz_version: "2.7.11"
 
 mactex_version: "" # not configurable at the moment
 
 google_photos_version: "" # not configurable at the moment
 
-python3_version: 3.6.3
+python3_version: "3.6.3"
 
-skitch_version: 2.8
+skitch_version: "2.8"
 
 dash_version: "" # not configurable at the moment
 
-vlc_version: 2.2.6
+vlc_version: "2.2.6"
 
-prey_version: 1.7.1
+prey_version: "1.7.1"
 
-git_version: 2.14.1
+git_version: "2.14.1"
 
-pgsanity_version: 0.2.9
+pgsanity_version: "0.2.9"
 
-jmeter_version: 0.2.9
+jmeter_version: "0.2.9"
 
-mplayer_version: 1.3.0
+mplayer_version: "1.3.0"
 
-vimpc_version: 0.09.1
+vimpc_version: "0.09.1"
 
-ripgrep_version: 0.8.1
+ripgrep_version: "0.8.1"
 
-htop_version: 2.0.2
+htop_version: "2.0.2"
 
-pyre_check_version: 0.0.7 # homebrew is terrible and doesn't work with versions??
+pyre_check_version: "0.0.7" # homebrew is terrible and doesn't work with versions??
 
-yapf_version: 0.22.0
+hadoop_version: "3.1.1" # homebrew is terrible and doesn't work with versions??
+
+yapf_version: "0.22.0"
 
 markdown_version: "" # TODO
 
 shellcheck_version: "0.5.0" # homebrew is terrible and doesn't work with versions??
 
-vtop_version: 0.5.7
+vtop_version: "0.5.7"
 
-ctags_version: 5.8
+ctags_version: "5.8"
 
-irssi_version: 1.0.5
+light_table_version: "0.8.1"
 
-irssi_notifier_version: 1.8.0
+lua_version: "5.3.5"
+
+lua_jit_version: "2.0.5"
+
+neovim_version: "0.3.4"
+
+macvim_version: "snapshot-153"
+
+vim_version: "8.1"
+
+ruby_install_version: "0.7.0"
+
+chruby_version: "0.3.9"
+
+ruby_version: "2.6.0"
+
+open_office_version: "4.1.6"
+
+irssi_version: "1.0.5"
+
+r_version: "3.5.2"
+
+tmux_version: "2.8"
+
+irssi_notifier_version: "1.8.0"

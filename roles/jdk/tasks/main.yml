@@ -9,7 +9,7 @@
 - name: Mount JDK image
   command: >
     chdir={{ downloads_directory }}
-    hdiutil attach {{ jdk_dmg }}
+    hdiutil attach -nobrowse {{ jdk_dmg }}
     creates=/Volumes/{{ jdk_image }}
 
 - name: Check existing Java version

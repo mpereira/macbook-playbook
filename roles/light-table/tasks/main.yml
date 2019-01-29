@@ -1,17 +1,17 @@
 ---
 - name: Download LightTable
   get_url: >
-    url=http://d35ac8ww5dfjyg.cloudfront.net/playground/bins/0.6.2/LightTableMac.zip
-    dest={{ downloads_directory }}/LightTableMac.zip
+    url=https://github.com/LightTable/LightTable/releases/download/{{ light_table_version }}/lighttable-{{ light_table_version }}-mac.tar.gz
+    dest={{ downloads_directory }}/lighttable-{{ light_table_version }}-mac.tar.gz
 
-- name: Extract LightTable zip archive
-  command: >
-    chdir={{ downloads_directory }}
-    unzip LightTableMac.zip -d LightTableMac
-    creates=LightTableMac
+- name: Extract LightTable archive
+  unarchive:
+    src="{{ downloads_directory }}/lighttable-{{ light_table_version }}-mac.tar.gz"
+    dest="{{ downloads_directory }}"
+    creates="{{ downloads_directory }}/lighttable-{{ light_table_version }}-mac"
 
 - name: Copy LightTable.app to Applications directory
   command: >
-    cp -R {{ downloads_directory }}/LightTableMac/LightTable/LightTable.app /Applications
+    cp -R {{ downloads_directory }}/lighttable-{{ light_table_version }}-mac/LightTable.app /Applications
     creates=/Applications/LightTable.app
   become: yes

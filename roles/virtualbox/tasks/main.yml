@@ -1,8 +1,8 @@
 ---
 - name: Download VirtualBox
-  get_url: >
-    url=http://download.virtualbox.org/virtualbox/{{ virtualbox_version }}/VirtualBox-{{ virtualbox_version }}-{{ virtualbox_build }}-OSX.dmg
-    dest={{ downloads_directory }}/VirtualBox-{{ virtualbox_version }}-{{ virtualbox_build }}-OSX.dmg
+  get_url:
+    url: "http://download.virtualbox.org/virtualbox/{{ virtualbox_version }}/VirtualBox-{{ virtualbox_version }}-{{ virtualbox_build }}-OSX.dmg"
+    dest: "{{ downloads_directory }}/VirtualBox-{{ virtualbox_version }}-{{ virtualbox_build }}-OSX.dmg"
 
 - name: Check existing VirtualBox version
   shell: "VirtualBox --help 2>&1"
@@ -12,7 +12,7 @@
 - name: Mount VirtualBox image
   command: >
     chdir={{ downloads_directory }}
-    hdiutil attach VirtualBox-{{ virtualbox_version }}-{{ virtualbox_build }}-OSX.dmg
+    hdiutil attach -nobrowse VirtualBox-{{ virtualbox_version }}-{{ virtualbox_build }}-OSX.dmg
     creates=/Volumes/VirtualBox
   when: virtualbox_version_output.stdout.find('VirtualBox Manager ' ~ virtualbox_version) == -1
 

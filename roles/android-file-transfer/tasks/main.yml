@@ -11,7 +11,7 @@
 
 - name: Mount Android File Transfer image
   command: >
-    hdiutil attach {{ android_file_transfer_image_path }}
+    hdiutil attach -nobrowse {{ android_file_transfer_image_path }}
     creates="{{ android_file_transfer_volume_path }}"
   when: not android_file_transfer_app_directory_stat.stat.exists
 

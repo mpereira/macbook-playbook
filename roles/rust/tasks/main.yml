@@ -5,9 +5,13 @@
     dest: "{{ downloads_directory }}/rustup-init"
     mode: 0755
 
-- name: Install Rust
+- name: Install rustup
   command: >
     "{{ downloads_directory }}/rustup-init" -y --no-modify-path
+
+- name: Install Rust
+  command: >
+    rustup update --force stable
 
 - name: Fetch Rust source code
   command: >
@@ -21,40 +25,26 @@
   shell: >
     rustup completions fish > ~/.config/fish/completions/rustup.fish
 
+# Installing specific nightly because sometimes nighlies don't include
+# all components, e.g. rls, which breaks all `rustup` operations.
+# Check https://mexus.github.io/rustup-components-history for nightlies
+# with all components.
 - name: Set up nightly Rust (racer dependency)
   command: >
-    rustup toolchain add nightly
+    rustup install nightly-2019-01-26
+
+- name: Add rustup components
+  command: >
+    rustup component add --toolchain nightly rust-src rls-preview rust-analysis
 
 - name: Install cargo-script
   command: >
     cargo install --force {{ item }}
   with_items:
     - cargo-script
-    - rustfmt
-
-- name: Add rustup components
-  command: >
-    rustup component add rls-preview rust-analysis rust-src --toolchain nightly
 
 - name: Install racer
   command: >
     cargo +nightly install --force {{ item }}
   with_items:
     - racer
-
-# - name: Download Rust
-#   get_url:
-#     url: "{{ rust_pkg_url }}"
-#     dest: "{{ downloads_directory }}/{{ rust_pkg }}"
-
-# - name: Install Rust
-#   command: >
-#     installer -package "{{ downloads_directory }}/{{ rust_pkg }}" -target /
-#   become: yes
-
-# - name: Install a few Rust crates
-#   command: >
-#     cargo install --force {{ item }}
-#   with_items:
-#     - cargo-script
-#     - racer

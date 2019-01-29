@@ -13,7 +13,7 @@
 - name: Mount CMake image
   command: >
     chdir={{ downloads_directory }}
-    hdiutil attach -quiet {{ cmake_image_name }}.cdr
+    hdiutil attach -nobrowse -quiet {{ cmake_image_name }}.cdr
     creates="{{ cmake_volume_path }}"
 
 - name: Copy CMake application directory to the applications directory

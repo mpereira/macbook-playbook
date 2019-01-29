@@ -1,0 +1,23 @@
+---
+- name: Ensure the BitBar .config directory exists
+  file: >
+    path="{{ home_directory }}/.config/bitbar"
+    state=directory
+
+- name: Clone BitBar plugins repository
+  git:
+    repo: "git@github.com:mpereira/bitbar-plugins.git"
+    dest: "{{ home_directory }}/.config/bitbar/plugins"
+
+- name: Configure BitBar plugins directory
+  command: >
+    defaults write com.matryer.BitBar pluginsDirectory "{{ home_directory }}/.config/bitbar/plugins/Enabled"
+
+- name: Install BitBar plugins
+  file:
+    src: "{{ home_directory }}/.config/bitbar/plugins/{{ item.src }}"
+    dest: "{{ home_directory }}/.config/bitbar/plugins/Enabled/{{ item.dest }}"
+    state: link
+  with_items:
+    - { src: 'Music/mpd-simple.5s.sh', dest: 'mpd-simple.2s.sh' }
+    - { src: 'Music/spotify-simple.5s.sh', dest: 'spotify-simple.5s.sh' }

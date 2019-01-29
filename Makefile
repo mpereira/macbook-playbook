@@ -5,9 +5,10 @@ ANSIBLE_DIRECTORY               := .
 ANSIBLE_PLAYBOOKS_DIRECTORY     := $(ANSIBLE_DIRECTORY)
 ANSIBLE_ROLES_DIRECTORY         := $(ANSIBLE_DIRECTORY)/roles
 ANSIBLE_INVENTORY               := $(ANSIBLE_DIRECTORY)/hosts
-ANSIBLE_VERBOSE                 := -vv
+ANSIBLE_VERBOSE                 := -v
 ANSIBLE_VAULT_PASSWORD_FILE     := $(ANSIBLE_DIRECTORY)/.ansible_vault_password
 ANSIBLE_SENSITIVE_CONTENT_FILES := \
+  $(ANSIBLE_ROLES_DIRECTORY)/awscli/files/credentials \
   $(ANSIBLE_ROLES_DIRECTORY)/ssh-keys/files/id_rsa \
   $(ANSIBLE_ROLES_DIRECTORY)/s3cmd/files/.s3cfg \
   $(ANSIBLE_ROLES_DIRECTORY)/dotfiles/vars/environment.yml \
@@ -55,6 +56,8 @@ bootstrap: .ansible_vault_password
 	@$(BOOTSTRAP_PIP) install --user --ignore-installed six ansible
 	@export PATH="~/Library/Python/2.7/bin:${PATH}"
 	@$(ANSIBLE_COMMAND_LOCAL_WITH_VAULT) $(ANSIBLE_PLAYBOOKS_DIRECTORY)/bootstrap.yml
+	@export PATH="~/Library/Python/3.6/bin:${PATH}"
+	@$(BOOTSTRAP_PIP) install --user --ignore-installed six ansible
 
 converge:
 	@$(ANSIBLE_COMMAND_LOCAL_WITH_VAULT) $(ANSIBLE_PLAYBOOKS_DIRECTORY)/main.yml

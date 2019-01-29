@@ -1,3 +1,3 @@
 ---
 - name: Install hlint
-  command: cabal install hlint
+  command: stack install hlint

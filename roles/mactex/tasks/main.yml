@@ -7,5 +7,5 @@
 - name: Install MacTeX
   command: >
     installer -package {{ downloads_directory }}/{{ mactex_pkg }} -target /
-    creates=/usr/local/texlive/2015
+    creates=/usr/local/texlive
   become: yes

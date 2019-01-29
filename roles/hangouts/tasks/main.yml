@@ -7,14 +7,19 @@
 - name: Mount Hangouts image
   command: >
     chdir={{ downloads_directory }}
-    hdiutil attach GoogleVoiceAndVideoSetup.dmg
-    creates=/Volumes/GoogleVoiceAndVideoAccelSetup_4.9.1.16010
+    hdiutil attach -nobrowse GoogleVoiceAndVideoSetup.dmg
+  register: mount_hangounts_image
+
+- name: Get Hangouts version
+  shell: >
+    ls /Volumes | grep GoogleVoiceAndVideoAccelSetup | cut -d_ -f2
+  register: hangouts_version
 
 - name: Install Hangouts
-  command: >
-    installer -package /Volumes/GoogleVoiceAndVideoAccelSetup_4.9.1.16010/Google\ Voice\ and\ Video.pkg -target /
-    creates=Library/Application\ Support/Google/GoogleTalkPlugin.app
+  shell: >
+    installer -package "/Volumes/GoogleVoiceAndVideoAccelSetup_{{ hangouts_version.stdout }}/Google Voice and Video.pkg" -target /
+    creates="/Users/{{ user }}/Library/Application Support/Google/GoogleTalkPlugin.app"
   become: yes
 
 - name: Unmount Hangouts image
-  command: hdiutil detach /Volumes/GoogleVoiceAndVideoAccelSetup_4.9.1.16010
+  command: hdiutil detach /Volumes/GoogleVoiceAndVideoAccelSetup_{{ hangouts_version.stdout }}

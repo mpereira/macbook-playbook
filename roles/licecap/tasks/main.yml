@@ -13,7 +13,7 @@
 - name: Mount LICEcap image
   command: >
     chdir={{ downloads_directory }}
-    hdiutil attach -quiet {{ licecap_cdr }}
+    hdiutil attach -nobrowse -quiet {{ licecap_cdr }}
     creates=/Volumes/{{ licecap_volume }}
 
 - name: Copy {{ licecap_app }}lication directory to the applications directory

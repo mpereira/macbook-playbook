@@ -1,3 +1,10 @@
 ---
+- name: Create /usr/local/Frameworks
+  file:
+    path: /usr/local/Frameworks
+    state: directory
+    owner: "{{ user }}"
+  become: yes
+
 - name: Install fontforge
   homebrew: name=fontforge state=present

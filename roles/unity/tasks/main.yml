@@ -1,20 +1,26 @@
 ---
-- name: Download Unity
+- name: Download Unity Installer image
   get_url: >
-    url=http://netstorage.unity3d.com/unity/unity-4.6.1.dmg
-    dest={{ downloads_directory }}/unity-4.6.1.dmg
+    url=https://netstorage.unity3d.com/unity/393bae82dbb8/UnityDownloadAssistant-2018.3.3f1.dmg
+    dest={{ downloads_directory }}/UnityDownloadAssistant-2018.3.3f1.dmg
 
-- name: Mount Unity image
+- name: Mount Unity Installer image
   command: >
     chdir={{ downloads_directory }}
-    hdiutil attach unity-4.6.1.dmg
-    creates=/Volumes/Unity\ Installer
+    hdiutil attach -nobrowse UnityDownloadAssistant-2018.3.3f1.dmg
+    creates="/Volumes/Unity Download Assistant"
 
-- name: Install Unity
+- name: Install Unity Installer
   command: >
-    installer -package /Volumes/Unity\ Installer/Unity.pkg -target /
-    creates=/Applications/Unity
+    chdir={{ downloads_directory }}
+    cp -R "/Volumes/Unity Download Assistant/Unity Download Assistant.app" /Applications
+    creates="/Applications/Unity Download Assistant.app"
   become: yes
 
-- name: Unmount Unity image
-  command: hdiutil detach /Volumes/Unity\ Installer
+- name: Open Unity Installer
+  command: >
+    chdir={{ downloads_directory }}
+    open "/Applications/Unity Download Assistant.app"
+
+- name: Unmount Unity Installer image
+  command: hdiutil detach "/Volumes/Unity Download Assistant"

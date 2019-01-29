@@ -6,7 +6,7 @@
 
 - name: Mount Git image
   command: >
-    hdiutil attach {{ downloads_directory }}/{{ git_dmg }}
+    hdiutil attach -nobrowse {{ downloads_directory }}/{{ git_dmg }}
     creates="/Volumes/{{ git_volume }}"
 
 - name: Install Git

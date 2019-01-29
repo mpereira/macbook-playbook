@@ -1,0 +1,11 @@
+---
+- name: Download Haskell
+  get_url:
+    url: "https://haskell.org/platform/download/{{ haskell_platform_version }}/Haskell Platform {{ haskell_platform_version }} Core 64bit-signed.pkg"
+    dest: "{{ downloads_directory }}/Haskell Platform {{ haskell_platform_version }} Core 64bit-signed.pkg"
+
+- name: Install Haskell
+  command: >
+    installer -package "{{ downloads_directory }}/Haskell Platform {{ haskell_platform_version }} Core 64bit-signed.pkg" -target /
+    creates=/Library/Haskell
+  become: yes

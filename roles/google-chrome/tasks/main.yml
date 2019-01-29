@@ -11,7 +11,7 @@
 
 - name: Mount Google Chrome image
   command: >
-    hdiutil attach {{ google_chrome_image_path }}
+    hdiutil attach -nobrowse {{ google_chrome_image_path }}
     creates="{{ google_chrome_volume_path }}"
   when: not google_chrome_app_directory_stat.stat.exists
 

@@ -7,7 +7,7 @@
 - name: Mount VLC image
   command: >
     chdir={{ downloads_directory }}
-    hdiutil attach {{ vlc_dmg }}
+    hdiutil attach -nobrowse {{ vlc_dmg }}
     creates=/Volumes/{{ vlc_volume }}
 
 - name: Copy VLC.app to Applications directory

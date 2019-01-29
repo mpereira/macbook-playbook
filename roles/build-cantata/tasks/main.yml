@@ -4,12 +4,28 @@
     repo: "https://github.com/CDrummond/cantata.git"
     dest: "{{ downloads_directory }}/cantata"
 
+- name: Clear build directory
+  file: >
+    path="{{ downloads_directory }}/cantata/build"
+    state=absent
+
 - name: Ensure build directory exists
   file: >
     path="{{ downloads_directory }}/cantata/build"
     state=directory
 
-- name: Build Cantata
+- name: Create Cantata Makefile
   shell: >
     chdir="{{ downloads_directory }}/cantata/build"
-    CMAKE_PREFIX_PATH=/Applications/Qt5.9.0/5.9/clang_64/ cmake ..
+    CMAKE_PREFIX_PATH="/Applications/Qt{{ qt_version }}/{{ qt_major_minor_version }}/clang_64" cmake ..
+
+- name: Build Cantata
+  command:
+    chdir="{{ downloads_directory }}/cantata/build"
+    make
+
+- name: Install Cantata
+  command:
+    chdir="{{ downloads_directory }}/cantata/build"
+    make install
+  become: yes

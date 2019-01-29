@@ -1,19 +1,37 @@
 ---
 - name: Download Firefox
-  get_url: >
-    url=https://download.mozilla.org/?product=firefox-25.0.1&os=osx
-    dest={{ downloads_directory }}/Firefox\ 25.0.1.dmg
+  get_url:
+    url: "https://download.mozilla.org/?product=firefox-{{ firefox_version }}&os=osx"
+    dest: "{{ downloads_directory }}/Firefox\ {{ firefox_version }}.dmg"
+
+- name: Get current Firefox version
+  shell: defaults read "{{ firefox_app }}/Contents/Info.plist" CFBundleShortVersionString
+  register: firefox_version_output
+  ignore_errors: yes
+
+- name: Maybe clear '{{ firefox_app }}' directory
+  file: >
+    path="{{ firefox_app }}"
+    state=absent
+  when: (firefox_version_output.rc == 1
+         or firefox_version_output.stdout | version_compare(firefox_version, '<'))
 
 - name: Mount Firefox image
   command: >
     chdir={{ downloads_directory }}
-    hdiutil attach Firefox\ 25.0.1.dmg
+    hdiutil attach -nobrowse Firefox\ {{ firefox_version }}.dmg
     creates=/Volumes/Firefox
+  when: (firefox_version_output.rc == 1
+         or firefox_version_output.stdout | version_compare(firefox_version, '<'))
 
 - name: Copy Firefox application directory to the applications directory
   command: >
     cp -R /Volumes/Firefox/Firefox.app /Applications
-    creates=/Applications/Firefox.app
+    creates={{ firefox_app }}
+  when: (firefox_version_output.rc == 1
+         or firefox_version_output.stdout | version_compare(firefox_version, '<'))
 
 - name: Unmount Firefox image
   command: hdiutil detach /Volumes/Firefox
+  when: (firefox_version_output.rc == 1
+         or firefox_version_output.stdout | version_compare(firefox_version, '<'))

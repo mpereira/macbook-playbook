@@ -1,0 +1,6 @@
+---
+emacs_pre_built_pretest_prefix: "{{ 'pretest-' if (emacs_pre_built_pretest is defined and emacs_pre_built_pretest) else '' }}"
+emacs_pre_built_full_version: "{{ emacs_pre_built_pretest_prefix }}{{ emacs_pre_built_version }}"
+emacs_pre_built_dmg: "Emacs-{{ emacs_pre_built_full_version }}-universal.dmg"
+emacs_pre_built_src_archive: "emacs-{{ emacs_pre_built_version }}.tar.xz"
+emacs_pre_built_app: "/Applications/Emacs-{{ emacs_pre_built_full_version }}.app"

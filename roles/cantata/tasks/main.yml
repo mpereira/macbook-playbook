@@ -12,15 +12,18 @@
 - name: Mount Cantata image
   command: >
     chdir={{ downloads_directory }}
-    hdiutil attach {{ cantata_dmg }}
-  when: cantata_version_output.stdout | version_compare(cantata_version, '<')
+    hdiutil attach -nobrowse {{ cantata_dmg }}
+  when: (cantata_version_output.rc == 1
+         or cantata_version_output.stdout | version_compare(cantata_version, '<'))
 
 - name: Copy Cantata.app to Applications directory
   command: >
     cp -R /Volumes/Cantata/Cantata.app /Applications
   become: yes
-  when: cantata_version_output.stdout | version_compare(cantata_version, '<')
+  when: (cantata_version_output.rc == 1
+         or cantata_version_output.stdout | version_compare(cantata_version, '<'))
 
 - name: Unmount Cantata image
   command: hdiutil detach /Volumes/Cantata
-  when: cantata_version_output.stdout | version_compare(cantata_version, '<')
+  when: (cantata_version_output.rc == 1
+         or cantata_version_output.stdout | version_compare(cantata_version, '<'))

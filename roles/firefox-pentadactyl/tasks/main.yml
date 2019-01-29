@@ -1,9 +1,0 @@
----
-- name: Download Pentadactyl
-  get_url: >
-    url=http://5digits.org/nightly/pentadactyl-latest.xpi
-    dest={{ downloads_directory }}/pentadactyl-latest.xpi
-
-- name: Install Pentadactyl
-  shell: >
-    cd /Users/{{ user }}/Library/Application\ Support/Firefox/Profiles/*/extensions && unzip -u {{ downloads_directory }}/pentadactyl-latest.xpi -d pentadactyl\@dactyl.googlecode.com

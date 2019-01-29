@@ -1,0 +1,5 @@
+---
+- name: Install wrk
+  homebrew:
+    name: wrk
+    # name: wrk@{{ wrk_version }}

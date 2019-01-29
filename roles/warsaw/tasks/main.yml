@@ -8,3 +8,16 @@
   command: >
     installer -package "{{ downloads_directory }}/{{ warsaw_pkg }}" -target /
   become: yes
+
+# A process named "core" from the Warsaw package sometimes pegs the
+# CPU at 100%.
+# https://macmagazine.uol.com.br/2017/11/18/o-modulo-de-seguranca-de-bancos-pode-estar-detonando-o-seu-mac-saiba-como-so-ativa-lo-quando-necessario-neste-tutorial/
+- name: Stop Warsaw service
+  command: >
+    launchctl unload -F /Library/LaunchDaemons/com.diebold.warsaw.plist
+  become: yes
+
+- name: Don't run Warsaw on startup
+  command: >
+    plutil -replace RunAtLoad -bool NO /Library/LaunchDaemons/com.diebold.warsaw.plist
+  become: yes

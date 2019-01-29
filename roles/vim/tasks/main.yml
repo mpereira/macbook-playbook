@@ -1,45 +1,44 @@
 ---
 - name: Download Vim
   command: >
-    wget ftp://ftp.vim.org/pub/vim/unix/vim-8.0.tar.bz2
-    -p {{ downloads_directory }}
-    creates={{ downloads_directory }}/vim-8.0.tar.bz2
+    wget "https://ftp.nluug.nl/pub/vim/unix/vim-{{ vim_version }}.tar.bz2"
+         -P {{ downloads_directory }}
+    creates={{ downloads_directory }}/vim-{{ vim_version }}.tar.bz2
 
 - name: Extract Vim
   command: >
-    tar -xjvf {{ downloads_directory }}/vim-8.0.tar.bz2
-    -C {{ downloads_directory }}
-    creates={{ downloads_directory }}/vim80
+    tar -xjvf {{ downloads_directory }}/vim-{{ vim_version }}.tar.bz2
+        -C {{ downloads_directory }}
+    creates={{ downloads_directory }}/vim{{ vim_version | regex_replace('\\.', '') }}
 
 - name: Install Vim dependencies
   homebrew: name={{ item }}
   with_items:
     - libtool
     - automake
-    - cmake
     - pkg-config
     - gettext
 
 - name: Configure Vim
-  command: >
-    chdir={{ downloads_directory }}/vim80
-    ./configure
-      --enable-fail-if-missing
-      --enable-luainterp
-      --enable-perlinterp
-      --enable-pythoninterp
-      --enable-python3interp
-      --enable-rubyinterp
-      --enable-cscope
-      --enable-gui=auto
-      --disable-netbeans
-      --enable-multibyte
-      --with-luajit
-      --with-lua-prefix=/usr/local
-      --with-features=huge
+  shell: >
+    chdir="{{ downloads_directory }}/vim{{ vim_version | regex_replace('\\.', '') }}"
+    STRIP=/usr/bin/true ./configure \
+      --enable-fail-if-missing \
+      --enable-luainterp \
+      --enable-perlinterp \
+      --enable-pythoninterp \
+      --enable-python3interp \
+      --enable-rubyinterp \
+      --enable-cscope \
+      --enable-gui=auto \
+      --disable-netbeans \
+      --enable-multibyte \
+      --with-luajit \
+      --with-lua-prefix=/usr/local \
+      --with-features=huge \
       --with-compiledby='Murilo Pereira <murilo@murilopereira.com>'
 
 - name: Build and install Vim
   shell: >
-    chdir={{ downloads_directory }}/vim80
-    make && sudo make install
+    chdir="{{ downloads_directory }}/vim{{ vim_version | regex_replace('\\.', '') }}"
+    make && STRIP=/bin/true sudo make install

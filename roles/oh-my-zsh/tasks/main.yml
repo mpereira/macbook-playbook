@@ -1,5 +1,0 @@
----
-- name: Check out the oh-my-zsh GitHub repository
-  git: >
-    repo=git@github.com:mpereira/oh-my-zsh.git
-    dest=/Users/{{ user }}/.oh-my-zsh

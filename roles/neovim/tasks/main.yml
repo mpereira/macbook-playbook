@@ -1,28 +1,15 @@
 ---
 - name: Download Neovim
   get_url:
-    url=https://github.com/neovim/neovim/archive/v0.1.5.tar.gz
-    dest={{ downloads_directory }}/neovim.v0.1.5.tar.gz
+    url="https://github.com/neovim/neovim/releases/download/v{{ neovim_version }}/nvim-macos.tar.gz"
+    dest="{{ downloads_directory }}/nvim-macos.tar.gz"
 
 - name: Extract Neovim
   command: >
-    tar -xjvf {{ downloads_directory }}/neovim.v0.1.5.tar.gz
-    -C {{ downloads_directory }}
-    creates={{ downloads_directory }}/neovim-0.1.5
+    tar -xvf {{ downloads_directory }}/nvim-macos.tar.gz
+        -C {{ downloads_directory }}
+    creates={{ downloads_directory }}/nvim-osx64
 
-- name: Install Neovim dependencies
-  homebrew: name={{ item }}
-  with_items:
-    - libtool
-    - automake
-    - cmake
-    - pkg-config
-    - gettext
-
-- name: Build and install Neovim
-  shell: >
-    chdir={{ downloads_directory }}/neovim-0.1.5
-    rm -rf build
-    && make clean
-    && make CMAKE_BUILD_TYPE=Release
-    && sudo make install
+- name: Install nvim binary
+  command: >
+    cp {{ downloads_directory }}/nvim-osx64/bin/nvim /usr/local/bin

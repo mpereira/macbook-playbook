@@ -7,7 +7,7 @@
 - name: Mount the Docker image
   command: >
     chdir={{ downloads_directory }}
-    hdiutil attach Docker.dmg
+    hdiutil attach -nobrowse Docker.dmg
     creates=/Volumes/Docker
 
 - name: Install Docker

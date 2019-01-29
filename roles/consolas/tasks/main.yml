@@ -2,25 +2,24 @@
 - name: Install cabextract
   homebrew: name=cabextract state=present
 
-# TODO: The URL below is a 404 so I downloaded PowerPointViewer.exe manually
-# from here:
+# Got it originally from here:
 # https://download.cnet.com/PowerPoint-Viewer/3001-2075_4-75450958.html
-# - name: Download PowerPointViewer.exe
-#   get_url:
-#     url: http://download.microsoft.com/download/f/5/a/f5a3df76-d856-4a61-a6bd-722f52a5be26/PowerPointViewer.exe
-#     dest: "{{ downloads_directory }}/PowerPointViewer.exe"
+- name: Download PowerPointViewer.exe
+  get_url:
+    url: https://macbook-playbook.s3.amazonaws.com/artifacts/PowerPointViewer.exe
+    dest: "{{ downloads_directory }}/PowerPointViewer.exe"
 
 - name: Make PowerPointViewer directory
-  command: mkdir "{{ downloads_directory }}/PowerPointViewer"
+  command: mkdir -p "{{ downloads_directory }}/PowerPointViewer"
 
 - name: Extract PowerPointViewer.exe
   command: cabextract "{{ downloads_directory }}/PowerPointViewer.exe" -d "{{ downloads_directory }}/PowerPointViewer"
 
 - name: Extract ppviewer directory
-  command: mkdir "{{ downloads_directory }}/ppviewer"
+  command: mkdir -p "{{ downloads_directory }}/ppviewer"
 
 - name: Extract ppviewer.cab
   command: cabextract "{{ downloads_directory }}/ppviewer.cab" -d "{{ downloads_directory }}/ppviewer"
 
 - name: Install Consolas
-  shell: open "{{ downloads_directory }}/ppviewer/CONSOLA*.TTF"
+  shell: open {{ downloads_directory }}/ppviewer/CONSOLA*.TTF

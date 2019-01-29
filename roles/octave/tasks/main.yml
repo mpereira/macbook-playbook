@@ -7,14 +7,14 @@
 - name: Mount Octave image
   command: >
     chdir={{ downloads_directory }}
-    hdiutil attach GNU_Octave_3.8.0-6.dmg
-    creates=/Volumes/GNU\ Octave\ 3.8.0
+    hdiutil attach -nobrowse GNU_Octave_3.8.0-6.dmg
+    creates="/Volumes/GNU Octave 3.8.0"
 
 - name: Install Octave
   command: >
-    installer -pkg /Volumes/GNU\ Octave\ 3.8.0/Octave-3.8.0-6.mpkg -target /
+    installer -pkg "/Volumes/GNU Octave 3.8.0/Octave-3.8.0-6.mpkg" -target /
     creates=/Applications/Octave-cli.app
   become: yes
 
 - name: Unmount Octave image
-  command: hdiutil detach /Volumes/GNU\ Octave\ 3.8.0
+  command: hdiutil detach "/Volumes/GNU Octave 3.8.0"

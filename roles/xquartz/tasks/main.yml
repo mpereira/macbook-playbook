@@ -7,7 +7,7 @@
 - name: Mount XQuartz image
   command: >
     chdir={{ downloads_directory }}
-    hdiutil attach {{ xquartz_dmg }}
+    hdiutil attach -nobrowse {{ xquartz_dmg }}
     creates=/Volumes/{{ xquartz_volume }}
 
 - name: Install XQuartz

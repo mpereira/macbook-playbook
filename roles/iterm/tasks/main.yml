@@ -1,17 +1,17 @@
 ---
 - name: Download iTerm
   get_url: >
-    url=http://www.iterm2.com/nightly/iTerm2-1_0_0_20131221-nightly.zip
-    dest={{ downloads_directory }}/iTerm2-1_0_0_20131221-nightly.zip
+    url="https://iterm2.com/downloads/stable/iTerm2-{{ iterm_version }}.zip"
+    dest="{{ downloads_directory }}/iTerm2-{{ iterm_version }}.zip"
 
 - name: Extract iTerm zip archive
   command: >
     chdir={{ downloads_directory }}
-    unzip iTerm2-1_0_0_20131221-nightly.zip -d iTerm2-1_0_0_20131221-nightly
-    creates=iTerm2-1_0_0_20131221-nightly
+    unzip "iTerm2-{{ iterm_version }}.zip" -d "iTerm2-{{ iterm_version }}"
+    creates=iTerm2-{{ iterm_version }}
 
 - name: Copy iTerm.app to Applications directory
   command: >
-    cp -R {{ downloads_directory }}/iTerm2-1_0_0_20131221-nightly/iTerm.app /Applications
+    cp -R "{{ downloads_directory }}/iTerm2-{{ iterm_version }}/iTerm.app" /Applications
     creates=/Applications/iTerm.app
   become: yes

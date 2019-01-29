@@ -11,16 +11,19 @@
 
 - name: Mount PostgreSQL image
   command: >
-    hdiutil attach {{ postgresql_image_path }}
+    hdiutil attach -nobrowse {{ postgresql_image_path }}
     creates="{{ postgresql_volume_path }}"
-  when: postgresql_version_output.stdout | version_compare(postgresql_version, '<')
+  when: (postgresql_version_output.rc == 1
+         or postgresql_version_output.stdout | version_compare(postgresql_version, '<'))
 
 - name: Create {{ postgresql_app_directory }}
   command: >
     cp -R "{{ postgresql_volume_path }}/{{ postgresql_app_name }}" /Applications
   become: yes
-  when: postgresql_version_output.stdout | version_compare(postgresql_version, '<')
+  when: (postgresql_version_output.rc == 1
+         or postgresql_version_output.stdout | version_compare(postgresql_version, '<'))
 
 - name: Unmount PostgreSQL image
   command: hdiutil detach "{{ postgresql_volume_path }}"
-  when: postgresql_version_output.stdout | version_compare(postgresql_version, '<')
+  when: (postgresql_version_output.rc == 1
+         or postgresql_version_output.stdout | version_compare(postgresql_version, '<'))

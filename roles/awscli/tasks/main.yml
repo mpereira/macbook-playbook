@@ -1,0 +1,16 @@
+- name: Install awscli
+  pip:
+    name: awscli
+    version: "{{ awscli_version }}"
+    extra_args: --user
+
+- name: Ensure ~/.aws directory exists
+  file: >
+    path="{{ home_directory }}/.aws"
+    state=directory
+
+- name: Install ~/.aws/credentials
+  copy:
+    src: credentials
+    dest: "{{ home_directory }}/.aws/credentials"
+    mode: 0644

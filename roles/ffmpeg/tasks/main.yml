@@ -1,16 +1,3 @@
 ---
-- name: Download ffmpeg
-  get_url:
-    url: "{{ ffmpeg_url }}"
-    dest: "{{ downloads_directory }}/{{ ffmpeg_zip }}"
-    checksum: "{{ ffmpeg_checksum }}"
-
-- name: Extract ffmpeg archive
-  command: >
-    chdir={{ downloads_directory }}
-    unzip -u {{ ffmpeg_zip }} -d {{ ffmpeg_directory }}
-
-- name: Install ffmpeg binaries
-  shell: >
-    cp {{ downloads_directory }}/{{ ffmpeg_directory }}/* /usr/local/bin
-  become: yes
+- name: Install ffmpeg
+  homebrew: name=ffmpeg state=present

@@ -7,7 +7,7 @@
 - name: Mount GnuPG image
   command: >
     chdir={{ downloads_directory }}
-    hdiutil attach {{ gnupg_dmg }}
+    hdiutil attach -nobrowse {{ gnupg_dmg }}
     creates="/Volumes/{{ gnupg_volume }}"
 
 - name: Install GnuPG

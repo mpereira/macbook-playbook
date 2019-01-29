@@ -14,7 +14,7 @@
 - name: Mount Vagrant image
   command: >
     chdir={{ downloads_directory }}
-    hdiutil attach vagrant_{{ vagrant_version }}_x86_64.dmg
+    hdiutil attach -nobrowse vagrant_{{ vagrant_version }}_x86_64.dmg
     creates=/Volumes/Vagrant
   when: vagrant_version_output.stdout.find('Vagrant ' ~ vagrant_version) == -1
 

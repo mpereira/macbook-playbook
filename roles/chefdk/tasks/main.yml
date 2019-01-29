@@ -9,7 +9,7 @@
   command: >
     chdir={{ downloads_directory }}
     creates="/Volumes/Chef Development Kit"
-    hdiutil attach chefdk-0.10.0-1.dmg
+    hdiutil attach -nobrowse chefdk-0.10.0-1.dmg
 
 - name: Install Chef Development Kit
   command: >

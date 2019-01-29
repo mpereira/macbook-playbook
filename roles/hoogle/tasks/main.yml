@@ -1,6 +1,6 @@
 ---
 - name: Install hoogle
-  command: cabal install hoogle
+  command: stack install hoogle
 
 - name: Generate hoogle database
   command: hoogle data

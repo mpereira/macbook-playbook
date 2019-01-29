@@ -4,3 +4,4 @@ dependencies:
   - qt5
   - taglib
   - mpg123
+  - jpeg

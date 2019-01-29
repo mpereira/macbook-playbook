@@ -7,7 +7,7 @@
 - name: Mount YNAB image
   command: >
     chdir={{ downloads_directory }}
-    hdiutil attach {{ ynab_dmg }}
+    hdiutil attach -nobrowse {{ ynab_dmg }}
     creates="/Volumes/YNAB 4"
 
 - name: Copy YNAB application directory to the applications directory

@@ -7,7 +7,7 @@
 - name: Mount teensy image
   command: >
     chdir={{ downloads_directory }}
-    hdiutil attach teensy.dmg
+    hdiutil attach -nobrowse teensy.dmg
     creates=/Volumes/teensy
 
 - name: Copy teensy.app to Applications directory

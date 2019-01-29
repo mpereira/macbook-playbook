@@ -7,7 +7,7 @@
 - name: Mount Dropbox image
   command: >
     chdir={{ downloads_directory }}
-    hdiutil attach DropboxInstaller.dmg
+    hdiutil attach -nobrowse DropboxInstaller.dmg
     creates="/Volumes/Dropbox Installer"
 
 - name: Copy Dropbox application directory to the applications directory

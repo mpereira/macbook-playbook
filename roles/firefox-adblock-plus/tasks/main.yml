@@ -1,4 +1,8 @@
 ---
+- name: Open Firefox
+  shell: >
+    "{{ firefox_app }}/Contents/MacOS/firefox-bin" -headless & firefox_pid=$!; sleep 5; kill $firefox_pid
+
 - name: Download Adblock Plus
   get_url: >
     url=https://addons.mozilla.org/firefox/downloads/latest/1865/addon-1865-latest.xpi

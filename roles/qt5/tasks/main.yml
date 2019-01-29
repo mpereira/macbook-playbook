@@ -1,32 +1,41 @@
 ---
-- name: Download Qt5
+- name: Download {{ qt_image_url }}
   get_url: >
-    url="{{ qt5_image_url }}"
-    dest="{{ qt5_image_path }}"
+    url="{{ qt_image_url }}"
+    dest="{{ qt_image_path }}"
     checksum="md5:3d940877ea3dd22c095463bcdf6aa966"
 
-- name: Get {{ qt5_app_directory }} stats
+# 5.12.0:
+# checksum="md5:6fe192b2b63bd0f3203266b677510a22"
+
+- name: Get {{ qt_app_directory }} stats
   stat:
-    path: "{{ qt5_app_directory }}"
-  register: qt5_app_directory_stat
+    path: "{{ qt_app_directory }}"
+  register: qt_app_directory_stat
 
-- name: Mount Qt5 image
+- name: Mount {{ qt_image_path }}
   command: >
-    hdiutil attach -noverify {{ qt5_image_path }}
-    creates="{{ qt5_volume_path }}"
-  when: not qt5_app_directory_stat.stat.exists
+    hdiutil attach -nobrowse -noverify {{ qt_image_path }}
+    creates="{{ qt_volume_path }}"
+  when: not qt_app_directory_stat.stat.exists
 
-- name: Get {{ qt5_volume_path }} stats
+- name: Get {{ qt_volume_path }} stats
   stat:
-    path: "{{ qt5_volume_path }}"
-  register: qt5_volume_path_stat
+    path: "{{ qt_volume_path }}"
+  register: qt_volume_path_stat
 
-- name: Create {{ qt5_app_directory }}
+- name: Create {{ qt_app_directory }}
   command: >
-    cp -R "{{ qt5_volume_path }}/{{ qt5_app_name }}" /Applications
-    creates="{{ qt5_app_directory }}"
+    cp -R "{{ qt_volume_path }}/{{ qt_app_name }}" /Applications
+    creates="{{ qt_app_directory }}"
   become: yes
 
 - name: Unmount Qt5 image
-  command: hdiutil detach "{{ qt5_volume_path }}"
-  when: qt5_volume_path_stat.stat.exists
+  command: hdiutil detach "{{ qt_volume_path }}"
+  when: qt_volume_path_stat.stat.exists
+
+- name: Install Qt5
+  command: >
+    {{ qt_app_directory }}/Contents/MacOS/{{ qt_installer_name }} --script roles/qt/files/qt-noninteractive.qs --platform minimal
+    creates="/Applications/Qt{{ qt_version }}"
+  become: yes

@@ -4,7 +4,7 @@
     name: s3cmd
     # name: s3cmd@{{ s3cmd_version }}
 
-- name: Install .s3cfg
+- name: Install ~/.s3cfg
   copy:
     src: .s3cfg
     dest: "{{ home_directory }}/.s3cfg"

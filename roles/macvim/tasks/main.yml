@@ -1,23 +1,18 @@
 ---
 - name: Download MacVim
   get_url: >
-    url=https://github.com/macvim-dev/macvim/releases/download/snapshot-107/MacVim.dmg
-    dest={{ downloads_directory }}/MacVim-snapshot-107.dmg
+    url=https://github.com/macvim-dev/macvim/releases/download/{{ macvim_version }}/MacVim.dmg
+    dest={{ downloads_directory }}/MacVim-{{ macvim_version }}.dmg
 
 - name: Mount MacVim image
   command: >
     chdir={{ downloads_directory }}
-    hdiutil attach MacVim-snapshot-107.dmg
+    hdiutil attach -nobrowse MacVim-{{ macvim_version }}.dmg
     creates=/Volumes/MacVim
 
 - name: Install MacVim
   command: >
-    cp -r /Volumes/MacVim/MacVim.app /Applications
-  become: yes
-
-- name: Install console binary
-  command: >
-    cp /Volumes/MacVim/mvim /usr/local/bin
+    cp -R /Volumes/MacVim/MacVim.app /Applications
   become: yes
 
 - name: Unmount MacVim image

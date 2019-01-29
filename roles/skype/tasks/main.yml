@@ -7,7 +7,7 @@
 - name: Mount Skype image
   command: >
     chdir={{ downloads_directory }}
-    hdiutil attach getskype-macosx.dmg
+    hdiutil attach -nobrowse getskype-macosx.dmg
     creates=/Volumes/Skype
 
 - name: Copy Skype.app to Applications directory

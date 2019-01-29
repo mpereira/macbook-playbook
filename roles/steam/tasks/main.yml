@@ -13,7 +13,7 @@
 - name: Mount Steam image
   command: >
     chdir={{ downloads_directory }}
-    hdiutil attach -quiet steam.cdr
+    hdiutil attach -nobrowse -quiet steam.cdr
     creates=/Volumes/Steam
 
 - name: Copy Steam application directory to the applications directory

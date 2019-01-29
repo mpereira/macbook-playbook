@@ -6,7 +6,7 @@
 
 - homebrew:
     name: "{{ item }}"
-    state: present
+    state: latest
   with_items:
     - binutils
     - diffutils
