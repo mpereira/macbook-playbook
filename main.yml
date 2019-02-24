@@ -2,144 +2,145 @@
 - hosts: localhost
   connection: local
   roles:
-    - gnu-command-line-tools
-    - xz
-    - git
-    - p7zip
-    - cmake
-    - make
+    - build-emacs
+    # - gnu-command-line-tools
+    # - xz
+    # - git
+    # - p7zip
+    # - cmake
+    # - make
 
-    - mac-ports
-    - homebrew
+    # - mac-ports
+    # - homebrew
 
-    - bash
-    - jdk
-    - python3
-    - node
-    - go
-    - rust
-    - ruby
-    - lua
-    - luajit
-    - leiningen # depends on jdk
-    - octave
-    - r
+    # - bash
+    # - jdk
+    # - python3
+    # - node
+    # - go
+    # - rust
+    # - ruby
+    # - lua
+    # - luajit
+    # - leiningen # depends on jdk
+    # - octave
+    # - r
 
-    - bundler
-    - maven
+    # - bundler
+    # - maven
 
-    - awscli
-    # - s3cmd # using awscli instead.
-    - virtualbox
-    - vagrant
-    - vagrant-vbguest
-    - docker
-    - terraform
-    # - chefdk
+    # - awscli
+    # # - s3cmd # using awscli instead.
+    # - virtualbox
+    # - vagrant
+    # - vagrant-vbguest
+    # - docker
+    # - terraform
+    # # - chefdk
 
-    - xquartz
-    - ffmpeg
+    # - xquartz
+    # - ffmpeg
 
-    - zsh
-    - fish
-    - fish-foreign-env
+    # - zsh
+    # - fish
+    # - fish-foreign-env
 
-    # - macos
+    # # - macos
 
-    - rescuetime
-    - bitbar
-    - defaultbrowser
-    - jq
-    - wkhtmltopdf
-    - beets
-    - glances
-    - pandoc
-    - consolas
-    - hugo
-    - black
-    - mpd
-    - mpc
-    - mpdscribble
-    - shpotify
-    # - the-silver-searcher # using ripgrep instead.
-    - tree
-    - yapf
+    # - rescuetime
+    # - bitbar
+    # - defaultbrowser
+    # - jq
+    # - wkhtmltopdf
+    # - beets
+    # - glances
+    # - pandoc
+    # - consolas
+    # - hugo
+    # - black
+    # - mpd
+    # - mpc
+    # - mpdscribble
+    # - shpotify
+    # # - the-silver-searcher # using ripgrep instead.
+    # - tree
+    # - yapf
 
-    - emacs-pre-built
-    - light-table
-    - powerline
-    - vim
-    - macvim
-    - neovim # isn't working because of https://github.com/neovim/bot-ci/commit/05384567778d00414e926dda23af2b05510d08bf?
+    # - emacs-pre-built
+    # - light-table
+    # - powerline
+    # - vim
+    # - macvim
+    # - neovim # isn't working because of https://github.com/neovim/bot-ci/commit/05384567778d00414e926dda23af2b05510d08bf?
 
-    # - dotemacs
-    # - dotfiles
-    # - bitbar-plugins
+    # # - dotemacs
+    # # - dotfiles
+    # # - bitbar-plugins
 
-    - vault
-    - divvy
-    - android-file-transfer
-    - dropbox
-    - google-chrome
-    - firefox
-    - firefox-adblock-plus
-    - google-chrome-as-default-browser
-    - warsaw
-    - skype
-    - slack
-    - spotify
-    - steam
-    - teensy-loader
-    - ynab
-    # - build-cantata # disabling for now due to https://github.com/CDrummond/cantata/issues/1443.
-    - cantata # using this instead of build-cantata due to https://github.com/CDrummond/cantata/issues/1443.
-    - gnuplot
-    - gnupg
-    - caps-lock-remapped-to-control
-    - licecap
-    - wordnet # depends on xquartz
-    - mactex
-    - google-photos
-    # - skitch # Mojave's screenshotting tools are good enough.
-    - dash
-    - vlc
-    - prey
-    - pgsanity
-    - jmeter
-    - mplayer
-    - markdown
-    - shellcheck
-    - vimpc
-    - pyre-check
-    - htop
-    - vtop
-    - ctags
-    - irssi
-    - irssi-notifier
-    - ripgrep
-    - tealdeer
+    # - vault
+    # - divvy
+    # - android-file-transfer
+    # - dropbox
+    # - google-chrome
+    # - firefox
+    # - firefox-adblock-plus
+    # - google-chrome-as-default-browser
+    # - warsaw
+    # - skype
+    # - slack
+    # - spotify
+    # - steam
+    # - teensy-loader
+    # - ynab
+    # # - build-cantata # disabling for now due to https://github.com/CDrummond/cantata/issues/1443.
+    # - cantata # using this instead of build-cantata due to https://github.com/CDrummond/cantata/issues/1443.
+    # - gnuplot
+    # - gnupg
+    # - caps-lock-remapped-to-control
+    # - licecap
+    # - wordnet # depends on xquartz
+    # - mactex
+    # - google-photos
+    # # - skitch # Mojave's screenshotting tools are good enough.
+    # - dash
+    # - vlc
+    # - prey
+    # - pgsanity
+    # - jmeter
+    # - mplayer
+    # - markdown
+    # - shellcheck
+    # - vimpc
+    # - pyre-check
+    # - htop
+    # - vtop
+    # - ctags
+    # - irssi
+    # - irssi-notifier
+    # - ripgrep
+    # - tealdeer
 
-    # # - haskell-platform # superseded by stack, which also installs GHC.
-    # - stack     # wait for https://github.com/commercialhaskell/stack/issues/4426
-    # - hdevtools # wait for https://github.com/commercialhaskell/stack/issues/4426
-    # - ghc-mod   # wait for https://github.com/commercialhaskell/stack/issues/4426
-    # - hindent   # wait for https://github.com/commercialhaskell/stack/issues/4426
-    # - hlint     # wait for https://github.com/commercialhaskell/stack/issues/4426
-    # - hoogle    # wait for https://github.com/commercialhaskell/stack/issues/4426
-    # - pointfree # wait for https://github.com/commercialhaskell/stack/issues/4426
-    # - purescript # disabled because `stack install purescript` isn't working.
+    # # # - haskell-platform # superseded by stack, which also installs GHC.
+    # # - stack     # wait for https://github.com/commercialhaskell/stack/issues/4426
+    # # - hdevtools # wait for https://github.com/commercialhaskell/stack/issues/4426
+    # # - ghc-mod   # wait for https://github.com/commercialhaskell/stack/issues/4426
+    # # - hindent   # wait for https://github.com/commercialhaskell/stack/issues/4426
+    # # - hlint     # wait for https://github.com/commercialhaskell/stack/issues/4426
+    # # - hoogle    # wait for https://github.com/commercialhaskell/stack/issues/4426
+    # # - pointfree # wait for https://github.com/commercialhaskell/stack/issues/4426
+    # # - purescript # disabled because `stack install purescript` isn't working.
 
-    - postgresql
-    - hadoop
+    # - postgresql
+    # - hadoop
 
-    - hangouts
-    - iterm
-    - jsxhint
-    # - openoffice # using google docs/sheets/slides instead.
-    - pulp
-    - reattach-to-user-namespace
-    - terminal-notifier
-    # - theremin # using cantata instead.
-    - tmux
-    - tmuxinator
-    - unity
+    # - hangouts
+    # - iterm
+    # - jsxhint
+    # # - openoffice # using google docs/sheets/slides instead.
+    # - pulp
+    # - reattach-to-user-namespace
+    # - terminal-notifier
+    # # - theremin # using cantata instead.
+    # - tmux
+    # - tmuxinator
+    # - unity

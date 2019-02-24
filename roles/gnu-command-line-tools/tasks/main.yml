@@ -8,7 +8,8 @@
     name: "{{ item }}"
     state: latest
   with_items:
-    - binutils
+    - binutils # don't link this so that there's no conflicts with
+               # MacOS executables.
     - diffutils
     - gawk
     - gnutls

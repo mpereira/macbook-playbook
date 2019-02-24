@@ -1,5 +1,7 @@
 BOOTSTRAP_PIP                   := pip
 PIP                             := pip3
+MACOS_VERSION                   := 10.14
+MACOS_SDK_HEADERS_PKG           := /Library/Developer/CommandLineTools/Packages/macOS_SDK_headers_for_macOS_$(MACOS_VERSION).pkg
 LOCAL_PROJECT_DIRECTORY         := $(shell pwd)
 ANSIBLE_DIRECTORY               := .
 ANSIBLE_PLAYBOOKS_DIRECTORY     := $(ANSIBLE_DIRECTORY)
@@ -52,6 +54,7 @@ upgrade_ansible:
 
 # TODO: install Python 3 manually outside Ansible?
 bootstrap: .ansible_vault_password
+	@sudo install -package $(MACOS_SDK_HEADERS_PKG) --target /
 	@sudo -H easy_install pip
 	@$(BOOTSTRAP_PIP) install --user --ignore-installed six ansible
 	@export PATH="~/Library/Python/2.7/bin:${PATH}"

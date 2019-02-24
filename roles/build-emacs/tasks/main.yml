@@ -1,0 +1,86 @@
+---
+- name: Install libwebkit dependencies from macports
+  macports:
+    name: ["hyphen"]
+    state: present
+
+# If you need to have icu4c first in your PATH run:
+#   echo 'export PATH="/usr/local/opt/icu4c/bin:$PATH"' >> ~/.bash_profile
+#   echo 'export PATH="/usr/local/opt/icu4c/sbin:$PATH"' >> ~/.bash_profile
+
+# For compilers to find icu4c you may need to set:
+#   export LDFLAGS="-L/usr/local/opt/icu4c/lib"
+#   export CPPFLAGS="-I/usr/local/opt/icu4c/include"
+
+# For pkg-config to find icu4c you may need to set:
+#   export PKG_CONFIG_PATH="/usr/local/opt/icu4c/lib/pkgconfig"
+
+- name: Install libwebkit dependencies from homebrew
+  homebrew:
+    name: ["libgcrypt" "libsoup" "libsecret" "libnotify" "woff2" "gstreamer" "gst-plugins-base" "freeglut"]
+    state: present
+
+# libwebkit
+# cmake . -DCMAKE_BUILD_TYPE=Release -DPORT=GTK -DENABLE_GEOLOCATION=OFF -DENABLE_INTROSPECTION=OFF -DENABLE_OPENGL=OFF -DUSE_LIBHYPHEN=ON -DENABLE_WEBGL=OFF -DENABLE_WEBGL2=OFF -DCMAKE_C_FLAGS=-I/opt/X11/include -DCMAKE_CXX_FLAGS=-I/opt/X11/include
+
+- name: Install Emacs dependencies
+  homebrew:
+    name: ["gtk+3"]
+    state: present
+
+- name: Clone Emacs repository
+  git:
+    repo: git://git.savannah.gnu.org/emacs.git
+    dest: "{{ downloads_directory }}/emacs"
+
+- name: Clean git repository
+  command: >
+    git clean -fdx
+  args:
+    chdir: "{{ downloads_directory }}/emacs"
+
+- name: Generate configure script
+  command: >
+    ./autogen.sh
+  args:
+    chdir: "{{ downloads_directory }}/emacs"
+
+- name: Generate Makefiles
+  command: >
+    ./configure \
+      --disable-silent-rules \
+      --without-ns \
+      --with-xwidgets \
+      --with-modules
+  args:
+    chdir: "{{ downloads_directory }}/emacs"
+
+# --with-gnutls \
+# --with-x \
+# --with-x-toolkit=gtk3 \
+
+- name: Build Emacs
+  command: >
+    make
+  args:
+    chdir: "{{ downloads_directory }}/emacs"
+
+- name: Generate Emacs.app
+  command: >
+    make install
+  args:
+    chdir: "{{ downloads_directory }}/emacs"
+
+- name: Get Emacs version
+  command: >
+    /usr/libexec/PlistBuddy -c 'Print CFBundleShortVersionString' nextstep/Emacs.app/Contents/Info.plist
+  register: emacs_version
+  args:
+    chdir: "{{ downloads_directory }}/emacs"
+
+- name: Install Emacs.app
+  command: >
+    cp -R nextstep/Emacs.app /Applications/Emacs-{{ emacs_version.stdout }}.app
+  become: yes
+  args:
+    chdir: "{{ downloads_directory }}/emacs"
