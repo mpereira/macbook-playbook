@@ -8,7 +8,7 @@
 - name: Extract Terraform archive
   command: >
     chdir={{ downloads_directory }}
-    unzip -u {{ terraform_zip }} -d {{ downloads_directory }}
+    unzip -fou {{ terraform_zip }} -d {{ downloads_directory }}
 
 - name: Install Terraform
   command: cp "{{ downloads_directory }}/{{ terraform_binary_name }}" /usr/local/bin
