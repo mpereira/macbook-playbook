@@ -1,7 +1,7 @@
 ---
 - name: Download fish
   get_url:
-    url: https://fishshell.com/files/{{ fish_version }}/{{ fish_pkg }}
+    url: https://github.com/fish-shell/fish-shell/releases/download/{{ fish_version }}/{{ fish_pkg }}
     dest: "{{ downloads_directory }}/{{ fish_pkg }}"
 
 - name: Install fish

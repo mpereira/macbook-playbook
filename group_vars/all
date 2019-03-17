@@ -48,7 +48,7 @@ defaultbrowser_version: "1.0"
 
 ffmpeg_version: "15.05.2017"
 
-fish_version: "2.6.0"
+fish_version: "3.0.2"
 fish_foreign_env_version: "baefbd690f0b52cb8746f3e64b326d82834d07c5"
 
 homebrew_version: "master" # not configurable at the moment
