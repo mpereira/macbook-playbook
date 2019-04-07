@@ -1,5 +1,9 @@
 BOOTSTRAP_PIP                   := pip
 PIP                             := pip3
+PYTHON2_VERSION                 := 2.7
+PYTHON3_VERSION                 := 3.7
+PYTHON2_BIN_PATH                := ~/Library/Python/$(PYTHON2_VERSION)/bin
+PYTHON3_BIN_PATH                := ~/Library/Python/$(PYTHON3_VERSION)/bin
 MACOS_VERSION                   := 10.14
 MACOS_SDK_HEADERS_PKG           := /Library/Developer/CommandLineTools/Packages/macOS_SDK_headers_for_macOS_$(MACOS_VERSION).pkg
 LOCAL_PROJECT_DIRECTORY         := $(shell pwd)
@@ -33,20 +37,31 @@ VAULT_COMMAND := \
 	ansible-vault --vault-password-file $(ANSIBLE_VAULT_PASSWORD_FILE)
 
 .PHONY: \
+	clean_bootstrap_pip \
+	get_bootstrap_pip \
+	bootstrap \
 	upgrade_pip \
 	upgrade_ansible \
-	bootstrap \
 	converge \
 	encrypt \
 	decrypt \
 	encrypt_pre_commit
 
-upgrade_pip:
-	@sudo $(PIP) install --upgrade pip
+# This might be required if you're seeing errors like "ImportError: No module
+# named _internal".
+# $ sudo python -m pip uninstall pip
+# Uninstalling pip-9.0.1:
+#   /Library/Python/2.7/site-packages/pip-9.0.1-py2.7.egg
+#   /usr/local/bin/pip
+#   /usr/local/bin/pip2
+#   /usr/local/bin/pip2.7
+clean_bootstrap_pip:
+	sudo python -m pip uninstall pip
 
-# https://github.com/pypa/pip/issues/3165#issuecomment-146666737
-upgrade_ansible:
-	@$(PIP) install --user --upgrade --ignore-installed six ansible
+get_bootstrap_pip:
+	curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+	python get-pip.py --user --force-reinstall
+	rm -f get-pip.py
 
 .ansible_vault_password:
 	@test -s $(ANSIBLE_VAULT_PASSWORD_FILE) \
@@ -54,13 +69,17 @@ upgrade_ansible:
 
 # TODO: install Python 3 manually outside Ansible?
 bootstrap: .ansible_vault_password
-	@sudo install -package $(MACOS_SDK_HEADERS_PKG) --target /
-	@sudo -H easy_install pip
-	@$(BOOTSTRAP_PIP) install --user --ignore-installed six ansible
-	@export PATH="~/Library/Python/2.7/bin:${PATH}"
-	@$(ANSIBLE_COMMAND_LOCAL_WITH_VAULT) $(ANSIBLE_PLAYBOOKS_DIRECTORY)/bootstrap.yml
-	@export PATH="~/Library/Python/3.6/bin:${PATH}"
-	@$(BOOTSTRAP_PIP) install --user --ignore-installed six ansible
+	@sudo installer -package $(MACOS_SDK_HEADERS_PKG) -target /
+	@export PATH="$(PYTHON2_BIN_PATH):$$PATH"; $(BOOTSTRAP_PIP) install --user --ignore-installed six ansible
+	@export PATH="$(PYTHON2_BIN_PATH):$$PATH"; $(ANSIBLE_COMMAND_LOCAL_WITH_VAULT) $(ANSIBLE_PLAYBOOKS_DIRECTORY)/bootstrap.yml
+	@export PATH="$(PYTHON3_BIN_PATH):$$PATH"; $(PIP) install --user --ignore-installed six ansible
+
+upgrade_pip:
+	@$(PIP) install --upgrade pip
+
+# https://github.com/pypa/pip/issues/3165#issuecomment-146666737
+upgrade_ansible:
+	@$(PIP) install --user --upgrade --ignore-installed six ansible
 
 converge:
 	@$(ANSIBLE_COMMAND_LOCAL_WITH_VAULT) $(ANSIBLE_PLAYBOOKS_DIRECTORY)/main.yml
