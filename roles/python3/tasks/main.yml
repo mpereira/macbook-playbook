@@ -11,4 +11,4 @@
 
 - name: Install Python 3 SSL certificates
   command: >
-    '/Applications/Python 3.6/Install Certificates.command'
+    "/Applications/Python {{ python3_version_major_minor }}/Install Certificates.command"
