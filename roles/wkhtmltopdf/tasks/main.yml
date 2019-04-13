@@ -1,10 +1,10 @@
 ---
 - name: Download wkhtmltopdf
   get_url:
-    url:  https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/{{ wkhtmltopdf_version }}/wkhtmltox-{{ wkhtmltopdf_version }}_osx-cocoa-x86-64.pkg
+    url: "{{ wkhtmltopdf_pkg_url }}"
     dest: "{{ downloads_directory }}/{{ wkhtmltopdf_pkg }}"
 
 - name: Install wkhtmltopdf
   command: >
-    installer -package {{ downloads_directory }}/wkhtmltox-{{ wkhtmltopdf_version }}_osx-cocoa-x86-64.pkg -target /
+    installer -package {{ downloads_directory }}/{{ wkhtmltopdf_pkg }} -target /
   become: yes
