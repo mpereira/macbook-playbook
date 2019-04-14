@@ -7,7 +7,7 @@ home_directory: "/Users/{{ user }}"
 downloads_directory: "{{ home_directory }}/.ansible/downloads"
 computer_name: baloon
 
-emacs_pre_built_version: "26.1"
+emacs_pre_built_version: "26.2"
 # emacs_pre_built_version: "26.1-rc1"
 # emacs_pre_built_pretest: "yes"
 
