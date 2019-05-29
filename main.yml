@@ -60,6 +60,7 @@
     # - consolas
     # - hugo
     # - black
+    - ktlint
     # - mpd
     # - mpc
     # - mpdscribble

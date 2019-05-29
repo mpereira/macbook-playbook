@@ -155,6 +155,8 @@ google_photos_version: "" # not configurable at the moment
 python3_version: "3.7.3"
 python3_version_major_minor: "{{ python3_version | regex_replace('^([0-9]+)\\.([0-9]+)(?:\\.[0-9]+)?$', '\\1.\\2') }}"
 
+ktlint_version: "0.33.0"
+
 skitch_version: "2.8"
 
 dash_version: "" # not configurable at the moment

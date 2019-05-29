@@ -1,0 +1,6 @@
+---
+- name: Install ktlint
+  get_url:
+    url: "https://github.com/pinterest/ktlint/releases/download/{{ ktlint_version }}/ktlint"
+    mode: 0755
+    dest: /usr/local/bin/ktlint
