@@ -128,14 +128,15 @@ Automatically prepare a Macbook for development and desktop tasks using Ansible.
 
 - [Docker](https://store.docker.com/editions/community/docker-ce-desktop-mac)
 - [Terraform](https://www.terraform.io/)
-- [Vagrant](https://www.vagrantup.com/downloads.html)
 - [Vagrant vagrant-vbguest plugin](https://github.com/dotless-de/vagrant-vbguest)
+- [Vagrant](https://www.vagrantup.com/downloads.html)
 - [VirtualBox](https://www.virtualbox.org/wiki/Downloads)
 
 ### Package Managers and Build Tools
 
 - [bundler](http://bundler.io/)
 - [CMake](https://cmake.org/)
+- [GraalVM](https://www.graalvm.org/)
 - [Homebrew](https://brew.sh/)
 - [leiningen](https://leiningen.org/)
 - [MacPorts](https://www.macports.org/)

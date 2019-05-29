@@ -1,0 +1,3 @@
+---
+graalvm_directory: "graalvm-ce-darwin-amd64-{{ graalvm_version }}"
+graalvm_archive: "{{ graalvm_directory }}.tar.gz"

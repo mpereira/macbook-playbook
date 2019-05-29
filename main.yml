@@ -33,6 +33,7 @@
     # # - s3cmd # using awscli instead.
     # - virtualbox
     # - vagrant
+    - graalvm
     # - vagrant-vbguest
     # - docker
     # - terraform

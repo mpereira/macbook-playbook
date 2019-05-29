@@ -146,6 +146,8 @@ macports_mac_release: "10.14-Mojave"
 
 xquartz_version: "2.7.11"
 
+graalvm_version: "19.0.0"
+
 mactex_version: "" # not configurable at the moment
 
 google_photos_version: "" # not configurable at the moment
