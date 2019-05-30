@@ -1,3 +1,3 @@
 ---
-graalvm_directory: "graalvm-ce-darwin-amd64-{{ graalvm_version }}"
-graalvm_archive: "{{ graalvm_directory }}.tar.gz"
+graalvm_archive: "graalvm-ce-darwin-amd64-{{ graalvm_version }}.tar.gz"
+graalvm_directory: "graalvm-ce-{{ graalvm_version }}"

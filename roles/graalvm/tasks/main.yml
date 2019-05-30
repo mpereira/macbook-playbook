@@ -4,16 +4,14 @@
     url: "https://github.com/oracle/graal/releases/download/vm-{{ graalvm_version }}/graalvm-ce-darwin-amd64-{{ graalvm_version }}.tar.gz"
     dest: "{{ downloads_directory }}/{{ graalvm_archive }}"
 
-- command: mkdir -p "{{ downloads_directory }}/{{ graalvm_directory }}"
-
 - name: Extract GraalVM
   unarchive:
     src="{{ downloads_directory }}/{{ graalvm_archive }}"
-    dest="{{ downloads_directory }}/{{ graalvm_directory }}"
+    dest="{{ downloads_directory }}"
     creates="{{ downloads_directory }}/{{ graalvm_directory }}"
 
 - name: Install GraalVM
-  command: cp -R "{{ downloads_directory }}/{{ graalvm_directory }}/graalvm-ce-{{ graalvm_version }}" "/Applications/GraalVM-{{ graalvm_version }}.app"
+  command: cp -R "{{ downloads_directory }}/{{ graalvm_directory }}" "/Applications/GraalVM-{{ graalvm_version }}.app"
 
 - name: Install native-image utility
   command: /Applications/GraalVM-{{ graalvm_version }}.app/Contents/Home/bin/gu install native-image
