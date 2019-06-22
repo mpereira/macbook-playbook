@@ -149,7 +149,7 @@ gron_version: "0.6.0"
 
 xquartz_version: "2.7.11"
 
-graalvm_version: "19.0.0"
+graalvm_version: "19.0.2"
 
 mactex_version: "" # not configurable at the moment
 
