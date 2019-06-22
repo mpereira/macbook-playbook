@@ -1,0 +1,7 @@
+---
+- name: Download and install gron binary
+  unarchive:
+    src: https://github.com/tomnomnom/gron/releases/download/v{{ gron_version }}/gron-darwin-amd64-{{ gron_version }}.tgz
+    dest: /usr/local/bin
+    mode: u+x
+    remote_src: yes

@@ -145,6 +145,8 @@ licecap_version: "" # not configurable at the moment
 macports_version: "2.5.4"
 macports_mac_release: "10.14-Mojave"
 
+gron_version: "0.6.0"
+
 xquartz_version: "2.7.11"
 
 graalvm_version: "19.0.0"

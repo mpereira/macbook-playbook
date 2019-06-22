@@ -158,6 +158,7 @@ Automatically prepare a Macbook for development and desktop tasks using Ansible.
 
 - [Black](https://black.readthedocs.io/en/stable/)
 - [Ctags](https://ctags.io/)
+- [gron](https://github.com/tomnomnom/gron)
 - [jsxhint](https://www.npmjs.com/package/jsxhint)
 - [ktlint](https://ktlint.github.io/)
 - [Pyre](https://pyre-check.org/)

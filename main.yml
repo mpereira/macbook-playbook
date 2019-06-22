@@ -68,6 +68,7 @@
     # # - the-silver-searcher # using ripgrep instead.
     # - tree
     # - yapf
+    - gron
 
     # - emacs-pre-built
     # - light-table
