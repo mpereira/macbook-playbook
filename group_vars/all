@@ -23,8 +23,8 @@ awscli_version: "1.16.96"
 vagrant_version: "2.0.0"
 vagrant_vbguest_version: "0.15.0"
 
-# https://dl.google.com/go/go1.11.1.darwin-amd64.pkg
-go_version: "1.11.1"
+# https://dl.google.com/go/go1.12.5.darwin-amd64.pkg
+go_version: "1.12.5"
 
 make_version: "4.2.1"
 
