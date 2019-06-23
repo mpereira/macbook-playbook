@@ -1,0 +1,6 @@
+---
+- name: Install prettier
+  npm:
+    name: prettier
+    version: "{{ prettier_version }}"
+    global: yes

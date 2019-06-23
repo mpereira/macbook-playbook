@@ -1,0 +1,6 @@
+---
+- name: Install node-cljfmt
+  npm:
+    name: node-cljfmt
+    version: "{{ node_cljfmt_version }}"
+    global: yes

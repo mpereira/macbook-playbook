@@ -161,9 +161,13 @@ Automatically prepare a Macbook for development and desktop tasks using Ansible.
 - [gron](https://github.com/tomnomnom/gron)
 - [jsxhint](https://www.npmjs.com/package/jsxhint)
 - [ktlint](https://ktlint.github.io/)
+- [node-cljfmt](https://github.com/snoe/node-cljfmt)
+- [Prettier](https://prettier.io/)
 - [Pyre](https://pyre-check.org/)
 - [ShellCheck](https://www.shellcheck.net/)
+- [shfmt](https://github.com/mvdan/sh)
 - [YAPF](https://github.com/google/yapf)
+- [yq](https://github.com/mikefarah/yq)
 
 ### Haskell Utilities
 

@@ -93,6 +93,15 @@ tree_version: "1.7.0"
 
 vault_version: "0.3.0"
 
+# https://github.com/prettier/prettier/releases
+prettier_version: "1.18.2"
+
+# https://github.com/snoe/node-cljfmt
+node_cljfmt_version: "" # no released versions
+
+# https://github.com/mikefarah/yq/releases
+yq_version: "2.4.0" # no released versions
+
 bitbar_version: "1.9.2"
 
 divvy_version: "" # not configurable at the moment
@@ -132,7 +141,9 @@ firefox_version: "64.0.2"
 cmake_version: "3.10.0-rc4"
 cmake_version_path: "v3.10"
 
-maven_version: "3.5.2"
+maven_version: "3.5.2" # homebrew is terrible and doesn't work with versions??
+
+shfmt_version: "" # homebrew is terrible and doesn't work with versions??
 
 # gnuplot_version: "3.5.2"
 

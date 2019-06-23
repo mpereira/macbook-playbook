@@ -1,0 +1,6 @@
+---
+- name: Download and install yq binary
+  get_url:
+    url: https://github.com/mikefarah/yq/releases/download/{{ yq_version }}/yq_darwin_amd64
+    dest: /usr/local/bin/yq
+    mode: u+x

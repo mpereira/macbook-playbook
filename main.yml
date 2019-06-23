@@ -60,7 +60,7 @@
     # - consolas
     # - hugo
     # - black
-    - ktlint
+    # - ktlint
     # - mpd
     # - mpc
     # - mpdscribble
@@ -68,7 +68,11 @@
     # # - the-silver-searcher # using ripgrep instead.
     # - tree
     # - yapf
-    - gron
+    # - gron
+    # - prettier
+    # - node-cljfmt
+    # - yq
+    # - shfmt
 
     # - emacs-pre-built
     # - light-table
