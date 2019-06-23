@@ -2,7 +2,7 @@
 - hosts: localhost
   connection: local
   roles:
-    - build-emacs
+    # - build-emacs
     # - gnu-command-line-tools
     # - xz
     # - git
@@ -33,7 +33,7 @@
     # # - s3cmd # using awscli instead.
     # - virtualbox
     # - vagrant
-    - graalvm
+    # - graalvm
     # - vagrant-vbguest
     # - docker
     # - terraform
