@@ -1,0 +1,4 @@
+openzfs_dmg: "OpenZFS_on_OS_X_{{ openzfs_version }}.dmg"
+openzfs_dmg_url: "https://openzfsonosx.org/w/images/{{ openzfs_image_path }}/{{ openzfs_dmg }}"
+openzfs_volume: "OpenZFS on OS X {{ openzfs_version }}"
+openzfs_pkg: "OpenZFS on OS X {{ openzfs_version }} {{ openzfs_macos_version }}.pkg"

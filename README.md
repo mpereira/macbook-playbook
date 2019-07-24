@@ -124,9 +124,10 @@ Automatically prepare a Macbook for development and desktop tasks using Ansible.
 - [Ruby](https://www.ruby-lang.org)
 - [Rust](https://www.rust-lang.org/)
 
-### Virtualization, Provisioning and Containers
+### Virtualization, Provisioning, Containers and System Tools
 
 - [Docker](https://store.docker.com/editions/community/docker-ce-desktop-mac)
+- [OpenZFS](https://openzfsonosx.org/)
 - [Terraform](https://www.terraform.io/)
 - [Vagrant vagrant-vbguest plugin](https://github.com/dotless-de/vagrant-vbguest)
 - [Vagrant](https://www.vagrantup.com/downloads.html)

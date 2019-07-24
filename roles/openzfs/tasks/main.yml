@@ -1,0 +1,19 @@
+---
+- name: Download OpenZFS image
+  get_url:
+    url: "{{ openzfs_dmg_url }}"
+    dest: "{{ downloads_directory }}/{{ openzfs_dmg }}"
+    checksum: "{{ openzfs_checksum }}"
+
+- name: Mount OpenZFS image
+  command: >
+    hdiutil attach -nobrowse "{{ downloads_directory }}/{{ openzfs_dmg }}"
+    creates="/Volumes/{{ openzfs_volume }}"
+
+- name: Install OpenZFS
+  command: >
+    installer -package "/Volumes/{{ openzfs_volume }}/{{ openzfs_pkg }}" -target /
+  become: yes
+
+- name: Unmount OpenZFS image
+  command: hdiutil detach "/Volumes/{{ openzfs_volume }}"

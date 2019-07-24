@@ -30,6 +30,7 @@
     # - maven
 
     # - awscli
+    # - openzfs
     # # - s3cmd # using awscli instead.
     # - virtualbox
     # - vagrant

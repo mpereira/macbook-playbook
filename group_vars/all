@@ -38,6 +38,13 @@ docker_version: "stable" # not configurable at the moment
 terraform_version: "0.12.0"
 terraform_checksum: "sha256:9dbee9dea660ea64352f8ddf2539e60d1c414210e9c4a29c8585926fef366be1"
 
+# OpenZFS URLs change between versions, make sure to update them manually in the
+# vars.yml file when changing the version.
+openzfs_image_path: "1/18"
+openzfs_macos_version: "Mojave"
+openzfs_version: "1.9.0"
+openzfs_checksum: "sha256:a6b05d29e9ae1f313e642109d18da6d930b1991bcd24c5f91ecc6a64bdc130fc"
+
 # http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html
 java_version: "8"
 java_subversion: "152"
