@@ -154,8 +154,7 @@ shfmt_version: "" # homebrew is terrible and doesn't work with versions??
 
 # gnuplot_version: "3.5.2"
 
-gnupg_version: "2.1.21"
-gnupg_volume_version: "2.1"
+gnupg_version: "2.2.17"
 
 licecap_version: "" # not configurable at the moment
 
