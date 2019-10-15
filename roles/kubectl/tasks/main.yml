@@ -1,0 +1,9 @@
+---
+- name: Download kubectl binary
+  get_url:
+    url: "{{ kubectl_binary_url }}"
+    dest: "{{ downloads_directory }}/{{ kubectl_binary_name }}_{{ kubectl_version }}"
+    mode: "755"
+
+- name: Install kubectl
+  command: cp "{{ downloads_directory }}/{{ kubectl_binary_name }}_{{ kubectl_version }}" /usr/local/bin/{{ kubectl_binary_name }}

@@ -127,6 +127,7 @@ Automatically prepare a Macbook for development and desktop tasks using Ansible.
 ### Virtualization, Provisioning, Containers and System Tools
 
 - [Docker](https://store.docker.com/editions/community/docker-ce-desktop-mac)
+- [kubectl](https://kubernetes.io/docs/reference/kubectl/kubectl/)
 - [OpenZFS](https://openzfsonosx.org/)
 - [Terraform](https://www.terraform.io/)
 - [Vagrant vagrant-vbguest plugin](https://github.com/dotless-de/vagrant-vbguest)

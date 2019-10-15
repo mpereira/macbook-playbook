@@ -38,6 +38,7 @@
     # - vagrant-vbguest
     # - docker
     # - terraform
+    # - kubectl
     # # - chefdk
 
     # - xquartz
