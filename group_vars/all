@@ -191,6 +191,8 @@ git_version: "2.14.1"
 
 pgsanity_version: "0.2.9"
 
+grip_version: "4.5.2"
+
 jmeter_version: "0.2.9"
 
 mplayer_version: "1.3.0"

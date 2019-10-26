@@ -232,6 +232,7 @@ Automatically prepare a Macbook for development and desktop tasks using Ansible.
 
 ### Markup Tools
 
+- [Grip](https://github.com/joeyespo/grip)
 - [Hugo](https://gohugo.io/)
 - [Markdown](https://daringfireball.net/projects/markdown/)
 - [Pandoc](https://pandoc.org/)
