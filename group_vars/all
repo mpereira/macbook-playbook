@@ -201,6 +201,8 @@ vimpc_version: "0.09.1"
 
 ripgrep_version: "0.8.1"
 
+ngrep_version: "1.47"
+
 htop_version: "2.0.2"
 
 pyre_check_version: "0.0.7" # homebrew is terrible and doesn't work with versions??

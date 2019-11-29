@@ -223,6 +223,7 @@ Automatically prepare a Macbook for development and desktop tasks using Ansible.
 - [chefdk](https://downloads.chef.io/chefdk) (disabled by default since I don't use it anymore)
 - [Glances](https://nicolargo.github.io/glances/)
 - [htop](http://hisham.hm/htop/)
+- [ngrep](https://github.com/jpr5/ngrep)
 - [vtop](https://github.com/MrRio/vtop)
 
 ### Document Processors
