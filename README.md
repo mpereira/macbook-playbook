@@ -48,17 +48,27 @@ Automatically prepare a Macbook for development and desktop tasks using Ansible.
 ### Desktop Applications
 
 - [Android File Transfer](https://www.android.com/filetransfer/)
+- [BitBar](https://getbitbar.com/)
+- [Cantata](https://github.com/CDrummond/cantata)
 - [Dash](https://kapeli.com/dash)
+- [Divvy](http://mizage.com/divvy/)
 - [Dropbox](https://www.dropbox.com/install)
 - [Firefox](https://www.mozilla.org/en-US/firefox/new)
 - [Google Chrome](https://www.google.com/chrome/index.html)
 - [Google Photos](https://photos.google.com/apps)
 - [LICEcap](https://www.cockos.com/licecap/)
 - [RescueTime](https://www.rescuetime.com/)
-- [Skitch](https://evernote.com/products/skitch) (disabled by default since macOS Mojave's screenshotting tools are good enough)
+- [Skitch](https://evernote.com/products/skitch) (disabled by default since
+  macOS Mojave's screenshotting tools are good enough)
+- [Skype](https://www.skype.com/en/download-skype/skype-for-mac/)
+- [Slack](https://slack.com/downloads/osx)
+- [Spotify](https://www.spotify.com/br/download/other/)
 - [Steam](http://store.steampowered.com/about/)
 - [Teensy Loader](https://www.pjrc.com/teensy/loader_mac.html)
+- [Theremin](https://github.com/TheStalwart/Theremin) (disabled by default,
+  using Cantata)
 - [Unity](https://unity3d.com/get-unity/download)
+- [VLC](https://www.videolan.org/vlc/download-macosx.html)
 - [XQuartz](https://www.xquartz.org/)
 - [YNAB](https://classic.youneedabudget.com/)
 
@@ -74,8 +84,6 @@ Automatically prepare a Macbook for development and desktop tasks using Ansible.
 
 - [irssi](https://irssi.org/)
 - [IrssiNotifier](https://irssinotifier.appspot.com/)
-- [Skype](https://www.skype.com/en/download-skype/skype-for-mac/)
-- [Slack](https://slack.com/downloads/osx)
 
 ### Configuration
 
@@ -85,10 +93,8 @@ Automatically prepare a Macbook for development and desktop tasks using Ansible.
 ### Multimedia
 
 - [Beets](http://beets.io/)
-- [Cantata](https://github.com/CDrummond/cantata)
 - [FFmpeg](http://www.ffmpegmac.net/)
 - [gifsicle](https://www.lcdf.org/gifsicle/)
-- [gnuplot](http://www.gnuplot.info/)
 - [ImageMagick](https://www.imagemagick.org/)
 - [mpc](https://www.musicpd.org/clients/mpc/)
 - [mpd](https://www.musicpd.org/download.html)
@@ -96,16 +102,12 @@ Automatically prepare a Macbook for development and desktop tasks using Ansible.
 - [mpg123](https://www.mpg123.de/)
 - [mplayer](https://mplayerosx.ch/)
 - [shpotify](https://github.com/hnarayanan/shpotify)
-- [Spotify](https://www.spotify.com/br/download/other/)
 - [TagLib](http://taglib.org/)
-- [Theremin](https://github.com/TheStalwart/Theremin) (disabled by default, using Cantata)
 - [vimpc](https://github.com/boysetsfrog/vimpc)
-- [VLC](https://www.videolan.org/vlc/download-macosx.html)
 
 ### Browser Plugins
 
 - [Firefox Adblock Plus](https://addons.mozilla.org/en-US/firefox/addon/adblock-plus/)
-- [Firefox Pentadactyl](http://5digits.org/pentadactyl/)
 - [Google Chrome Hangouts](https://tools.google.com/dlpage/hangoutplugin)
 - [Warsaw (bb.com.br security module)](https://seg.bb.com.br/home.html)
 
@@ -113,7 +115,9 @@ Automatically prepare a Macbook for development and desktop tasks using Ansible.
 
 - [GNU Octave](https://www.gnu.org/software/octave/download.html)
 - [Go](https://golang.org/)
-- [Haskell Platform](https://www.haskell.org/platform/mac.html)
+- [Haskell Platform](https://www.haskell.org/platform/mac.html) (disabled by
+  default, using Haskell Stack)
+- [Haskell Stack](https://docs.haskellstack.org/en/stable/README/)
 - [Java (JDK)](http://www.oracle.com/technetwork/pt/java/javase/downloads/jdk8-downloads-2133151.html)
 - [Lua](https://www.lua.org/download.html)
 - [LuaJIT](http://luajit.org/download.html)
@@ -126,6 +130,7 @@ Automatically prepare a Macbook for development and desktop tasks using Ansible.
 
 ### Virtualization, Provisioning, Containers and System Tools
 
+- [chefdk](https://downloads.chef.io/chefdk) (disabled by default since I don't use it anymore)
 - [Docker](https://store.docker.com/editions/community/docker-ce-desktop-mac)
 - [kubectl](https://kubernetes.io/docs/reference/kubectl/kubectl/)
 - [OpenZFS](https://openzfsonosx.org/)
@@ -153,7 +158,10 @@ Automatically prepare a Macbook for development and desktop tasks using Ansible.
 - [fish](https://fishshell.com/)
 - [iTerm](https://www.iterm2.com/)
 - [Powerline](https://github.com/powerline/powerline)
+- [reattach-to-user-namespace](https://github.com/ChrisJohnsen/tmux-MacOSX-pasteboard)
+  (for tmux)
 - [tmux](https://github.com/tmux/tmux)
+- [tmuxinator](https://github.com/tmuxinator/tmuxinator) (for tmux)
 - [Zsh](http://www.zsh.org/)
 
 ### Programming Utilities
@@ -206,28 +214,22 @@ Automatically prepare a Macbook for development and desktop tasks using Ansible.
 - wdiff
 - wget
 
-### UI
-
-- [BitBar](https://getbitbar.com/)
-- [Divvy](http://mizage.com/divvy/)
-
 ### Data Systems
 
 - [Apache Hadoop](http://hadoop.apache.org/)
 - [PostgreSQL 9.4](https://postgresapp.com/)
-- [pgsanity](https://pypi.python.org/pypi/pgsanity)
 
-### Configuration, Monitoring and Debugging
+### Configuration, Monitoring and Debugging (tag: observability)
 
 - [Apache JMeter](http://jmeter.apache.org/)
-- [chefdk](https://downloads.chef.io/chefdk) (disabled by default since I don't use it anymore)
 - [Glances](https://nicolargo.github.io/glances/)
 - [htop](http://hisham.hm/htop/)
 - [ngrep](https://github.com/jpr5/ngrep)
 - [vtop](https://github.com/MrRio/vtop)
 
-### Document Processors
+### Document Processors and Plotting
 
+- [gnuplot](http://www.gnuplot.info/)
 - [MacTeX](http://www.tug.org/mactex/)
 - [OpenOffice](https://www.openoffice.org/porting/mac/)
 
@@ -239,28 +241,31 @@ Automatically prepare a Macbook for development and desktop tasks using Ansible.
 - [Pandoc](https://pandoc.org/)
 - [wkhtmltopdf](https://wkhtmltopdf.org/)
 
-### Miscellaneous
+### Command line tools
 
 - [AWS CLI](https://aws.amazon.com/cli/)
-- [Consolas font](https://docs.microsoft.com/en-us/typography/font-list/consolas)
 - [defaultbrowser](https://github.com/kerma/defaultbrowser)
-- [FontForge](http://fontforge.github.io/en-US/downloads/mac-dl/)
 - [git](https://git-scm.com/download/mac)
 - [jq](https://stedolan.github.io/jq/)
 - [p7zip](http://www.7-zip.org/)
-- [Qt 5](http://download.qt.io/official_releases/qt/5.9/5.9.2/)
-- [reattach-to-user-namespace](https://github.com/ChrisJohnsen/tmux-MacOSX-pasteboard)
+- [pgsanity](https://pypi.python.org/pypi/pgsanity)
 - [ripgrep](https://github.com/BurntSushi/ripgrep)
-- [s3cmd](http://s3tools.org/s3cmd) (disabled by default since I use the aws CLI now)
+- [s3cmd](http://s3tools.org/s3cmd) (disabled by default since I use the aws CLI
+  now)
 - [tealdeer](https://tldr.sh/)
 - [terminal-notifier](https://github.com/julienXX/terminal-notifier)
-- [the-silver-searcher](https://geoff.greer.fm/ag/) (disabled by default since I use ripgrep now)
-- [tmuxinator](https://github.com/tmuxinator/tmuxinator)
+- [the-silver-searcher](https://geoff.greer.fm/ag/) (disabled by default since I
+  use ripgrep now)
 - [tree](http://brewformulas.org/Tree)
-- [wget](https://www.gnu.org/software/wget/)
-- [WordNet](https://wordnet.princeton.edu/download)
 - [wrk](https://github.com/wg/wrk)
 - [xz](https://tukaani.org/xz/)
+
+### Miscellaneous
+
+- [Consolas font](https://docs.microsoft.com/en-us/typography/font-list/consolas)
+- [FontForge](http://fontforge.github.io/en-US/downloads/mac-dl/)
+- [Qt 5](http://download.qt.io/official_releases/qt/5.9/5.9.2/)
+- [WordNet](https://wordnet.princeton.edu/download)
 
 ## Configures
 

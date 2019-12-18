@@ -2,158 +2,534 @@
 - hosts: localhost
   connection: local
   roles:
-    # - build-emacs
-    # - gnu-command-line-tools
-    # - xz
-    # - git
-    # - p7zip
-    # - cmake
-    # - make
+    #############################################################################
+    # Foundational ##############################################################
+    #############################################################################
 
-    # - mac-ports
-    # - homebrew
+    - role: git
+      tags: [foundational, git]
 
-    # - bash
-    # - jdk
-    # - python3
-    # - node
-    # - go
-    # - rust
-    # - ruby
-    # - lua
-    # - luajit
-    # - leiningen # depends on jdk
-    # - octave
-    # - r
+    - role: homebrew
+      tags: [foundational, package-build-tools, homebrew]
 
-    # - bundler
-    # - maven
+    # Depends on homebrew.
+    - role: gnu-command-line-tools
+      tags: [foundational, gnu-command-line-tools]
 
-    # - awscli
-    # - openzfs
-    # # - s3cmd # using awscli instead.
-    # - virtualbox
-    # - vagrant
-    # - graalvm
-    # - vagrant-vbguest
-    # - docker
-    # - terraform
-    # - kubectl
-    # # - chefdk
+    # Depends on homebrew.
+    - role: make
+      tags: [foundational, package-build-tools, make]
 
-    # - xquartz
-    # - ffmpeg
-    # - imagemagick
+    # Depends on homebrew.
+    - role: bash
+      tags: [foundational, programming-languages, shell, bash]
 
-    # - zsh
-    # - fish
-    # - fish-foreign-env
+    - role: cmake
+      tags: [foundational, package-build-tools, cmake]
 
-    # # - macos
+    - role: python3
+      tags: [foundational, programming-languages, python3]
 
-    # - rescuetime
-    # - bitbar
-    # - defaultbrowser
-    # - jq
-    # - wkhtmltopdf
-    # - beets
-    # - glances
-    # - pandoc
-    # - consolas
-    # - hugo
-    # - black
-    # - ktlint
-    # - mpd
-    # - mpc
-    # - mpdscribble
-    # - shpotify
-    # # - the-silver-searcher # using ripgrep instead.
-    # - tree
-    # - yapf
-    # - gron
-    # - prettier
-    # - node-cljfmt
-    # - yq
-    # - shfmt
+    - role: mac-ports
+      tags: [foundational, package-build-tools, mac-ports]
 
-    # - emacs-pre-built
-    # - light-table
-    # - powerline
-    # - vim
-    # - macvim
-    # - neovim # isn't working because of https://github.com/neovim/bot-ci/commit/05384567778d00414e926dda23af2b05510d08bf?
+    - role: node
+      tags: [foundational, programming-languages, node]
 
-    # # - dotemacs
-    # # - dotfiles
-    # # - bitbar-plugins
+    - role: maven
+      tags: [foundational, package-build-tools, maven]
 
-    # - vault
-    # - divvy
-    # - android-file-transfer
-    # - dropbox
-    # - google-chrome
-    # - firefox
-    # - firefox-adblock-plus
-    # - google-chrome-as-default-browser
-    # - warsaw
-    # - skype
-    # - slack
-    # - spotify
-    # - steam
-    # - teensy-loader
-    # - ynab
-    # # - build-cantata # disabling for now due to https://github.com/CDrummond/cantata/issues/1443.
-    # - cantata # using this instead of build-cantata due to https://github.com/CDrummond/cantata/issues/1443.
-    # - gnuplot
-    # - gnupg
-    # - caps-lock-remapped-to-control
-    # - licecap
-    # - wordnet # depends on xquartz
-    # - mactex
-    # - google-photos
-    # # - skitch # Mojave's screenshotting tools are good enough.
-    # - dash
-    # - vlc
-    # - prey
-    # - pgsanity
-    # - grip
-    # - jmeter
-    # - mplayer
-    # - markdown
-    # - shellcheck
-    # - vimpc
-    # - pyre-check
-    # - htop
-    # - vtop
-    # - ctags
-    # - irssi
-    # - irssi-notifier
-    # - ripgrep
-    # - ngrep
-    # - tealdeer
-    # - gifsicle
+    #############################################################################
+    # Configuration #############################################################
+    #############################################################################
 
-    # # # - haskell-platform # superseded by stack, which also installs GHC.
-    # # - stack     # wait for https://github.com/commercialhaskell/stack/issues/4426
-    # # - hdevtools # wait for https://github.com/commercialhaskell/stack/issues/4426
-    # # - ghc-mod   # wait for https://github.com/commercialhaskell/stack/issues/4426
-    # # - hindent   # wait for https://github.com/commercialhaskell/stack/issues/4426
-    # # - hlint     # wait for https://github.com/commercialhaskell/stack/issues/4426
-    # # - hoogle    # wait for https://github.com/commercialhaskell/stack/issues/4426
-    # # - pointfree # wait for https://github.com/commercialhaskell/stack/issues/4426
-    # # - purescript # disabled because `stack install purescript` isn't working.
+    - role: dotemacs
+      tags: [dotemacs]
 
-    # - postgresql
-    # - hadoop
+    - role: dotfiles
+      tags: [dotfiles]
 
-    # - hangouts
-    # - iterm
-    # - jsxhint
-    # # - openoffice # using google docs/sheets/slides instead.
-    # - pulp
-    # - reattach-to-user-namespace
-    # - terminal-notifier
-    # # - theremin # using cantata instead.
-    # - tmux
-    # - tmuxinator
-    # - unity
+    #############################################################################
+    # Text editors ##############################################################
+    #############################################################################
+
+    - role: build-emacs
+      tags: [disabled, build-emacs]
+
+    - role: emacs-pre-built
+      tags: [emacs-pre-built]
+
+    - role: light-table
+      tags: [light-table]
+
+    - role: vim
+      tags: [vim]
+
+    - role: macvim
+      tags: [macvim]
+
+    # Isn't working because of
+    # https://github.com/neovim/bot-ci/commit/05384567778d00414e926dda23af2b05510d08bf?
+    - role: neovim
+      tags: [neovim]
+
+    #############################################################################
+    # Behaviors #################################################################
+    #############################################################################
+
+    - role: caps-lock-remapped-to-control
+      tags: [caps-lock-remapped-to-control]
+
+    #############################################################################
+    # Security ##################################################################
+    #############################################################################
+
+    - role: prey
+      tags: [prey]
+
+    - role: vault
+      tags: [vault]
+
+    - role: gnupg
+      tags: [gnupg]
+
+    ############################################################################
+    # Observability ############################################################
+    ############################################################################
+
+    - role: glances
+      tags: [glances]
+
+    - role: ngrep
+      tags: [ngrep, observability]
+
+    - role: jmeter
+      tags: [jmeter]
+
+    - role: htop
+      tags: [htop]
+
+    - role: vtop
+      tags: [vtop]
+
+    ############################################################################
+    # Haskell ##################################################################
+    ############################################################################
+
+    # Disabled: superseded by stack, which also installs GHC.
+    - role: haskell-platform
+      tags: [disabled, haskell-platform]
+
+    # Disabled: wait for https://github.com/commercialhaskell/stack/issues/4426.
+    - role: stack
+      tags: [disabled, stack]
+
+    - role: hdevtools
+      tags: [disabled, hdevtools]
+
+    - role: ghc-mod
+      tags: [disabled, ghc-mod]
+
+    - role: hindent
+      tags: [disabled, hindent]
+
+    - role: hlint
+      tags: [disabled, hlint]
+
+    - role: hoogle
+      tags: [disabled, hoogle]
+
+    - role: pointfree
+      tags: [disabled, pointfree]
+
+    ############################################################################
+    # Data Systems #############################################################
+    ############################################################################
+
+    - role: postgresql
+      tags: [postgresql]
+
+    - role: hadoop
+      tags: [hadoop]
+
+    ############################################################################
+    # Document processing and plotting #########################################
+    ############################################################################
+
+    - role: mactex
+      tags: [mactex]
+
+    # Disabled: using google docs/sheets/slides instead.
+    - role: openoffice
+      tags: [disabled, openoffice]
+
+    - role: gnuplot
+      tags: [gnuplot]
+
+    ############################################################################
+    # Markup tools #############################################################
+    ############################################################################
+
+    - role: grip
+      tags: [grip]
+
+    - role: wkhtmltopdf
+      tags: [wkhtmltopdf]
+
+    - role: hugo
+      tags: [hugo]
+
+    - role: pandoc
+      tags: [pandoc]
+
+    - role: markdown
+      tags: [markdown]
+
+    ############################################################################
+    # Desktop applications #####################################################
+    ############################################################################
+
+    - role: licecap
+      tags: [licecap]
+
+    - role: unity
+      tags: [unity]
+
+    - role: xquartz
+      tags: [xquartz]
+
+    - role: rescuetime
+      tags: [rescuetime]
+
+    - role: bitbar
+      tags: [bitbar]
+
+    - role: bitbar-plugins
+      tags: [bitbar, bitbar-plugins]
+
+    # Disabled: using cantata instead.
+    - role: theremin
+      tags: [disabled, theremin]
+
+    # Disabling for now due to https://github.com/CDrummond/cantata/issues/1443.
+    - role: build-cantata
+      tags: [disabled, build-cantata]
+
+    # Using this instead of build-cantata due to
+    # https://github.com/CDrummond/cantata/issues/1443.
+    - role: cantata
+      tags: [cantata]
+
+    - role: divvy
+      tags: [divvy]
+
+    - role: android-file-transfer
+      tags: [android-file-transfer]
+
+    - role: dropbox
+      tags: [dropbox]
+
+    - role: google-chrome
+      tags: [google-chrome]
+
+    - role: firefox
+      tags: [firefox]
+
+    - role: google-chrome-as-default-browser
+      tags: [google-chrome-as-default-browser]
+
+    - role: skype
+      tags: [skype]
+
+    - role: slack
+      tags: [slack]
+
+    - role: spotify
+      tags: [spotify]
+
+    - role: steam
+      tags: [steam]
+
+    - role: teensy-loader
+      tags: [teensy-loader]
+
+    - role: ynab
+      tags: [ynab]
+
+    - role: google-photos
+      tags: [google-photos]
+
+    # Disabled: Mojave's screenshotting tools are good enough.
+    - role: skitch
+      tags: [disabled, skitch]
+
+    - role: dash
+      tags: [dash]
+
+    - role: vlc
+      tags: [vlc]
+
+    #############################################################################
+    # Programming utilities #####################################################
+    #############################################################################
+
+    - role: black
+      tags: [black]
+
+    - role: ktlint
+      tags: [ktlint]
+
+    - role: ctags
+      tags: [ctags]
+
+    - role: gron
+      tags: [gron]
+
+    - role: jsxhint
+      tags: [jsxhint]
+
+    - role: yapf
+      tags: [yapf]
+
+    - role: prettier
+      tags: [prettier]
+
+    - role: node-cljfmt
+      tags: [node-cljfmt]
+
+    - role: yq
+      tags: [yq]
+
+    - role: shfmt
+      tags: [shfmt]
+
+    - role: pyre-check
+      tags: [pyre-check]
+
+    - role: shellcheck
+      tags: [shellcheck]
+
+    #############################################################################
+    # Shell #####################################################################
+    #############################################################################
+
+    - role: zsh
+      tags: [zsh]
+
+    - role: fish
+      tags: [fish]
+
+    - role: fish-foreign-env
+      tags: [fish, fish-foreign-env]
+
+    - role: iterm
+      tags: [iterm]
+
+    - role: powerline
+      tags: [powerline]
+
+    - role: tmux
+      tags: [tmux]
+
+    - role: reattach-to-user-namespace
+      tags: [tmux, reattach-to-user-namespace]
+
+    - role: tmuxinator
+      tags: [tmux, tmuxinator]
+
+    #############################################################################
+    # Package managers and build tools ##########################################
+    #############################################################################
+
+    - role: pulp
+      tags: [pulp]
+
+    - role: bundler
+      tags: [bundler]
+
+    - role: graalvm
+      tags: [graalvm]
+
+    # Depends on jdk.
+    - role: leiningen
+      tags: [leiningen]
+
+    #############################################################################
+    # Virtualization, provisioning, containers and system tools #################
+    #############################################################################
+
+    - role: openzfs
+      tags: [openzfs]
+
+    - role: virtualbox
+      tags: [virtualbox]
+
+    - role: vagrant
+      tags: [vagrant]
+
+    - role: vagrant-vbguest
+      tags: [vagrant-vbguest]
+
+    - role: docker
+      tags: [docker]
+
+    - role: terraform
+      tags: [terraform]
+
+    - role: kubectl
+      tags: [kubectl]
+
+    # Disabled.
+    - role: chefdk
+      tags: [disabled, chefdk]
+
+    #############################################################################
+    # Programming languages #####################################################
+    #############################################################################
+
+    - role: jdk
+      tags: [jdk]
+
+    - role: go
+      tags: [go]
+
+    - role: rust
+      tags: [rust]
+
+    - role: ruby
+      tags: [ruby]
+
+    - role: lua
+      tags: [lua]
+
+    - role: luajit
+      tags: [luajit]
+
+    - role: octave
+      tags: [octave]
+
+    - role: r
+      tags: [r]
+
+    # Disabled: because `stack install purescript` isn't working.
+    - role: purescript
+      tags: [disabled, purescript]
+
+    ############################################################################
+    # Browser plugins ##########################################################
+    ############################################################################
+
+    - role: firefox-adblock-plus
+      tags: [firefox-adblock-plus]
+
+    - role: warsaw
+      tags: [warsaw]
+
+    - role: hangouts
+      tags: [hangouts]
+
+    ############################################################################
+    # Multimedia ###############################################################
+    ############################################################################
+
+    - role: beets
+      tags: [beets]
+
+    - role: ffmpeg
+      tags: [ffmpeg]
+
+    - role: imagemagick
+      tags: [imagemagick]
+
+    - role: gifsicle
+      tags: [gifsicle]
+
+    - role: mpd
+      tags: [mpd]
+
+    - role: mpc
+      tags: [mpc]
+
+    - role: mpdscribble
+      tags: [mpdscribble]
+
+    - role: shpotify
+      tags: [shpotify]
+
+    - role: mplayer
+      tags: [mplayer]
+
+    - role: vimpc
+      tags: [vimpc]
+
+    #############################################################################
+    # Communication #############################################################
+    #############################################################################
+
+    - role: irssi
+      tags: [irssi]
+
+    - role: irssi-notifier
+      tags: [irssi, irssi-notifier]
+
+    #############################################################################
+    # Command line tools ########################################################
+    #############################################################################
+
+    - role: xz
+      tags: [xz]
+
+    - role: p7zip
+      tags: [p7zip]
+
+    - role: awscli
+      tags: [awscli]
+
+    # Disabled: using awscli instead.
+    - role: s3cmd
+      tags: [disabled, s3cmd]
+
+    - role: defaultbrowser
+      tags: [defaultbrowser]
+
+    - role: jq
+      tags: [jq]
+
+    # Disabled: using ripgrep instead.
+    - role: the-silver-searcher
+      tags: [disabled, the-silver-searcher]
+
+    - role: tree
+      tags: [tree]
+
+    - role: pgsanity
+      tags: [pgsanity]
+
+    - role: ripgrep
+      tags: [ripgrep]
+
+    - role: tealdeer
+      tags: [tealdeer]
+
+    - role: wrk
+      tags: [wrk]
+
+    - role: terminal-notifier
+      tags: [terminal-notifier]
+
+    #############################################################################
+    # Miscellaneous #############################################################
+    #############################################################################
+
+    - role: qt5
+      tags: [qt5]
+
+    - role: fontforge
+      tags: [fontforge]
+
+    - role: consolas
+      tags: [consolas]
+
+    # Depends on xquartz.
+    - role: wordnet
+      tags: [wordnet]

@@ -13,8 +13,7 @@
 - debug: var=environment_variables
 
 - name: Install dotfiles
-  env: environment_variables
   environment: "{{ environment_variables }}"
-  command: rake sync
+  shell: rake sync
   args:
     chdir: "{{ home_directory }}/.dotfiles"
