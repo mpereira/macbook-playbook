@@ -23,12 +23,14 @@ ANSIBLE_SENSITIVE_CONTENT_FILES := \
 ANSIBLE_COMMAND := \
 	ansible-playbook $(ANSIBLE_VERBOSE) \
 		-i $(ANSIBLE_INVENTORY) \
-		--extra-vars "local_project_directory=$(LOCAL_PROJECT_DIRECTORY)"
+		--extra-vars "local_project_directory=$(LOCAL_PROJECT_DIRECTORY)" \
+		$(ARGS)
 
 ANSIBLE_COMMAND_LOCAL := \
 	ansible-playbook $(ANSIBLE_VERBOSE) \
 		-i $(ANSIBLE_INVENTORY) \
-		--extra-vars "local_project_directory=$(LOCAL_PROJECT_DIRECTORY)"
+		--extra-vars "local_project_directory=$(LOCAL_PROJECT_DIRECTORY)" \
+		$(ARGS)
 
 ANSIBLE_COMMAND_LOCAL_WITH_VAULT := \
 	$(ANSIBLE_COMMAND_LOCAL) --vault-password-file $(ANSIBLE_VAULT_PASSWORD_FILE)
