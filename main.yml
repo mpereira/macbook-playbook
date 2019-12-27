@@ -189,6 +189,9 @@
     # Desktop applications #####################################################
     ############################################################################
 
+    - role: cursorcerer
+      tags: [cursorcerer]
+
     - role: licecap
       tags: [licecap]
 

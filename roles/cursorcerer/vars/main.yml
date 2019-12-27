@@ -1,0 +1,9 @@
+---
+# Version is 3.1 as of 2019-12-27.
+library_pref_panes: "~/Library/PreferencePanes"
+cursorcerer_zip: "{{ downloads_directory }}/Cursorcerer.zip"
+cursorcerer_directory: "{{ downloads_directory }}/Cursorcerer"
+cursorcerer_installed_pref_pane: "{{ library_pref_panes }}/Cursorcerer.prefPane"
+cursorcerer_installed_info_plist: "{{ cursorcerer_installed_pref_pane }}/Contents/Info.plist"
+cursorcerer_downloaded_pref_pane: "{{ cursorcerer_directory }}/Cursorcerer.prefPane"
+cursorcerer_downloaded_info_plist: "{{ cursorcerer_downloaded_pref_pane }}/Contents/Info.plist"

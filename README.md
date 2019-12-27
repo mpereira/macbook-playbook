@@ -50,6 +50,7 @@ Automatically prepare a Macbook for development and desktop tasks using Ansible.
 - [Android File Transfer](https://www.android.com/filetransfer/)
 - [BitBar](https://getbitbar.com/)
 - [Cantata](https://github.com/CDrummond/cantata)
+- [Cursorcerer](http://doomlaser.com/cursorcerer-hide-your-cursor-at-will/)
 - [Dash](https://kapeli.com/dash)
 - [Divvy](http://mizage.com/divvy/)
 - [Dropbox](https://www.dropbox.com/install)

@@ -1,0 +1,26 @@
+---
+- name: Download Cursorcerer
+  get_url:
+    url: "http://www.doomlaser.com/downloads/Cursorcerer.zip"
+    dest: "{{ cursorcerer_zip }}"
+
+- name: Check installed Cursorcerer version
+  shell: "defaults read {{ cursorcerer_installed_info_plist }} CFBundleVersion --version 2>&1"
+  register: cursorcerer_installed_version_output
+  ignore_errors: yes
+
+- name: Extract Cursorcerer zip archive
+  command: >
+    unzip {{ cursorcerer_zip }} -d {{ cursorcerer_directory }}
+    creates="{{ cursorcerer_directory }}"
+
+- name: Check downloaded Cursorcerer version
+  shell: "defaults read {{ cursorcerer_downloaded_info_plist }} CFBundleVersion --version 2>&1"
+  register: cursorcerer_downloaded_version_output
+  ignore_errors: yes
+
+- name: Copy Cursorcerer.prefPane to Preference Panes directory
+  command: >
+    cp -R "{{ cursorcerer_downloaded_pref_pane }}" {{ library_pref_panes }}
+    creates="{{ cursorcerer_installed_pref_pane }}"
+  when: cursorcerer_installed_version_output.stdout.find(cursorcerer_downloaded_version_output.stdout) == -1
