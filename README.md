@@ -1,6 +1,6 @@
 # macbook-playbook
 
-Automatically prepare a Macbook for development and desktop tasks using Ansible.
+Ansible playbook to provision macOS for development and desktop use.
 
 ## Last tested on
 
