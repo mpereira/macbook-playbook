@@ -133,6 +133,8 @@ Ansible playbook to provision macOS for development and desktop use.
 
 - [chefdk](https://downloads.chef.io/chefdk) (disabled by default since I don't use it anymore)
 - [Docker](https://store.docker.com/editions/community/docker-ce-desktop-mac)
+- [krew](https://github.com/kubernetes-sigs/krew)
+- [kubectl-tree](https://github.com/ahmetb/kubectl-tree)
 - [kubectl](https://kubernetes.io/docs/reference/kubectl/kubectl/)
 - [OpenZFS](https://openzfsonosx.org/)
 - [Terraform](https://www.terraform.io/)

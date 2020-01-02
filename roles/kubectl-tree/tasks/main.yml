@@ -1,0 +1,3 @@
+---
+- name: Install kubectl-tree
+  command: kubectl krew install tree

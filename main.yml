@@ -380,7 +380,13 @@
       tags: [terraform]
 
     - role: kubectl
-      tags: [kubectl]
+      tags: [kubernetes, kubectl]
+
+    - role: krew
+      tags: [kubernetes, krew]
+
+    - role: kubectl-tree
+      tags: [kubernetes, kubectl-tree]
 
     # Disabled.
     - role: chefdk

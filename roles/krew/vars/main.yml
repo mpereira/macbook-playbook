@@ -1,0 +1,2 @@
+kubectl_binary_name: "kubectl"
+kubectl_binary_url: "https://storage.googleapis.com/kubernetes-release/release/v{{ kubectl_version }}/bin/darwin/amd64/{{ kubectl_binary_name }}"
