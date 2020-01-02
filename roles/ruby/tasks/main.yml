@@ -1,19 +1,9 @@
 ---
-- name: Install ruby-install
-  shell: >
-    chdir={{ downloads_directory }}
-    wget -O "ruby-install-{{ ruby_install_version }}.tar.gz" "https://github.com/postmodern/ruby-install/archive/v{{ ruby_install_version }}.tar.gz" \
-      && tar -xzvf "ruby-install-{{ ruby_install_version }}.tar.gz" \
-      && cd "ruby-install-{{ ruby_install_version }}" \
-      && sudo make install
+- name: Install ruby-build
+  homebrew:
+    name: ruby-build
+    # name: ruby_build@{{ ruby_build_version }}
 
-- name: Install chruby
+- name: Install Ruby
   shell: >
-    chdir={{ downloads_directory }}
-    wget -O "chruby-{{ chruby_version }}.tar.gz" "https://github.com/postmodern/chruby/archive/v{{ chruby_version }}.tar.gz" \
-      && tar -xzvf "chruby-{{ chruby_version }}.tar.gz" \
-      && cd "chruby-{{ chruby_version }}" \
-      && sudo make install
-
-- name: Install ruby
-  command: ruby-install --system --no-download --no-reinstall ruby "{{ ruby_version }}" -- --enable-shared
+    RUBY_CONFIGURE_OPTS="--with-openssl-dir=$(brew --prefix openssl)" ruby-build "{{ ruby_version }}" /usr/local

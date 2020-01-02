@@ -1,26 +1,10 @@
 ---
-- name: Download Unity Installer image
-  get_url: >
-    url=https://netstorage.unity3d.com/unity/393bae82dbb8/UnityDownloadAssistant-2018.3.3f1.dmg
-    dest={{ downloads_directory }}/UnityDownloadAssistant-2018.3.3f1.dmg
-
-- name: Mount Unity Installer image
-  command: >
-    chdir={{ downloads_directory }}
-    hdiutil attach -nobrowse UnityDownloadAssistant-2018.3.3f1.dmg
-    creates="/Volumes/Unity Download Assistant"
-
-- name: Install Unity Installer
-  command: >
-    chdir={{ downloads_directory }}
-    cp -R "/Volumes/Unity Download Assistant/Unity Download Assistant.app" /Applications
-    creates="/Applications/Unity Download Assistant.app"
+- name: Install u3d gem
+  gem: name=u3d state=latest
   become: yes
 
-- name: Open Unity Installer
+#
+- name: Install Unity
   command: >
-    chdir={{ downloads_directory }}
-    open "/Applications/Unity Download Assistant.app"
-
-- name: Unmount Unity Installer image
-  command: hdiutil detach "/Volumes/Unity Download Assistant"
+    u3d install {{ unity_version }} -p Unity,WebGL --trace
+  become: yes

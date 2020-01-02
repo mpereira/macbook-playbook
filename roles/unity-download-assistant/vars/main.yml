@@ -1,0 +1,7 @@
+---
+# I get the URL by looking at the web browser "network" tab in the developer
+# tools.
+unity_download_assistant_dmg: "UnityDownloadAssistant-{{ unity_download_assistant_version }}.dmg"
+unity_download_assistant_dmg_url: "https://netstorage.unity3d.com/unity/8e603399ca02/{{ unity_download_assistant_dmg }}"
+unity_download_assistant_volume: "/Volumes/Unity Download Assistant"
+unity_download_assistant_app: "Unity Download Assistant.app"

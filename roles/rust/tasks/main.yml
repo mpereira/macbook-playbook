@@ -25,13 +25,15 @@
   shell: >
     rustup completions fish > ~/.config/fish/completions/rustup.fish
 
-# Installing specific nightly because sometimes nighlies don't include
-# all components, e.g. rls, which breaks all `rustup` operations.
-# Check https://mexus.github.io/rustup-components-history for nightlies
-# with all components.
+# Installing nightly-2019-01-26 specifically because sometimes nighlies don't
+# include all components, e.g. rls, which breaks all `rustup` operations.
+#
+# Check https://mexus.github.io/rustup-components-history for nightlies with all
+# components.
+# 2019-12-31: changing this back to stable.
 - name: Set up nightly Rust (racer dependency)
   command: >
-    rustup install nightly-2019-01-26
+    rustup install {{ rust_version }}
 
 - name: Add rustup components
   command: >

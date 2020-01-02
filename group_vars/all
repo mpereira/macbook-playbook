@@ -189,6 +189,16 @@ prey_version: "1.9.2"
 
 git_version: "2.23.0"
 
+# https://github.com/DragonBox/u3d/releases
+u3d_version: "1.2.1"
+
+# The version is part of the DMG URL. I get the URL by looking at the web
+# browser "network" tab in the developer tools.
+unity_download_assistant_version: "2019.2.17f1"
+
+# Used by u3d.
+unity_version: "2019.2.17f1"
+
 pgsanity_version: "0.2.9"
 
 grip_version: "4.5.2"
@@ -235,7 +245,9 @@ ruby_install_version: "0.7.0"
 
 chruby_version: "0.3.9"
 
-ruby_version: "2.6.0"
+ruby_version: "2.7.0"
+
+rust_version: "1.40.0"
 
 websocat_version: "1.5.0"
 

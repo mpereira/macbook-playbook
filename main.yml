@@ -198,6 +198,13 @@
     - role: licecap
       tags: [licecap]
 
+    # Disabled: using u3d instead.
+    - role: unity-download-assistant
+      tags: [disabled, unity-download-assistant]
+
+    - role: u3d
+      tags: [u3d]
+
     - role: unity
       tags: [unity]
 

@@ -1,0 +1,51 @@
+---
+# - name: Download Unity Installer image
+#   get_url: >
+#     url={{ unity_download_assistant_dmg_url }}
+#     dest={{ downloads_directory }}/{{ unity_download_assistant_dmg }}
+
+# - name: Mount Unity Installer image
+#   command: >
+#     chdir={{ downloads_directory }}
+#     hdiutil attach -nobrowse {{ unity_download_assistant_dmg }}
+#     creates="{{ unity_download_assistant_volume }}"
+
+# - name: Install Unity Installer
+#   command: >
+#     chdir={{ downloads_directory }}
+#     cp -R "{{ unity_download_assistant_volume }}/{{ unity_download_assistant_app }}" /Applications
+#     creates="/Applications/{{ unity_download_assistant_app }}"
+#   become: yes
+
+# - name: Open Unity Installer
+#   command: >
+#     chdir={{ downloads_directory }}
+#     open "/Applications/Unity Download Assistant.app"
+
+# - name: Unmount Unity Installer image
+#   command: hdiutil detach "/Volumes/Unity Download Assistant"
+
+# - name: Install Unity Installer
+#   command: >
+#     chdir={{ downloads_directory }}
+#     cp -R "{{ unity_download_assistant_volume }}/{{ unity_download_assistant_app }}" /Applications
+#     creates="/Applications/{{ unity_download_assistant_app }}"
+#   become: yes
+
+- name: Download Unity Hub image
+  get_url: >
+    url=https://public-cdn.cloud.unity3d.com/hub/prod/UnityHubSetup.dmg
+    dest={{ downloads_directory }}/UnityHubSetup.dmg
+
+- name: Mount Unity Hub image
+  command: >
+    chdir={{ downloads_directory }}
+    hdiutil attach -nobrowse {{ downloads_directory }}/UnityHubSetup.dmg
+    creates="/Volumes/Unity Hub 2.2.2"
+
+- name: Install Unity Hub
+  command: >
+    chdir={{ downloads_directory }}
+    cp -R "/Volumes/Unity Hub 2.2.2/Unity Hub.app" /Applications
+    creates="/Applications/Unity Hub.app"
+  become: yes
