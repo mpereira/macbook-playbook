@@ -96,5 +96,9 @@ decrypt:
 		--vault-password-file $(ANSIBLE_VAULT_PASSWORD_FILE) \
 		$(ANSIBLE_SENSITIVE_CONTENT_FILES)
 
+.PHONY: truncate-sensitive-files
+truncate-sensitive-files:
+	@truncate --size 0 $(ANSIBLE_SENSITIVE_CONTENT_FILES)
+
 encrypt_pre_commit: encrypt
 	@git add $(ANSIBLE_SENSITIVE_CONTENT_FILES)
