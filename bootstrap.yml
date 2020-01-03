@@ -5,7 +5,6 @@
   roles:
     - ansible-download-directory
     - usr-local-src-directory
-    - ssh-keys
     - passwordless-sudo
     - python3
     - git_pre_commit
