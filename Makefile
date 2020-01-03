@@ -87,10 +87,14 @@ converge:
 	@$(ANSIBLE_COMMAND_LOCAL_WITH_VAULT) $(ANSIBLE_PLAYBOOKS_DIRECTORY)/main.yml
 
 encrypt:
-	@$(VAULT_COMMAND) encrypt $(ANSIBLE_SENSITIVE_CONTENT_FILES)
+	@ansible-vault encrypt \
+		--vault-password-file $(ANSIBLE_VAULT_PASSWORD_FILE) \
+		$(ANSIBLE_SENSITIVE_CONTENT_FILES)
 
 decrypt:
-	@$(VAULT_COMMAND) decrypt $(ANSIBLE_SENSITIVE_CONTENT_FILES)
+	@ansible-vault decrypt \
+		--vault-password-file $(ANSIBLE_VAULT_PASSWORD_FILE) \
+		$(ANSIBLE_SENSITIVE_CONTENT_FILES)
 
 encrypt_pre_commit: encrypt
 	@git add $(ANSIBLE_SENSITIVE_CONTENT_FILES)
