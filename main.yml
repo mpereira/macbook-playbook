@@ -526,6 +526,9 @@
     - role: wrk
       tags: [wrk]
 
+    - role: websocat
+      tags: [websocat]
+
     - role: terminal-notifier
       tags: [terminal-notifier]
 

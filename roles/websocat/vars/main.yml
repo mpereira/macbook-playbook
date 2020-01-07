@@ -1,0 +1,3 @@
+websocat_binary_name: "websocat_mac"
+websocat_binary_install_name: "websocat"
+websocat_binary_url: "https://github.com/vi/websocat/releases/download/v{{ websocat_version }}/{{ websocat_binary_name }}"
