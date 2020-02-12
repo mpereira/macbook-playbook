@@ -16,6 +16,8 @@
     sudo /usr/local/lib/prey/current/bin/prey config gui
   register: prey_config_gui
 
+# TODO: make the "when" condition be if prey_version is different than the
+# actual version.
 - name: Install Prey
   shell: >
     API_KEY={{ api_key.prey_api_key }} installer -package {{ downloads_directory }}/{{ prey_pkg }} -target /

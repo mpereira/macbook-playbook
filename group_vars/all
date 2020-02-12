@@ -185,7 +185,7 @@ dash_version: "" # not configurable at the moment
 
 vlc_version: "2.2.6"
 
-prey_version: "1.7.1"
+prey_version: "1.9.2"
 
 git_version: "2.23.0"
 
