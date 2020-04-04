@@ -18,7 +18,8 @@ emacs_pre_built_version: "26.3"
 virtualbox_version: "6.0.2"
 virtualbox_build: "128162"
 
-awscli_version: "1.16.96"
+# https://github.com/aws/aws-cli/releases
+awscli_version: "1.18.36"
 
 vagrant_version: "2.0.0"
 vagrant_vbguest_version: "0.15.0"
@@ -69,7 +70,9 @@ jq_checksum: "md5:81ff0e3ddd999d2f5bd151b882ce7e18"
 leiningen_version: "2.8.0"
 leiningen_checksum: "md5:9f90d51bffa55691aa0f4e305249d42b"
 
-node_version: "12.10.0"
+# https://nodejs.org/dist/
+# https://github.com/nodejs/node/releases
+node_version: "13.12.0"
 
 # Wait until https://github.com/wkhtmltopdf/wkhtmltopdf/issues/3241 gets fixed
 # before upgrading from 0.12.3.
@@ -88,7 +91,8 @@ black_version: "18.6b4"
 
 mpc_version: "0.28"
 
-mpd_version: "0.20.11"
+# homebrew is terrible and doesn't work with versions??
+mpd_version: "0.21.19"
 
 mpdscribble_version: "0.22"
 
