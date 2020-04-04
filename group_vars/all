@@ -43,10 +43,11 @@ terraform_checksum: "sha256:9dbee9dea660ea64352f8ddf2539e60d1c414210e9c4a29c8585
 
 # OpenZFS URLs change between versions, make sure to update them manually in the
 # vars.yml file when changing the version.
-openzfs_image_path: "1/18"
+# Check out: https://openzfsonosx.org/wiki/Downloads
+openzfs_image_path: "6/6f"
 openzfs_macos_version: "Mojave"
-openzfs_version: "1.9.0"
-openzfs_checksum: "sha256:a6b05d29e9ae1f313e642109d18da6d930b1991bcd24c5f91ecc6a64bdc130fc"
+openzfs_version: "1.9.4"
+openzfs_checksum: "sha256:4dc027cec9cb2fcbf572c1dfe5b1a31f0e14d3f55f1b4f8787903f8332db838b"
 
 # http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html
 java_version: "8"
