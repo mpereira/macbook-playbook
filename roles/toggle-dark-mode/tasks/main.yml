@@ -1,0 +1,4 @@
+---
+- name: Install ToggleDarkMode.app
+  command: cp -r roles/toggle-dark-mode/files/ToggleDarkMode.app /Applications
+  become: yes

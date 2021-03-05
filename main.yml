@@ -192,6 +192,9 @@
     # Desktop applications #####################################################
     ############################################################################
 
+
+    - role: toggle-dark-mode
+      tags: [desktop-applications, toggle-dark-mode]
     - role: cursorcerer
       tags: [cursorcerer]
 

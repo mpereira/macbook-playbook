@@ -348,10 +348,11 @@ Ansible playbook to prepare and maintain macOS for development and desktop use.
      - [[https://wordnet.princeton.edu/download][WordNet]]
 
 *** Configures
-**** Passwordless sudo
-**** Remaps Caps-Lock to Control
-**** Puts SSH keys in place
 **** Makes Google Chrome the default browser
+**** Passwordless sudo
+**** Puts SSH keys in place
+**** Remaps Caps-Lock to Control
+**** ToggleDarkMode.app
 
 ** Author
    [[http://murilopereira.com][Murilo Pereira]]
