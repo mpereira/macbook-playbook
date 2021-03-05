@@ -1,5 +1,0 @@
----
-skitch_name: Skitch-{{ skitch_version }}
-skitch_directory: "{{ skitch_name }}"
-skitch_zip: "{{ skitch_name }}.zip"
-skitch_app: Skitch.app

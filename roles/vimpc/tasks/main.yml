@@ -1,5 +1,0 @@
----
-- name: Install vimpc
-  homebrew:
-    name: vimpc
-    # name: vimpc@{{ vimpc_version }}

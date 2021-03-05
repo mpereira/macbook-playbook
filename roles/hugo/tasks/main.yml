@@ -1,16 +1,6 @@
 ---
-- name: Download Hugo
-  get_url:
-    url: "https://github.com/gohugoio/hugo/releases/download/v{{ hugo_version }}/{{ hugo_archive }}"
-    dest: "{{ downloads_directory }}/{{ hugo_archive }}"
-
-- command: mkdir -p "{{ downloads_directory }}/{{ hugo_directory }}"
-
-- name: Extract Hugo
-  unarchive:
-    src="{{ downloads_directory }}/{{ hugo_archive }}"
-    dest="{{ downloads_directory }}/{{ hugo_directory }}"
-    creates="{{ downloads_directory }}/{{ hugo_directory }}/hugo"
-
 - name: Install Hugo
-  command: cp "{{ downloads_directory }}/{{ hugo_directory }}/hugo" /usr/local/bin
+  homebrew:
+    name: hugo
+    # name: "hugo@{{ hugo_version }}"
+    state: latest

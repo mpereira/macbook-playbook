@@ -1,10 +1,6 @@
 ---
-- name: Download wkhtmltopdf
-  get_url:
-    url: "{{ wkhtmltopdf_pkg_url }}"
-    dest: "{{ downloads_directory }}/{{ wkhtmltopdf_pkg }}"
-
 - name: Install wkhtmltopdf
-  command: >
-    installer -package {{ downloads_directory }}/{{ wkhtmltopdf_pkg }} -target /
-  become: yes
+  homebrew_cask:
+    name: wkhtmltopdf 
+    # name: "wkhtmltopdf @{{ wkhtmltopdf_version }}"
+    state: latest

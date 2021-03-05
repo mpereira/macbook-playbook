@@ -149,7 +149,6 @@ Ansible playbook to prepare and maintain macOS for development and desktop use.
 **** Desktop Applications
      - [[https://www.android.com/filetransfer/][Android File Transfer]]
      - [[https://getbitbar.com/][BitBar]]
-     - [[https://github.com/CDrummond/cantata][Cantata]]
      - [[http://doomlaser.com/cursorcerer-hide-your-cursor-at-will/][Cursorcerer]]
      - [[https://kapeli.com/dash][Dash]]
      - [[http://mizage.com/divvy/][Divvy]]
@@ -159,14 +158,11 @@ Ansible playbook to prepare and maintain macOS for development and desktop use.
      - [[https://photos.google.com/apps][Google Photos]]
      - [[https://www.cockos.com/licecap/][LICEcap]]
      - [[https://www.rescuetime.com/][RescueTime]]
-     - [[https://evernote.com/products/skitch][Skitch]] (disabled by default since macOS Mojave's screenshotting tools are
-       good enough)
      - [[https://www.skype.com/en/download-skype/skype-for-mac/][Skype]]
      - [[https://slack.com/downloads/osx][Slack]]
      - [[https://www.spotify.com/br/download/other/][Spotify]]
      - [[http://store.steampowered.com/about/][Steam]]
      - [[https://www.pjrc.com/teensy/loader_mac.html][Teensy Loader]]
-     - [[https://github.com/TheStalwart/Theremin][Theremin]] (disabled by default, using Cantata)
      - [[https://unity3d.com/get-unity/download][Unity]]
      - [[https://www.videolan.org/vlc/download-macosx.html][VLC]]
      - [[https://www.xquartz.org/][XQuartz]]
@@ -174,14 +170,9 @@ Ansible playbook to prepare and maintain macOS for development and desktop use.
 
 **** Text Editors
      - [[https://emacsformacosx.com/][Emacs 26]]
-     - [[http://lighttable.com/][LightTable]]
      - [[http://macvim-dev.github.io/macvim/][MacVim]]
      - [[https://github.com/neovim/neovim/wiki/Installing-Neovim][Neovim]]
      - [[http://www.vim.org/][Vim]]
-
-**** Communication
-     - [[https://irssi.org/][irssi]]
-     - [[https://irssinotifier.appspot.com/][IrssiNotifier]]
 
 **** Configuration
      - [[https://github.com/mpereira/.emacs.d][dotemacs]]
@@ -209,7 +200,6 @@ Ansible playbook to prepare and maintain macOS for development and desktop use.
 **** Programming Languages
      - [[https://www.gnu.org/software/octave/download.html][GNU Octave]]
      - [[https://golang.org/][Go]]
-     - [[https://www.haskell.org/platform/mac.html][Haskell Platform]] (disabled by default, using Haskell Stack)
      - [[https://docs.haskellstack.org/en/stable/README/][Haskell Stack]]
      - [[http://www.oracle.com/technetwork/pt/java/javase/downloads/jdk8-downloads-2133151.html][Java (JDK)]]
      - [[https://www.lua.org/download.html][Lua]]
@@ -222,7 +212,6 @@ Ansible playbook to prepare and maintain macOS for development and desktop use.
      - [[https://www.rust-lang.org/][Rust]]
 
 **** Virtualization, Provisioning, Containers and System Tools
-     - [[https://downloads.chef.io/chefdk][chefdk]] (disabled by default since I don't use it anymore)
      - [[https://store.docker.com/editions/community/docker-ce-desktop-mac][Docker]]
      - [[https://github.com/kubernetes-sigs/krew][krew]]
      - [[https://github.com/ahmetb/kubectl-tree][kubectl-tree]]
@@ -269,14 +258,6 @@ Ansible playbook to prepare and maintain macOS for development and desktop use.
      - [[https://github.com/google/yapf][YAPF]]
      - [[https://github.com/mikefarah/yq][yq]]
 
-**** Haskell Utilities
-     - [[https://hackage.haskell.org/package/ghc-mod][ghc-mod]]
-     - [[https://hackage.haskell.org/package/hdevtools][hdevtools]]
-     - [[https://hackage.haskell.org/package/hindent][hindent]]
-     - [[https://hackage.haskell.org/package/hlint][hlint]]
-     - [[https://hackage.haskell.org/package/hoogle][hoogle]]
-     - [[https://hackage.haskell.org/package/pointfree][pointfree]]
-
 **** Security
      - [[https://www.preyproject.com/download][Prey]]
      - [[https://www.gnupg.org/download/index.html][GnuPG]]
@@ -303,7 +284,6 @@ Ansible playbook to prepare and maintain macOS for development and desktop use.
 
 **** Data Systems
      - [[http://hadoop.apache.org/][Apache Hadoop]]
-     - [[https://postgresapp.com/][PostgreSQL 9.4]]
 
 **** Configuration, Monitoring and Debugging (tag: observability)
      - [[http://jmeter.apache.org/][Apache JMeter]]
@@ -315,7 +295,6 @@ Ansible playbook to prepare and maintain macOS for development and desktop use.
 **** Document Processors and Plotting
      - [[http://www.gnuplot.info/][gnuplot]]
      - [[http://www.tug.org/mactex/][MacTeX]]
-     - [[https://www.openoffice.org/porting/mac/][OpenOffice]]
 
 **** Markup Tools
      - [[https://github.com/joeyespo/grip][Grip]]
@@ -335,7 +314,6 @@ Ansible playbook to prepare and maintain macOS for development and desktop use.
      - [[http://s3tools.org/s3cmd][s3cmd]] (disabled by default since I use the aws CLI now)
      - [[https://tldr.sh/][tealdeer]]
      - [[https://github.com/julienXX/terminal-notifier][terminal-notifier]]
-     - [[https://geoff.greer.fm/ag/][the-silver-searcher]] (disabled by default since I use ripgrep now)
      - [[http://brewformulas.org/Tree][tree]]
      - [[https://github.com/vi/websocat][websocat]]
      - [[https://github.com/wg/wrk][wrk]]

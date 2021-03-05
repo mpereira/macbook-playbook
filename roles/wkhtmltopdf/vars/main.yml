@@ -1,3 +1,0 @@
----
-wkhtmltopdf_pkg: wkhtmltox-{{ wkhtmltopdf_version }}-1.macos-cocoa.pkg
-wkhtmltopdf_pkg_url: https://downloads.wkhtmltopdf.org/{{ wkhtmltopdf_version_major_minor }}/{{ wkhtmltopdf_version }}/{{ wkhtmltopdf_pkg }}

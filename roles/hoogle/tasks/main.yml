@@ -1,6 +1,0 @@
----
-- name: Install hoogle
-  command: stack install hoogle
-
-- name: Generate hoogle database
-  command: hoogle data

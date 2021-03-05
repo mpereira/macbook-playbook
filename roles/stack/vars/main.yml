@@ -1,3 +1,0 @@
----
-stack_directory: "stack-{{ stack_version }}-osx-x86_64"
-stack_archive: "{{ stack_directory }}.tar.gz"

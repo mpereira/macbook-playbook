@@ -1,3 +1,0 @@
----
-- name: Install hlint
-  command: stack install hlint

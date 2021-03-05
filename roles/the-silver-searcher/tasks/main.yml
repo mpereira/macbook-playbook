@@ -1,5 +1,0 @@
----
-- name: Install The Silver Searcher
-  homebrew:
-    name: the_silver_searcher
-    # name: the_silver_searcher@{{ the_silver_searcher_version }}

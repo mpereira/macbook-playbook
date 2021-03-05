@@ -62,9 +62,6 @@
     - role: emacs-pre-built
       tags: [emacs-pre-built]
 
-    - role: light-table
-      tags: [light-table]
-
     - role: vim
       tags: [vim]
 
@@ -115,42 +112,10 @@
     - role: vtop
       tags: [vtop]
 
-    ############################################################################
-    # Haskell ##################################################################
-    ############################################################################
-
-    # Disabled: superseded by stack, which also installs GHC.
-    - role: haskell-platform
-      tags: [disabled, haskell-platform]
-
-    # Disabled: wait for https://github.com/commercialhaskell/stack/issues/4426.
-    - role: stack
-      tags: [disabled, stack]
-
-    - role: hdevtools
-      tags: [disabled, hdevtools]
-
-    - role: ghc-mod
-      tags: [disabled, ghc-mod]
-
-    - role: hindent
-      tags: [disabled, hindent]
-
-    - role: hlint
-      tags: [disabled, hlint]
-
-    - role: hoogle
-      tags: [disabled, hoogle]
-
-    - role: pointfree
-      tags: [disabled, pointfree]
 
     ############################################################################
     # Data Systems #############################################################
     ############################################################################
-
-    - role: postgresql
-      tags: [postgresql]
 
     - role: hadoop
       tags: [hadoop]
@@ -161,10 +126,6 @@
 
     - role: mactex
       tags: [mactex]
-
-    # Disabled: using google docs/sheets/slides instead.
-    - role: openoffice
-      tags: [disabled, openoffice]
 
     - role: gnuplot
       tags: [gnuplot]
@@ -223,19 +184,6 @@
     - role: bitbar-plugins
       tags: [bitbar, bitbar-plugins]
 
-    # Disabled: using cantata instead.
-    - role: theremin
-      tags: [disabled, theremin]
-
-    # Disabling for now due to https://github.com/CDrummond/cantata/issues/1443.
-    - role: build-cantata
-      tags: [disabled, build-cantata]
-
-    # Using this instead of build-cantata due to
-    # https://github.com/CDrummond/cantata/issues/1443.
-    - role: cantata
-      tags: [cantata]
-
     - role: divvy
       tags: [divvy]
 
@@ -274,10 +222,6 @@
 
     - role: google-photos
       tags: [google-photos]
-
-    # Disabled: Mojave's screenshotting tools are good enough.
-    - role: skitch
-      tags: [disabled, skitch]
 
     - role: dash
       tags: [dash]
@@ -401,10 +345,6 @@
     - role: kubectl-tree
       tags: [kubernetes, kubectl-tree]
 
-    # Disabled.
-    - role: chefdk
-      tags: [disabled, chefdk]
-
     #############################################################################
     # Programming languages #####################################################
     #############################################################################
@@ -444,12 +384,6 @@
     - role: firefox-adblock-plus
       tags: [firefox-adblock-plus]
 
-    - role: warsaw
-      tags: [warsaw]
-
-    - role: hangouts
-      tags: [hangouts]
-
     ############################################################################
     # Multimedia ###############################################################
     ############################################################################
@@ -481,19 +415,6 @@
     - role: mplayer
       tags: [mplayer]
 
-    - role: vimpc
-      tags: [vimpc]
-
-    #############################################################################
-    # Communication #############################################################
-    #############################################################################
-
-    - role: irssi
-      tags: [irssi]
-
-    - role: irssi-notifier
-      tags: [irssi, irssi-notifier]
-
     #############################################################################
     # Command line tools ########################################################
     #############################################################################
@@ -516,10 +437,6 @@
 
     - role: jq
       tags: [jq]
-
-    # Disabled: using ripgrep instead.
-    - role: the-silver-searcher
-      tags: [disabled, the-silver-searcher]
 
     - role: tree
       tags: [tree]

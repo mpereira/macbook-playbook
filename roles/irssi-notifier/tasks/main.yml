@@ -1,6 +1,0 @@
----
-- name: Check out the IrssiNotifier GitHub repository
-  git:
-    repo: https://github.com/murgo/IrssiNotifier.git
-    dest: "{{ home_directory }}/.irssi/IrssiNotifier"
-    version: v{{ irssi_notifier_version }}

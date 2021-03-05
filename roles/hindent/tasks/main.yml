@@ -1,3 +1,0 @@
----
-- name: Install hindent
-  command: stack install hindent

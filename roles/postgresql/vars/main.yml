@@ -1,7 +1,0 @@
----
-postgresql_image_name: "Postgres-{{ postgresql_version }}.dmg"
-postgresql_image_url: "https://github.com/PostgresApp/PostgresApp/releases/download/v{{ postgresql_version }}/{{ postgresql_image_name }}"
-postgresql_image_path: "{{ downloads_directory }}/{{ postgresql_image_name }}"
-postgresql_volume_path: "/Volumes/Postgres-{{ postgresql_version }}"
-postgresql_app_name: "Postgres.app"
-postgresql_app_directory: "/Applications/{{ postgresql_app_name }}"

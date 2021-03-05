@@ -1,3 +1,0 @@
----
-- name: Install ghc-mod
-  command: stack install ghc-mod

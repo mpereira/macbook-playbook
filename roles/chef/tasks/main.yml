@@ -1,3 +1,0 @@
----
-- name: Install chef gem
-  gem: name=chef state=present

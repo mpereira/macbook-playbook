@@ -1,11 +1,6 @@
 ---
-- name: Download MacTeX
-  get_url: >
-    url=http://tug.org/cgi-bin/mactex-download/{{ mactex_pkg }}
-    dest={{ downloads_directory }}/{{ mactex_pkg }}
-
 - name: Install MacTeX
-  command: >
-    installer -package {{ downloads_directory }}/{{ mactex_pkg }} -target /
-    creates=/usr/local/texlive
-  become: yes
+  homebrew_cask:
+    name: mactex-no-gui
+    # name: "mactex-no-gui@{{ mactex_version }}"
+    state: latest
