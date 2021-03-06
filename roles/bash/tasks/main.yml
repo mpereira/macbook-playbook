@@ -15,6 +15,10 @@
     line: "{{ bin_bash.stdout }}"
   become: yes
 
+- name: Make bash be the default shell
+  shell: >
+    chsh -s "{{ bin_bash.stdout }}"
+
 - name: Install bash-completion@2
   homebrew:
     name: "bash-completion@2"
