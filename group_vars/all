@@ -51,8 +51,6 @@ jdk_checksum: "md5:7205cff06dd8ff134f33535ceda0ea96"
 
 defaultbrowser_version: "1.0"
 
-ffmpeg_version: "15.05.2017"
-
 fish_version: "3.0.2"
 fish_foreign_env_version: "baefbd690f0b52cb8746f3e64b326d82834d07c5"
 

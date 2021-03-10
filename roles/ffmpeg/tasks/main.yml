@@ -1,3 +1,5 @@
 ---
 - name: Install ffmpeg
-  homebrew: name=ffmpeg state=present
+  homebrew:
+    name: ffmpeg
+    state: latest
