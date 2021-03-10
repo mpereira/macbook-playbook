@@ -5,34 +5,31 @@
     state: present
 
 - homebrew:
-    name: "{{ item }}"
     state: latest
-  with_items:
-    - binutils # don't link this so that there's no conflicts with
-               # MacOS executables.
-    - diffutils
-    - gawk
-    - gnutls
-    - gzip
-    - screen
-    - watch
-    - wget
+    name:
+      - binutils # don't link this so that there's no conflicts with
+      # MacOS executables.
+      - diffutils
+      - gawk
+      - gnutls
+      - gzip
+      - screen
+      - watch
+      - wget
 
 - homebrew:
-    name: "{{ item }}"
-    state: present
-    install_options: with-default-names
-  with_items:
-    - ed
-    - findutils
-    - gnu-indent
-    - gnu-sed
-    - gnu-tar
-    - gnu-which
-    - grep
+    state: latest
+    name:
+      - ed
+      - findutils
+      - gnu-indent
+      - gnu-sed
+      - gnu-tar
+      - gnu-which
+      - grep
 
-- name: Install coreutils
+- name: Install wdiff
   homebrew:
     name: wdiff
     state: present
-    install_options: with-default-names,with-gettext
+    install_options: with-gettext
