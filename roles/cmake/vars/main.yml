@@ -1,6 +1,7 @@
 ---
+# https://github.com/Kitware/CMake/releases/download
 cmake_image_name: "cmake-{{ cmake_version }}-Darwin-x86_64.dmg"
-cmake_image_url: "https://cmake.org/files/{{ cmake_version_path }}/{{ cmake_image_name }}"
+cmake_image_url: "https://github.com/Kitware/CMake/releases/download/v{{ cmake_version }}/{{ cmake_image_name }}"
 cmake_image_path: "{{ downloads_directory }}/{{ cmake_image_name }}"
 cmake_volume_path: "/Volumes/cmake-{{ cmake_version }}-Darwin-x86_64"
 cmake_app_name: "CMake.app"

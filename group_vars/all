@@ -7,6 +7,9 @@ home_directory: "/Users/{{ user }}"
 downloads_directory: "{{ home_directory }}/.ansible/downloads"
 computer_name: baloon
 
+# https://cmake.org/download/
+cmake_version: "3.17.2"
+
 emacs_pre_built_version: "27.1"
 emacs_pre_built_patch: "-1"
 # emacs_pre_built_version: "26.1-rc1"
@@ -152,9 +155,6 @@ iterm_version: "3_2_7"
 tealdeer_version: "1.1.0"
 
 firefox_version: "64.0.2"
-
-cmake_version: "3.10.0-rc4"
-cmake_version_path: "v3.10"
 
 maven_version: "3.5.2" # homebrew is terrible and doesn't work with versions??
 

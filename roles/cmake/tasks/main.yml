@@ -1,25 +1,36 @@
 ---
 - name: Download CMake
-  get_url: >
-    url="{{ cmake_image_url }}"
-    dest="{{ downloads_directory }}/{{ cmake_image_name }}"
+  get_url:
+    url: "{{ cmake_image_url }}"
+    dest: "{{ downloads_directory }}/{{ cmake_image_name }}"
+
+- name: Get current CMake version
+  command: cmake --version
+  register: cmake_version_output
+  ignore_errors: yes
+
+- set_fact:
+    installed_cmake_version_differs_or_not_installed: (cmake_version_output.rc == 1 or (cmake_version_output.stdout | regex_search('\d+\.\d+\.\d+')) is version(cmake_version, '<'))
 
 - name: Convert CMake image to a format that does not require an EULA
   command: >
     chdir={{ downloads_directory }}
     hdiutil convert -quiet {{ cmake_image_name }} -format UDTO -o {{ cmake_image_name }}.cdr
     creates={{ cmake_image_name }}.cdr
+  when: installed_cmake_version_differs_or_not_installed | bool
 
 - name: Mount CMake image
   command: >
     chdir={{ downloads_directory }}
     hdiutil attach -nobrowse -quiet {{ cmake_image_name }}.cdr
     creates="{{ cmake_volume_path }}"
+  when: installed_cmake_version_differs_or_not_installed | bool
 
 - name: Copy CMake application directory to the applications directory
   command: >
     cp -R "{{ cmake_volume_path }}/{{ cmake_app_name }}" /Applications
-    creates="{{ cmake_app_directory }}"
+  when: installed_cmake_version_differs_or_not_installed | bool
 
 - name: Unmount CMake image
   command: hdiutil detach "{{ cmake_volume_path }}"
+  when: installed_cmake_version_differs_or_not_installed | bool
