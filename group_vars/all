@@ -10,6 +10,11 @@ computer_name: baloon
 # https://cmake.org/download/
 cmake_version: "3.17.2"
 
+# https://www.python.org/ftp/python/
+python3_version: "3.9.2"
+python3_macos_version: "10.9" # this is used in the .pkg file name.
+python3_version_major_minor: "{{ python3_version | regex_replace('^([0-9]+)\\.([0-9]+)(?:\\.[0-9]+)?$', '\\1.\\2') }}"
+
 emacs_pre_built_version: "27.1"
 emacs_pre_built_patch: "-1"
 # emacs_pre_built_version: "26.1-rc1"
@@ -166,9 +171,6 @@ graalvm_version: "19.2.1"
 mactex_version: "" # not configurable at the moment
 
 google_photos_version: "" # not configurable at the moment
-
-python3_version: "3.7.3"
-python3_version_major_minor: "{{ python3_version | regex_replace('^([0-9]+)\\.([0-9]+)(?:\\.[0-9]+)?$', '\\1.\\2') }}"
 
 ktlint_version: "0.33.0"
 
