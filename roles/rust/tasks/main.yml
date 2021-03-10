@@ -1,52 +1,9 @@
 ---
-- name: Download rustup-init
-  get_url:
-    url: https://static.rust-lang.org/rustup/dist/x86_64-apple-darwin/rustup-init
-    dest: "{{ downloads_directory }}/rustup-init"
-    mode: 0755
+- name: Install rustup-init
+  homebrew:
+    name: rustup
+    # name: "rustup{{ rustup_version }}"
+    state: latest
 
 - name: Install rustup
-  command: >
-    "{{ downloads_directory }}/rustup-init" -y --no-modify-path
-
-- name: Install Rust
-  command: >
-    rustup update --force stable
-
-- name: Fetch Rust source code
-  command: >
-    rustup component add rust-src
-
-- name: Install Rust bash completions
-  shell: >
-    rustup completions bash > "$(brew --prefix)/etc/bash_completion.d/rustup.bash-completion"
-
-- name: Install Rust fish completions
-  shell: >
-    rustup completions fish > ~/.config/fish/completions/rustup.fish
-
-# Installing nightly-2019-01-26 specifically because sometimes nighlies don't
-# include all components, e.g. rls, which breaks all `rustup` operations.
-#
-# Check https://mexus.github.io/rustup-components-history for nightlies with all
-# components.
-# 2019-12-31: changing this back to stable.
-- name: Set up nightly Rust (racer dependency)
-  command: >
-    rustup install {{ rust_version }}
-
-- name: Add rustup components
-  command: >
-    rustup component add --toolchain nightly rust-src rls-preview rust-analysis
-
-- name: Install cargo-script
-  command: >
-    cargo install --force {{ item }}
-  with_items:
-    - cargo-script
-
-- name: Install racer
-  command: >
-    cargo +nightly install --force {{ item }}
-  with_items:
-    - racer
+  command: rustup-init -y --no-modify-path

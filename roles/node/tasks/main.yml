@@ -9,3 +9,6 @@
     chdir={{ downloads_directory }}
     installer -package {{ node_pkg }} -target /
   become: yes
+
+- name: Make sure npm installation prefix for global packages is sane
+  command: npm config set prefix /usr/local

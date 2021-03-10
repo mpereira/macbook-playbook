@@ -12,4 +12,5 @@
 
 - name: Install nvim binary
   command: >
-    cp {{ downloads_directory }}/nvim-osx64/bin/nvim /usr/local/bin
+    cp -R {{ downloads_directory }}/nvim-osx64 /opt/nvim-{{ neovim_version }}
+  become: yes

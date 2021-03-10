@@ -3,3 +3,4 @@
   homebrew:
     name: shellcheck
     # name: shellcheck@{{ shellcheck_version }}
+    state: latest

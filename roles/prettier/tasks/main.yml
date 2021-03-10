@@ -4,3 +4,4 @@
     name: prettier
     version: "{{ prettier_version }}"
     global: yes
+  become: yes

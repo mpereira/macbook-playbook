@@ -1,5 +1,5 @@
 ---
-- name: Check out my dotfiles repository
+- name: Check out the mpereira/dotfiles repository
   git:
     repo: git@github.com:mpereira/dotfiles.git
     dest: "{{ home_directory }}/.dotfiles"
@@ -9,8 +9,6 @@
   include_vars:
     file: environment.yml
     name: environment_variables
-
-- debug: var=environment_variables
 
 - name: Install dotfiles
   environment: "{{ environment_variables }}"
