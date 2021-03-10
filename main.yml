@@ -44,81 +44,79 @@
     #############################################################################
 
     - role: ssh-keys
-      tags: [ssh-keys]
+      tags: [configuration, ssh-keys]
 
-    - role: dotemacs
-      tags: [dotemacs]
 
     - role: dotfiles
-      tags: [dotfiles]
+      tags: [configuration, dotfiles]
+
+    - role: dotemacs
+      tags: [configuration, dotemacs]
 
     #############################################################################
     # Text editors ##############################################################
     #############################################################################
 
     - role: build-emacs
-      tags: [disabled, build-emacs]
+      tags: [text-editors, build-emacs]
 
     - role: emacs-pre-built
-      tags: [emacs-pre-built]
+      tags: [text-editors, emacs-pre-built]
 
     - role: vim
-      tags: [vim]
+      tags: [text-editors, vim]
 
     - role: macvim
-      tags: [macvim]
+      tags: [text-editors, macvim]
 
-    # Isn't working because of
-    # https://github.com/neovim/bot-ci/commit/05384567778d00414e926dda23af2b05510d08bf?
     - role: neovim
-      tags: [neovim]
+      tags: [text-editors, neovim]
 
     #############################################################################
     # Behaviors #################################################################
     #############################################################################
 
     - role: caps-lock-remapped-to-control
-      tags: [caps-lock-remapped-to-control]
+      tags: [behaviors, caps-lock-remapped-to-control]
 
     #############################################################################
     # Security ##################################################################
     #############################################################################
 
     - role: prey
-      tags: [prey]
+      tags: [security, prey]
 
     - role: vault
-      tags: [vault]
+      tags: [security, vault]
 
     - role: gnupg
-      tags: [gnupg]
+      tags: [security, gnupg]
 
     ############################################################################
     # Observability ############################################################
     ############################################################################
 
     - role: glances
-      tags: [glances]
+      tags: [observability, glances]
 
     - role: ngrep
-      tags: [ngrep, observability]
+      tags: [observability, ngrep]
 
     - role: jmeter
-      tags: [jmeter]
+      tags: [observability, jmeter]
 
     - role: htop
-      tags: [htop]
+      tags: [observability, htop]
 
     - role: vtop
-      tags: [vtop]
-
+      tags: [observability, vtop]
 
     ############################################################################
     # Data Systems #############################################################
     ############################################################################
 
     - role: hadoop
-      tags: [hadoop]
+      tags: [data-systems, hadoop]
 
     ############################################################################
     # Document processing and plotting #########################################
@@ -135,19 +133,19 @@
     ############################################################################
 
     - role: grip
-      tags: [grip]
+      tags: [markup-tools, grip]
 
     - role: wkhtmltopdf
-      tags: [wkhtmltopdf]
+      tags: [markup-tools, wkhtmltopdf]
 
     - role: hugo
-      tags: [hugo]
+      tags: [markup-tools, hugo]
 
     - role: pandoc
-      tags: [pandoc]
+      tags: [markup-tools, pandoc]
 
     - role: markdown
-      tags: [markdown]
+      tags: [markup-tools, markdown]
 
     ############################################################################
     # Desktop applications #####################################################
@@ -156,118 +154,147 @@
 
     - role: toggle-dark-mode
       tags: [desktop-applications, toggle-dark-mode]
+
     - role: cursorcerer
-      tags: [cursorcerer]
+      tags: [desktop-applications, cursorcerer]
 
     - role: licecap
-      tags: [licecap]
+      tags: [desktop-applications, licecap]
 
     # Disabled: using u3d instead.
     - role: unity-download-assistant
-      tags: [disabled, unity-download-assistant]
+      tags: [desktop-applications, disabled, unity-download-assistant]
 
     - role: u3d
-      tags: [u3d]
+      tags: [desktop-applications, u3d]
 
     - role: unity
-      tags: [unity]
+      tags: [desktop-applications, unity]
 
     - role: xquartz
-      tags: [xquartz]
+      tags: [desktop-applications, xquartz]
 
     - role: rescuetime
-      tags: [rescuetime]
+      tags: [desktop-applications, rescuetime]
 
     - role: bitbar
-      tags: [bitbar]
+      tags: [desktop-applications, bitbar]
 
     - role: bitbar-plugins
-      tags: [bitbar, bitbar-plugins]
+      tags: [desktop-applications, bitbar, bitbar-plugins]
 
     - role: divvy
-      tags: [divvy]
+      tags: [desktop-applications, divvy]
 
     - role: android-file-transfer
-      tags: [android-file-transfer]
+      tags: [desktop-applications, android-file-transfer]
 
     - role: dropbox
-      tags: [dropbox]
+      tags: [desktop-applications, dropbox]
 
     - role: google-chrome
-      tags: [google-chrome]
+      tags: [desktop-applications, google-chrome]
 
     - role: firefox
-      tags: [firefox]
+      tags: [desktop-applications, firefox]
 
     - role: google-chrome-as-default-browser
-      tags: [google-chrome-as-default-browser]
+      tags: [desktop-applications, google-chrome-as-default-browser]
 
     - role: skype
-      tags: [skype]
+      tags: [desktop-applications, skype]
 
     - role: slack
-      tags: [slack]
+      tags: [desktop-applications, slack]
 
     - role: spotify
-      tags: [spotify]
+      tags: [desktop-applications, spotify]
 
     - role: steam
-      tags: [steam]
+      tags: [desktop-applications, steam]
 
     - role: teensy-loader
-      tags: [teensy-loader]
+      tags: [desktop-applications, teensy-loader]
 
     - role: ynab
-      tags: [ynab]
+      tags: [desktop-applications, ynab]
 
     - role: google-photos
-      tags: [google-photos]
+      tags: [desktop-applications, google-photos]
 
     - role: dash
-      tags: [dash]
+      tags: [desktop-applications, dash]
 
     - role: vlc
-      tags: [vlc]
+      tags: [desktop-applications, vlc]
+
+    #############################################################################
+    # Programming languages #####################################################
+    #############################################################################
+
+    - role: jdk
+      tags: [programming-languages, jdk]
+
+    - role: go
+      tags: [programming-languages, go]
+
+    - role: rust
+      tags: [programming-languages, rust]
+
+    - role: ruby
+      tags: [programming-languages, ruby]
+
+    - role: lua
+      tags: [programming-languages, lua]
+
+    - role: luajit
+      tags: [programming-languages, luajit]
+
+    - role: octave
+      tags: [programming-languages, octave]
+
+    - role: r
+      tags: [programming-languages, r]
 
     #############################################################################
     # Programming utilities #####################################################
     #############################################################################
 
     - role: black
-      tags: [black]
+      tags: [programming-utilities, black]
 
     - role: ktlint
-      tags: [ktlint]
+      tags: [programming-utilities, ktlint]
 
     - role: ctags
-      tags: [ctags]
+      tags: [programming-utilities, ctags]
 
     - role: gron
-      tags: [gron]
+      tags: [programming-utilities, gron]
 
     - role: jsxhint
-      tags: [jsxhint]
+      tags: [programming-utilities, jsxhint]
 
     - role: yapf
-      tags: [yapf]
+      tags: [programming-utilities, yapf]
 
     - role: prettier
-      tags: [prettier]
+      tags: [programming-utilities, prettier]
 
     - role: node-cljfmt
-      tags: [node-cljfmt]
+      tags: [programming-utilities, node-cljfmt]
 
     - role: yq
-      tags: [yq]
+      tags: [programming-utilities, yq]
 
     - role: shfmt
-      tags: [shfmt]
+      tags: [programming-utilities, shfmt]
 
     - role: pyre-check
-      tags: [pyre-check]
+      tags: [programming-utilities, pyre-check]
 
     - role: shellcheck
-      tags: [shellcheck]
+      tags: [programming-utilities, shellcheck]
 
     #############################################################################
     # Shell #####################################################################
@@ -345,38 +372,6 @@
     - role: kubectl-tree
       tags: [kubernetes, kubectl-tree]
 
-    #############################################################################
-    # Programming languages #####################################################
-    #############################################################################
-
-    - role: jdk
-      tags: [jdk]
-
-    - role: go
-      tags: [go]
-
-    - role: rust
-      tags: [rust]
-
-    - role: ruby
-      tags: [ruby]
-
-    - role: lua
-      tags: [lua]
-
-    - role: luajit
-      tags: [luajit]
-
-    - role: octave
-      tags: [octave]
-
-    - role: r
-      tags: [r]
-
-    # Disabled: because `stack install purescript` isn't working.
-    - role: purescript
-      tags: [disabled, purescript]
-
     ############################################################################
     # Browser plugins ##########################################################
     ############################################################################
@@ -420,51 +415,54 @@
     #############################################################################
 
     - role: xz
-      tags: [xz]
+      tags: [command-line-tools, xz]
 
     - role: p7zip
-      tags: [p7zip]
+      tags: [command-line-tools, p7zip]
 
     - role: awscli
-      tags: [awscli]
+      tags: [command-line-tools, awscli]
 
     # Disabled: using awscli instead.
     - role: s3cmd
-      tags: [disabled, s3cmd]
+      tags: [command-line-tools, disabled, s3cmd]
 
     - role: defaultbrowser
-      tags: [defaultbrowser]
+      tags: [command-line-tools, defaultbrowser]
 
     - role: jq
-      tags: [jq]
+      tags: [command-line-tools, jq]
 
     - role: tree
-      tags: [tree]
+      tags: [command-line-tools, tree]
 
     - role: pgsanity
-      tags: [pgsanity]
+      tags: [command-line-tools, pgsanity]
 
     - role: ripgrep
-      tags: [ripgrep]
+      tags: [command-line-tools, ripgrep]
+
+    - role: fd
+      tags: [command-line-tools, fd]
 
     - role: tealdeer
-      tags: [tealdeer]
+      tags: [command-line-tools, tealdeer]
 
     - role: wrk
-      tags: [wrk]
+      tags: [command-line-tools, wrk]
 
     - role: websocat
-      tags: [websocat]
+      tags: [command-line-tools, websocat]
 
     - role: terminal-notifier
-      tags: [terminal-notifier]
+      tags: [command-line-tools, terminal-notifier]
 
     #############################################################################
     # Miscellaneous #############################################################
     #############################################################################
 
     - role: qt5
-      tags: [qt5]
+      tags: [qt5, disabled]
 
     - role: fontforge
       tags: [fontforge]
