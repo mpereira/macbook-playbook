@@ -11,54 +11,53 @@ Ansible playbook to prepare and maintain macOS for development and desktop use.
    :PROPERTIES:
    :TOC:      this
    :END:
-    -  [[#tested-on][Tested on]]
-    -  [[#configuring-machine][Configuring machine]]
-      -  [[#install-developer-tools-xcode-select][Install Developer Tools (xcode-select)]]
-      -  [[#clone-repository][Clone repository]]
-      -  [[#create-an-ansible-vault-password][Create an Ansible Vault password]]
-      -  [[#encrypted-files-using-ansible-vault][Encrypted files (using Ansible Vault)]]
-      -  [[#prepare-machine-to-run-the-ansible-playbooks][Prepare machine to run the Ansible playbooks]]
-      -  [[#provision-machine][Provision machine]]
-      -  [[#manual-steps-post-make-converge][Manual steps post make converge]]
-        -  [[#httpmizagecomhelpaccessibilityhtmlenable-assistive-access-for-divvy][Enable assistive access for Divvy]]
-        -  [[#enable-assistive-access-for-terminal][Enable assistive access for Terminal]]
-        -  [[#enable-assistive-access-for-emacs][Enable assistive access for Emacs]]
-        -  [[#set-up-spotify-lastfm-connect][Set up Spotify Last.fm connect]]
-    -  [[#roles][Roles]]
-      -  [[#installs][Installs]]
-        -  [[#desktop-applications][Desktop Applications]]
-        -  [[#text-editors][Text Editors]]
-        -  [[#communication][Communication]]
-        -  [[#configuration][Configuration]]
-        -  [[#multimedia][Multimedia]]
-        -  [[#browser-plugins][Browser Plugins]]
-        -  [[#programming-languages][Programming Languages]]
-        -  [[#virtualization-provisioning-containers-and-system-tools][Virtualization, Provisioning, Containers and System Tools]]
-        -  [[#package-managers-and-build-tools][Package Managers and Build Tools]]
-        -  [[#shell][Shell]]
-        -  [[#programming-utilities][Programming Utilities]]
-        -  [[#haskell-utilities][Haskell Utilities]]
-        -  [[#security][Security]]
-        -  [[#gnu-command-line-tools][GNU Command Line Tools]]
-        -  [[#data-systems][Data Systems]]
-        -  [[#configuration-monitoring-and-debugging-tag-observability][Configuration, Monitoring and Debugging (tag: observability)]]
-        -  [[#document-processors-and-plotting][Document Processors and Plotting]]
-        -  [[#markup-tools][Markup Tools]]
-        -  [[#command-line-tools][Command line tools]]
-        -  [[#miscellaneous][Miscellaneous]]
-      -  [[#configures][Configures]]
-        -  [[#passwordless-sudo][Passwordless sudo]]
-        -  [[#remaps-caps-lock-to-control][Remaps Caps-Lock to Control]]
-        -  [[#puts-ssh-keys-in-place][Puts SSH keys in place]]
-        -  [[#makes-google-chrome-the-default-browser][Makes Google Chrome the default browser]]
-    -  [[#author][Author]]
-    -  [[#license][License]]
+    - [[#tested-on][Tested on]]
+    - [[#configuring-machine][Configuring machine]]
+      - [[#install-developer-tools-xcode-select][Install Developer Tools (xcode-select)]]
+      - [[#clone-repository][Clone repository]]
+      - [[#create-an-ansible-vault-password][Create an Ansible Vault password]]
+      - [[#encrypted-files-using-ansible-vault][Encrypted files (using Ansible Vault)]]
+      - [[#prepare-machine-to-run-the-ansible-playbooks][Prepare machine to run the Ansible playbooks]]
+      - [[#provision-machine][Provision machine]]
+      - [[#manual-steps-post-make-converge][Manual steps post make converge]]
+        - [[#httpmizagecomhelpaccessibilityhtmlenable-assistive-access-for-divvy][Enable assistive access for Divvy]]
+        - [[#enable-assistive-access-for-terminal][Enable assistive access for Terminal]]
+        - [[#enable-assistive-access-for-emacs][Enable assistive access for Emacs]]
+        - [[#set-up-spotify-lastfm-connect][Set up Spotify Last.fm connect]]
+    - [[#roles][Roles]]
+      - [[#installs][Installs]]
+        - [[#desktop-applications][Desktop Applications]]
+        - [[#text-editors][Text Editors]]
+        - [[#communication][Communication]]
+        - [[#configuration][Configuration]]
+        - [[#multimedia][Multimedia]]
+        - [[#browser-plugins][Browser Plugins]]
+        - [[#programming-languages][Programming Languages]]
+        - [[#virtualization-provisioning-containers-and-system-tools][Virtualization, Provisioning, Containers and System Tools]]
+        - [[#package-managers-and-build-tools][Package Managers and Build Tools]]
+        - [[#shell][Shell]]
+        - [[#programming-utilities][Programming Utilities]]
+        - [[#security][Security]]
+        - [[#gnu-command-line-tools][GNU Command Line Tools]]
+        - [[#data-systems][Data Systems]]
+        - [[#configuration-monitoring-and-debugging-tag-observability][Configuration, Monitoring and Debugging (tag: observability)]]
+        - [[#document-processors-and-plotting][Document Processors and Plotting]]
+        - [[#markup-tools][Markup Tools]]
+        - [[#command-line-tools][Command line tools]]
+        - [[#miscellaneous][Miscellaneous]]
+      - [[#configures][Configures]]
+        - [[#passwordless-sudo][Passwordless sudo]]
+        - [[#remaps-caps-lock-to-control][Remaps Caps-Lock to Control]]
+        - [[#puts-ssh-keys-in-place][Puts SSH keys in place]]
+        - [[#makes-google-chrome-the-default-browser][Makes Google Chrome the default browser]]
+    - [[#author][Author]]
+    - [[#license][License]]
 
 ** Tested on
    I've been using =macbook-playbook= for 6 years now. I've used it on at least
    four MacBookPros with different macOS versions. The macOS version on my
    current MacBookPros is =10.14.4= as of [2020-01-03 Fri].
-   
+
    Please let me know if you try =macbook-playbook= out and bump into something.
 
 ** Configuring machine
@@ -85,21 +84,22 @@ Ansible playbook to prepare and maintain macOS for development and desktop use.
     personal Ansible Vault password. Unless you have my password, roles
     referencing these files will fail to run.
 
-    | Description                       | File                            | Role     |
-    | Private SSH key                   | =ssh-keys/files/id_rsa=         | ssh-keys |
-    | AWS CLI credentials               | =awscli/files/credentials=      | awscli   |
-    | s3cmd configuration               | =s3cmd/files/.s3cfg=            | s3cmd    |
-    | Enviroment variables for dotfiles | =dotfiles/vars/environment.yml= | dotfiles |
-    | Prey API key                      | =prey/vars/api_key.yml=         | prey     |
+    | Description                       | File                                  | Role              |
+    | AWS CLI credentials               | =awscli/files/credentials=            | awscli            |
+    | BetterTouchTool license           | =better-touch-tool/files/license.xml= | better-touch-tool |
+    | Enviroment variables for dotfiles | =dotfiles/vars/environment.yml=       | dotfiles          |
+    | Prey API key                      | =prey/vars/api_key.yml=               | prey              |
+    | Private SSH key                   | =ssh-keys/files/id_rsa=               | ssh-keys          |
+    | s3cmd configuration               | =s3cmd/files/.s3cfg=                  | s3cmd             |
 
     You have two choices: skip these roles, and/or overwrite the encrypted files
     with your own.
-    
+
     To overwrite them first run
     #+begin_src bash
     make truncate-sensitive-files
     #+end_src
-    
+
     And then you'll be able to overwrite them with your own files (for example
     your own =~/.ssh/id_rsa=) and then encrypt them with ~make encrypt~.
 
@@ -132,17 +132,46 @@ Ansible playbook to prepare and maintain macOS for development and desktop use.
     #+end_src
 
     All role tags can be seen in [[file:main.yml][=main.yml=]].
-    
+
 *** Manual steps post =make converge=
-    These are some steps that are currently not automated either because it
-    would be difficult or impossible to automate.
+    These are steps that are currently not automated either because:
+    a) it would be difficult
+    b) it would be impossible
+    c) or I just didn't have the time
 
-    Or I just didn't have time.
-
-**** [[http://mizage.com/help/accessibility.html][Enable assistive access for Divvy]]
-**** Enable assistive access for Terminal
-**** Enable assistive access for Emacs
-**** Set up Spotify Last.fm connect
+**** Change keyboard layout to U.S. international
+     1. System Preferences -> Keyboard -> Input Sources
+     2. Click +
+     3. Select "English" on left column
+     4. Select "U.S. International - PC" on right column
+     5. Click "Add"
+     6. Remove other keyboard layouts from the left column
+**** PDF Expert
+***** Register license
+**** Sound Control
+***** Check "Check for updates automatically"
+***** Register license
+***** Preferences > Priority Devices > Output and Input
+      - Check "Switch to device when" "Device is attached"
+      - Reorder devices in priority list
+**** BetterTouchTool
+***** Register license
+**** Terminal
+***** Preferences > Profiles > Pro > Font
+      Set to =Hack Regular 18 pt.=
+**** System Preferences > Security & Privacy > Privacy > [[https://www.howtogeek.com/297083/why-do-some-mac-apps-need-to-control-this-computer-using-accessibility-features/][Accessibility]]
+     - BetterTouchTool.app
+     - Dropbox
+     - Emacs.app
+     - Persephone.app
+     - RescueTime
+     - VLC
+**** System Preferences > Keyboard > Shortcuts > Mission Control
+     Uncheck:
+     - Mission Control
+     - Move left a space
+     - Move right a space
+     - Switch to desktop 1
 
 ** Roles
 *** Installs
@@ -153,30 +182,56 @@ Ansible playbook to prepare and maintain macOS for development and desktop use.
      - [[https://kapeli.com/dash][Dash]]
      - [[http://mizage.com/divvy/][Divvy]]
      - [[https://www.dropbox.com/install][Dropbox]]
+     - [[https://www.elgato.com/en/dock/support][Elgato Dock]]
+     - [[https://justgetflux.com/][f.lux]]
      - [[https://www.mozilla.org/en-US/firefox/new][Firefox]]
      - [[https://www.google.com/chrome/index.html][Google Chrome]]
      - [[https://photos.google.com/apps][Google Photos]]
+     - [[https://www.grammarly.com/native/mac][Grammarly]]
+     - [[https://bjango.com/mac/istatmenus/][iStat Menus]]
      - [[https://www.cockos.com/licecap/][LICEcap]]
+     - [[https://pdfexpert.com/][PDF Expert]]
+     - [[https://persephone.fm/][Persephone]]
      - [[https://www.rescuetime.com/][RescueTime]]
      - [[https://www.skype.com/en/download-skype/skype-for-mac/][Skype]]
      - [[https://slack.com/downloads/osx][Slack]]
+     - [[https://staticz.com/soundcontrol/][Sound Control]]
      - [[https://www.spotify.com/br/download/other/][Spotify]]
      - [[http://store.steampowered.com/about/][Steam]]
      - [[https://www.pjrc.com/teensy/loader_mac.html][Teensy Loader]]
+     - [[https://github.com/mpereira/macbook-playbook/tree/master/roles/toggle-dark-mode/files/ToggleDarkMode.app/Contents][ToggleDarkMode]]
      - [[https://unity3d.com/get-unity/download][Unity]]
+     - [[https://docs.unity3d.com/Manual/GettingStartedInstallingHub.html][Unity Hub]]
      - [[https://www.videolan.org/vlc/download-macosx.html][VLC]]
      - [[https://www.xquartz.org/][XQuartz]]
-     - [[https://classic.youneedabudget.com/][YNAB]]
+     - [[https://classic.youneedabudget.com/][YNAB]] (disabled by default, I use the online version)
 
 **** Text Editors
-     - [[https://emacsformacosx.com/][Emacs 26]]
+     - [[https://emacsformacosx.com/][Emacs 27.1]]
+     - [[https://github.com/daviderestivo/homebrew-emacs-head][Emacs 28.0.50]]
      - [[http://macvim-dev.github.io/macvim/][MacVim]]
      - [[https://github.com/neovim/neovim/wiki/Installing-Neovim][Neovim]]
      - [[http://www.vim.org/][Vim]]
+     - [[https://code.visualstudio.com/][VSCode]]
 
 **** Configuration
      - [[https://github.com/mpereira/.emacs.d][dotemacs]]
      - [[https://github.com/mpereira/dotfiles][dotfiles]]
+
+**** Programming Languages
+     - [[https://clojure.org/guides/getting_started][Clojure]]
+     - [[https://www.gnu.org/software/octave/download.html][GNU Octave]]
+     - [[https://golang.org/][Go]]
+     - [[https://docs.haskellstack.org/en/stable/README/][Haskell]]
+     - [[https://adoptopenjdk.net/][Java (AdoptOpenJDK)]]
+     - [[https://www.lua.org/download.html][Lua]]
+     - [[http://luajit.org/download.html][LuaJIT]]
+     - [[https://nodejs.org/en/download/][Node.js]]
+     - [[http://www.purescript.org/][PureScript]]
+     - [[https://www.python.org/downloads/mac-osx/][Python 3]]
+     - [[https://cran.r-project.org/bin/macosx/][R]]
+     - [[https://www.ruby-lang.org][Ruby]]
+     - [[https://www.rust-lang.org/][Rust]]
 
 **** Multimedia
      - [[http://beets.io/][Beets]]
@@ -190,36 +245,23 @@ Ansible playbook to prepare and maintain macOS for development and desktop use.
      - [[https://mplayerosx.ch/][mplayer]]
      - [[https://github.com/hnarayanan/shpotify][shpotify]]
      - [[http://taglib.org/][TagLib]]
-     - [[https://github.com/boysetsfrog/vimpc][vimpc]]
+
+**** Fonts
+     - [[https://docs.microsoft.com/en-us/typography/font-list/consolas][Consolas]]
+     - [[https://sourcefoundry.org/hack/][Hack]]
 
 **** Browser Plugins
      - [[https://addons.mozilla.org/en-US/firefox/addon/adblock-plus/][Firefox Adblock Plus]]
-     - [[https://tools.google.com/dlpage/hangoutplugin][Google Chrome Hangouts]]
-     - [[https://seg.bb.com.br/home.html][Warsaw (bb.com.br security module)]]
-
-**** Programming Languages
-     - [[https://www.gnu.org/software/octave/download.html][GNU Octave]]
-     - [[https://golang.org/][Go]]
-     - [[https://docs.haskellstack.org/en/stable/README/][Haskell Stack]]
-     - [[http://www.oracle.com/technetwork/pt/java/javase/downloads/jdk8-downloads-2133151.html][Java (JDK)]]
-     - [[https://www.lua.org/download.html][Lua]]
-     - [[http://luajit.org/download.html][LuaJIT]]
-     - [[https://nodejs.org/en/download/][Node.js]]
-     - [[http://www.purescript.org/][PureScript]]
-     - [[https://www.python.org/downloads/mac-osx/][Python 3]]
-     - [[https://cran.r-project.org/bin/macosx/][R]]
-     - [[https://www.ruby-lang.org][Ruby]]
-     - [[https://www.rust-lang.org/][Rust]]
 
 **** Virtualization, Provisioning, Containers and System Tools
      - [[https://store.docker.com/editions/community/docker-ce-desktop-mac][Docker]]
      - [[https://github.com/kubernetes-sigs/krew][krew]]
-     - [[https://github.com/ahmetb/kubectl-tree][kubectl-tree]]
      - [[https://kubernetes.io/docs/reference/kubectl/kubectl/][kubectl]]
+     - [[https://github.com/ahmetb/kubectl-tree][kubectl-tree]]
      - [[https://openzfsonosx.org/][OpenZFS]]
      - [[https://www.terraform.io/][Terraform]]
-     - [[https://github.com/dotless-de/vagrant-vbguest][Vagrant vagrant-vbguest plugin]]
      - [[https://www.vagrantup.com/downloads.html][Vagrant]]
+     - [[https://github.com/dotless-de/vagrant-vbguest][Vagrant vagrant-vbguest plugin]]
      - [[https://www.virtualbox.org/wiki/Downloads][VirtualBox]]
 
 **** Package Managers and Build Tools
@@ -232,55 +274,32 @@ Ansible playbook to prepare and maintain macOS for development and desktop use.
      - [[https://www.gnu.org/software/make/][Make]]
      - [[https://maven.apache.org/][Maven]]
      - [[https://www.npmjs.com/package/pulp][pulp]]
+     - [[https://yarnpkg.com/][Yarn]]
 
 **** Shell
+     - [[https://github.com/babashka/babashka][Babashka]]
      - [[https://www.gnu.org/software/bash/][Bash]]
-     - [[https://github.com/oh-my-fish/plugin-foreign-env][fish-foreign-env]]
      - [[https://fishshell.com/][fish]]
+     - [[https://github.com/oh-my-fish/plugin-foreign-env][fish-foreign-env]]
      - [[https://www.iterm2.com/][iTerm]]
-     - [[https://github.com/powerline/powerline][Powerline]]
-     - [[https://github.com/ChrisJohnsen/tmux-MacOSX-pasteboard][reattach-to-user-namespace]] (for tmux)
      - [[https://github.com/tmux/tmux][tmux]]
-     - [[https://github.com/tmuxinator/tmuxinator][tmuxinator]] (for tmux)
+     - [[https://github.com/tmuxinator/tmuxinator][tmuxinator]]
      - [[http://www.zsh.org/][Zsh]]
 
 **** Programming Utilities
      - [[https://black.readthedocs.io/en/stable/][Black]]
+     - [[https://clojure-lsp.github.io/clojure-lsp/][clojure-lsp]]
      - [[https://ctags.io/][Ctags]]
      - [[https://github.com/tomnomnom/gron][gron]]
-     - [[https://www.npmjs.com/package/jsxhint][jsxhint]]
      - [[https://ktlint.github.io/][ktlint]]
      - [[https://github.com/snoe/node-cljfmt][node-cljfmt]]
      - [[https://prettier.io/][Prettier]]
      - [[https://pyre-check.org/][Pyre]]
+     - [[https://rust-analyzer.github.io/][rust-analyzer]]
      - [[https://www.shellcheck.net/][ShellCheck]]
      - [[https://github.com/mvdan/sh][shfmt]]
      - [[https://github.com/google/yapf][YAPF]]
      - [[https://github.com/mikefarah/yq][yq]]
-
-**** Security
-     - [[https://www.preyproject.com/download][Prey]]
-     - [[https://www.gnupg.org/download/index.html][GnuPG]]
-     - [[https://github.com/jcoglan/vault][vault]]
-
-**** GNU Command Line Tools
-     - binutils
-     - coreutils
-     - diffutils
-     - ed
-     - findutils
-     - gawk
-     - gnu-indent
-     - gnu-sed
-     - gnu-tar
-     - gnu-which
-     - gnutls
-     - grep
-     - gzip
-     - screen
-     - watch
-     - wdiff
-     - wget
 
 **** Data Systems
      - [[http://hadoop.apache.org/][Apache Hadoop]]
@@ -306,12 +325,15 @@ Ansible playbook to prepare and maintain macOS for development and desktop use.
 **** Command line tools
      - [[https://aws.amazon.com/cli/][AWS CLI]]
      - [[https://github.com/kerma/defaultbrowser][defaultbrowser]]
+     - [[https://github.com/dandavison/delta][delta]]
+     - [[https://github.com/dandavison/delta][delta]]
      - [[https://git-scm.com/download/mac][git]]
      - [[https://stedolan.github.io/jq/][jq]]
      - [[http://www.7-zip.org/][p7zip]]
      - [[https://pypi.python.org/pypi/pgsanity][pgsanity]]
+     - [[https://github.com/jcsalterego/pngpaste][pngpaste]]
      - [[https://github.com/BurntSushi/ripgrep][ripgrep]]
-     - [[http://s3tools.org/s3cmd][s3cmd]] (disabled by default since I use the aws CLI now)
+     - [[http://s3tools.org/s3cmd][s3cmd]] (disabled by default, I use the AWS CLI now)
      - [[https://tldr.sh/][tealdeer]]
      - [[https://github.com/julienXX/terminal-notifier][terminal-notifier]]
      - [[http://brewformulas.org/Tree][tree]]
@@ -319,10 +341,33 @@ Ansible playbook to prepare and maintain macOS for development and desktop use.
      - [[https://github.com/wg/wrk][wrk]]
      - [[https://tukaani.org/xz/][xz]]
 
+**** Security
+     - [[https://www.preyproject.com/download][Prey]]
+     - [[https://www.gnupg.org/download/index.html][GnuPG]]
+     - [[https://github.com/jcoglan/vault][vault]]
+
+**** GNU Command Line Tools
+     - binutils
+     - coreutils
+     - diffutils
+     - ed
+     - findutils
+     - gawk
+     - gnu-indent
+     - gnu-sed
+     - gnu-tar
+     - gnu-which
+     - gnutls
+     - grep
+     - gzip
+     - screen
+     - watch
+     - wdiff
+     - wget
+
 **** Miscellaneous
-     - [[https://docs.microsoft.com/en-us/typography/font-list/consolas][Consolas font]]
      - [[http://fontforge.github.io/en-US/downloads/mac-dl/][FontForge]]
-     - [[http://download.qt.io/official_releases/qt/5.9/5.9.2/][Qt 5]]
+     - [[http://download.qt.io/official_releases/qt/5.9/5.9.2/][Qt 5]] (disabled by default)
      - [[https://wordnet.princeton.edu/download][WordNet]]
 
 *** Configures
@@ -330,7 +375,6 @@ Ansible playbook to prepare and maintain macOS for development and desktop use.
 **** Passwordless sudo
 **** Puts SSH keys in place
 **** Remaps Caps-Lock to Control
-**** ToggleDarkMode.app
 
 ** Author
    [[http://murilopereira.com][Murilo Pereira]]
