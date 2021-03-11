@@ -2,8 +2,14 @@
 - name: Install ruby-build
   homebrew:
     name: ruby-build
-    # name: ruby_build@{{ ruby_build_version }}
+    state: latest
+
+- name: Install openssl
+  homebrew:
+    name: openssl
+    state: latest
 
 - name: Install Ruby
   shell: >
-    RUBY_CONFIGURE_OPTS="--with-openssl-dir=$(brew --prefix openssl)" ruby-build "{{ ruby_version }}" /usr/local
+    RUBY_CONFIGURE_OPTS="--with-openssl-dir=$(brew --prefix openssl)" \
+      ruby-build "{{ ruby_version }}" /usr/local

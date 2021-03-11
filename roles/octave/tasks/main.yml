@@ -1,20 +1,5 @@
 ---
-- name: Download Octave
-  get_url: >
-    url=http://ufpr.dl.sourceforge.net/project/octave/Octave%20MacOSX%20Binary/2013-12-30%20binary%20installer%20of%20Octave%203.8.0%20for%20OSX%2010.9.1%20%28beta%29/GNU_Octave_3.8.0-6.dmg
-    dest={{ downloads_directory }}/GNU_Octave_3.8.0-6.dmg
-
-- name: Mount Octave image
-  command: >
-    chdir={{ downloads_directory }}
-    hdiutil attach -nobrowse GNU_Octave_3.8.0-6.dmg
-    creates="/Volumes/GNU Octave 3.8.0"
-
 - name: Install Octave
-  command: >
-    installer -pkg "/Volumes/GNU Octave 3.8.0/Octave-3.8.0-6.mpkg" -target /
-    creates=/Applications/Octave-cli.app
-  become: yes
-
-- name: Unmount Octave image
-  command: hdiutil detach "/Volumes/GNU Octave 3.8.0"
+  homebrew:
+    name: octave
+    state: latest

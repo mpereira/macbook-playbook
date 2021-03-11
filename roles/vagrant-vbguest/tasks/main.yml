@@ -1,2 +1,3 @@
 - name: Install the vagrant-vbguest Vagrant plugin
-  command: vagrant plugin install vagrant-vbguest --plugin-version {{ vagrant_vbguest_version }}
+  command: >
+    vagrant plugin install vagrant-vbguest --plugin-version {{ vagrant_vbguest_version }}

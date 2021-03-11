@@ -2,5 +2,4 @@
 - name: Install Pyre-Check
   pip:
     name: pyre-check
-    version: "{{ pyre_check_version }}"
     extra_args: --user

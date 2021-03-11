@@ -2,4 +2,4 @@
 - name: Install mpc
   homebrew:
     name: mpc
-    # name: mpc@{{ mpc_version }}
+    state: latest

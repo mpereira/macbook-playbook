@@ -1,3 +1,5 @@
 ---
 - name: Install hadoop
-  homebrew: name=hadoop state=present
+  homebrew:
+    name: hadoop
+    state: latest

@@ -2,4 +2,4 @@
 - name: Install shfmt
   homebrew:
     name: shfmt
-    # name: shfmt@{{ shfmt_version }}
+    state: latest

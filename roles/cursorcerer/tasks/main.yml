@@ -2,5 +2,4 @@
 - name: Install Cursorcerer
   homebrew_cask:
     name: cursorcerer
-    # name: "cursorcerer@{{ cursorcerer_version }}"
     state: latest

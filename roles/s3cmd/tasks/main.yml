@@ -2,7 +2,7 @@
 - name: Install s3cmd
   homebrew:
     name: s3cmd
-    # name: s3cmd@{{ s3cmd_version }}
+    state: latest
 
 - name: Install ~/.s3cfg
   copy:

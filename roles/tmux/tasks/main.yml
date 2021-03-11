@@ -1,9 +1,11 @@
 ---
 - name: Install tmux
-  homebrew: name=tmux state=latest
+  homebrew:
+    name: tmux
+    state: latest
 
 - name: Install tmux-switch-session
-  get_url: >
-    url=https://raw.githubusercontent.com/mislav/dotfiles/master/bin/tmux-switch-session
-    dest=/usr/local/bin/tmux-switch-session
-    mode=0755
+  get_url:
+    url: https://raw.githubusercontent.com/mislav/dotfiles/master/bin/tmux-switch-session
+    dest: /usr/local/bin/tmux-switch-session
+    mode: 0755

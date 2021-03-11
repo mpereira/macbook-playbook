@@ -1,10 +1,5 @@
 ---
-- name: Download fish
-  get_url:
-    url: https://github.com/fish-shell/fish-shell/releases/download/{{ fish_version }}/{{ fish_pkg }}
-    dest: "{{ downloads_directory }}/{{ fish_pkg }}"
-
 - name: Install fish
-  command: >
-    installer -package {{ downloads_directory }}/{{ fish_pkg }} -target /
-  become: yes
+  homebrew:
+    name: fish
+    state: latest

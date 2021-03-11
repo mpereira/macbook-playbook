@@ -1,7 +1,7 @@
+---
 - name: Install glances
   pip:
     name: glances
-    version: "{{ glances_version }}"
     extra_args: --user
 
 - name: Create glances webserver service plist

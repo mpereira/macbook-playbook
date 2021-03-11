@@ -2,8 +2,8 @@
 - name: Download websocat binary
   get_url:
     url: "{{ websocat_binary_url }}"
-    dest: "{{ downloads_directory }}/{{ websocat_binary_name }}_{{ websocat_version }}"
+    dest: "{{ downloads_directory }}/{{ websocat_binary_name }}"
     mode: "755"
 
 - name: Install websocat
-  command: cp "{{ downloads_directory }}/{{ websocat_binary_name }}_{{ websocat_version }}" "/usr/local/bin/{{ websocat_binary_install_name }}"
+  command: cp "{{ downloads_directory }}/{{ websocat_binary_name }}" "/usr/local/bin/{{ websocat_binary_install_name }}"

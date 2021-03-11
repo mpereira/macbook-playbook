@@ -2,5 +2,4 @@
 - name: Install OpenZFS
   homebrew_cask:
     name: openzfs
-    # name: "openzfs@{{ openzfs_version }}"
     state: latest

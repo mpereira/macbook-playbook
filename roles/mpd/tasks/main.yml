@@ -2,10 +2,10 @@
 - name: Install mpd
   homebrew:
     name: mpd
-    # name: mpd@{{ mpd_version }}
+    state: latest
     install_options: with-libshout,with-lame,with-flac,with-lastfm
 
-# This seems to fail if the service is already started.
+# FIXME: this seems to fail if the service is already started.
 - name: Create mpd service and start mpd
   command: brew services restart mpd
   ignore_errors: yes

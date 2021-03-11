@@ -2,4 +2,4 @@
 - name: Install tree
   homebrew:
     name: tree
-    # name: tree@{{ tree_version }}
+    state: latest

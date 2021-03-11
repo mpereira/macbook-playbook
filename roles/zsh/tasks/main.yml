@@ -1,3 +1,5 @@
 ---
 - name: Install zsh
-  homebrew: name=zsh state=latest
+  homebrew:
+    name: zsh
+    state: latest

@@ -2,4 +2,4 @@
 - name: Install ctags
   homebrew:
     name: ctags
-    # name: ctags@{{ ctags_version }}
+    state: latest

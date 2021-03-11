@@ -1,2 +1,0 @@
-- name: Install Powerline
-  command: pip install --user powerline-status

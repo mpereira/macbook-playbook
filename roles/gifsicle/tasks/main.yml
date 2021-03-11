@@ -1,3 +1,5 @@
 ---
 - name: Install gifsicle
-  homebrew: name=gifsicle state=present
+  homebrew:
+    name: gifsicle
+    state: present

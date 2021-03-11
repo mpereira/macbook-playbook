@@ -1,3 +1,5 @@
 ---
 - name: Install tmuxinator gem
-  gem: name=tmuxinator state=latest
+  gem:
+    name: tmuxinator
+    state: latest

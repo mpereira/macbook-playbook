@@ -2,4 +2,4 @@
 - name: Install maven
   homebrew:
     name: maven
-    # name: maven@{{ maven_version }}
+    state: latest

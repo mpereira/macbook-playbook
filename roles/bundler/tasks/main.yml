@@ -1,3 +1,5 @@
 ---
-- name: Install bundler gem
-  gem: name=bundler state=latest
+- name: Install bundler
+  gem:
+    name: bundler
+    state: latest

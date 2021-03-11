@@ -1,5 +1,5 @@
+---
 - name: Install beets
   pip:
     name: beets
-    version: "{{ beets_version }}"
     extra_args: --user

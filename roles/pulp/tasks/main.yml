@@ -1,3 +1,6 @@
 ---
 - name: Install pulp
-  npm: name=pulp state=latest global=yes
+  npm:
+    name: pulp
+    state: latest
+    global: yes

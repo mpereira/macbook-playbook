@@ -2,4 +2,4 @@
 - name: Install htop
   homebrew:
     name: htop
-    # name: htop@{{ htop_version }}
+    state: latest

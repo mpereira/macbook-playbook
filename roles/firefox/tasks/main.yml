@@ -14,7 +14,7 @@
     path="{{ firefox_app }}"
     state=absent
   when: (firefox_version_output.rc == 1
-         or firefox_version_output.stdout | version_compare(firefox_version, '<'))
+         or firefox_version_output.stdout is version(firefox_version, '<'))
 
 - name: Mount Firefox image
   command: >
@@ -22,16 +22,16 @@
     hdiutil attach -nobrowse Firefox\ {{ firefox_version }}.dmg
     creates=/Volumes/Firefox
   when: (firefox_version_output.rc == 1
-         or firefox_version_output.stdout | version_compare(firefox_version, '<'))
+         or firefox_version_output.stdout is version(firefox_version, '<'))
 
 - name: Copy Firefox application directory to the applications directory
   command: >
     cp -R /Volumes/Firefox/Firefox.app /Applications
     creates={{ firefox_app }}
   when: (firefox_version_output.rc == 1
-         or firefox_version_output.stdout | version_compare(firefox_version, '<'))
+         or firefox_version_output.stdout is version(firefox_version, '<'))
 
 - name: Unmount Firefox image
   command: hdiutil detach /Volumes/Firefox
   when: (firefox_version_output.rc == 1
-         or firefox_version_output.stdout | version_compare(firefox_version, '<'))
+         or firefox_version_output.stdout is version(firefox_version, '<'))

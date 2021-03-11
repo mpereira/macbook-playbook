@@ -1,9 +1,11 @@
 ---
+# https://github.com/DragonBox/u3d/releases
 - name: Install u3d gem
-  gem: name=u3d state=latest
+  gem:
+    name: u3d
+    state: latest
   become: yes
 
-#
 - name: Install Unity
   command: >
     u3d install {{ unity_version }} -p Unity,WebGL --trace

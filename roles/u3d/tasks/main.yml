@@ -1,3 +1,0 @@
----
-- name: Install u3d gem
-  gem: name=u3d state=latest

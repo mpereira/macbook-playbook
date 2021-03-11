@@ -2,7 +2,6 @@
 - name: Install Docker
   homebrew_cask:
     name: docker
-    # name: "docker@{{ docker_version }}"
     state: latest
 
 # TODO: open it if it was just installed for the first time?

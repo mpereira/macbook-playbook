@@ -1,10 +1,5 @@
 ---
-- name: Download leiningen script
-  get_url:
-    url: https://raw.githubusercontent.com/technomancy/leiningen/{{ leiningen_version }}/bin/lein
-    dest: /usr/local/bin/lein
-    mode: u+x
-    checksum: "{{ leiningen_checksum }}"
-
 - name: Install leiningen
-  command: lein version
+  homebrew:
+    name: leiningen
+    state: latest

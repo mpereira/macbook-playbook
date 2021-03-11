@@ -2,4 +2,4 @@
 - name: Install p7zip
   homebrew:
     name: p7zip
-    # name: p7zip@{{ p7zip_version }}
+    state: latest

@@ -1,7 +1,7 @@
 ---
 - name: Install tealdeer
   command: >
-    cargo install tealdeer --force --version {{tealdeer_version}}
+    cargo install tealdeer --force
 
 - name: Update tldr cache
   command: >

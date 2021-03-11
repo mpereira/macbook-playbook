@@ -2,5 +2,4 @@
 - name: Install wkhtmltopdf
   homebrew_cask:
     name: wkhtmltopdf 
-    # name: "wkhtmltopdf @{{ wkhtmltopdf_version }}"
     state: latest

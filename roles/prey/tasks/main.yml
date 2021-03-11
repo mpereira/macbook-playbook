@@ -1,7 +1,6 @@
 ---
-# get_url fails to download because of a bug with SSL handling. Using
-# command + wget instead.
-# https://github.com/ansible/ansible/issues/23642
+# NOTE: get_url fails to download because of a bug with SSL handling. Using
+# command + wget instead. https://github.com/ansible/ansible/issues/23642
 - name: Download Prey
   command: >
     chdir={{ downloads_directory }}

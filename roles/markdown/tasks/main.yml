@@ -2,4 +2,4 @@
 - name: Install markdown
   homebrew:
     name: markdown
-    # name: markdown@{{ markdown_version }}
+    state: latest

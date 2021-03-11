@@ -2,4 +2,4 @@
 - name: Install xz
   homebrew:
     name: xz
-    state: present
+    state: latest

@@ -2,7 +2,7 @@
 - name: Install mpdscribble
   homebrew:
     name: mpdscribble
-    # name: mpdscribble@{{ mpdscribble_version }}
+    state: latest
 
 - name: Create mpdscribble service and start mpdscribble
   command: brew services restart mpdscribble

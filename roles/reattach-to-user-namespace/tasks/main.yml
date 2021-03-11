@@ -1,3 +1,0 @@
----
-- name: Install reattach-to-user-namespace
-  homebrew: name=reattach-to-user-namespace state=latest

@@ -2,4 +2,4 @@
 - name: Install JMeter
   homebrew:
     name: jmeter
-    # name: jmeter@{{ jmeter_version }}
+    state: latest

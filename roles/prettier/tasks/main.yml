@@ -2,6 +2,6 @@
 - name: Install prettier
   npm:
     name: prettier
-    version: "{{ prettier_version }}"
+    state: latest
     global: yes
   become: yes

@@ -1,3 +1,5 @@
 ---
 - name: Install taglib
-  homebrew: name=taglib state=present
+  homebrew:
+    name: taglib
+    state: present

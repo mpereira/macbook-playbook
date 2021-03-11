@@ -7,4 +7,6 @@
   become: yes
 
 - name: Install fontforge
-  homebrew: name=fontforge state=present
+  homebrew:
+    name: fontforge
+    state: latest

@@ -2,5 +2,5 @@
 - name: Install Hugo
   homebrew:
     name: hugo
-    # name: "hugo@{{ hugo_version }}"
-    state: latest
+    # NOTE: I don't want to automatically update Hugo.
+    state: present

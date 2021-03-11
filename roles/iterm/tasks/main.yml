@@ -1,17 +1,5 @@
 ---
-- name: Download iTerm
-  get_url: >
-    url="https://iterm2.com/downloads/stable/iTerm2-{{ iterm_version }}.zip"
-    dest="{{ downloads_directory }}/iTerm2-{{ iterm_version }}.zip"
-
-- name: Extract iTerm zip archive
-  command: >
-    chdir={{ downloads_directory }}
-    unzip "iTerm2-{{ iterm_version }}.zip" -d "iTerm2-{{ iterm_version }}"
-    creates=iTerm2-{{ iterm_version }}
-
-- name: Copy iTerm.app to Applications directory
-  command: >
-    cp -R "{{ downloads_directory }}/iTerm2-{{ iterm_version }}/iTerm.app" /Applications
-    creates=/Applications/iTerm.app
-  become: yes
+- name: Install iTerm2
+  homebrew_cask:
+    name: iterm2
+    state: latest

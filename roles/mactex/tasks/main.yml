@@ -2,5 +2,4 @@
 - name: Install MacTeX
   homebrew_cask:
     name: mactex-no-gui
-    # name: "mactex-no-gui@{{ mactex_version }}"
     state: latest

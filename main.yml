@@ -6,38 +6,62 @@
     # Foundational ##############################################################
     #############################################################################
 
-    - role: git
-      tags: [foundational, git]
-
     - role: homebrew
-      tags: [foundational, package-build-tools, homebrew]
+      tags: [foundational, package-and-build, homebrew]
+
+    # Depends on homebrew.
+    - role: git
+      tags: [foundational, brew-pkg, git]
 
     # Depends on homebrew.
     - role: gnu-command-line-tools
-      tags: [foundational, gnu-command-line-tools]
+      tags: [foundational, brew-pkg, gnu-command-line-tools]
 
     # Depends on homebrew.
     - role: make
-      tags: [foundational, package-build-tools, make]
+      tags: [foundational, package-and-build, brew-pkg, make]
 
     # Depends on homebrew.
     - role: bash
-      tags: [foundational, programming-languages, shell, bash]
+      tags: [foundational, brew-pkg, programming-languages, bash]
 
     - role: cmake
-      tags: [foundational, package-build-tools, cmake]
+      tags: [foundational, package-and-build, bespoke-pkg, cmake]
+      vars:
+        # https://cmake.org/download/
+        cmake_version: "3.17.2"
 
     - role: python3
-      tags: [foundational, programming-languages, python3]
+      tags: [foundational, programming-languages, bespoke-pkg, python3]
+      vars:
+        # https://www.python.org/ftp/python/
+        python3_version: "3.9.2"
+        python3_macos_version: "10.9" # this is used in the .pkg file name.
+        python3_version_major_minor: "{{ python3_version | regex_replace('^([0-9]+)\\.([0-9]+)(?:\\.[0-9]+)?$', '\\1.\\2') }}"
 
     - role: mac-ports
-      tags: [foundational, package-build-tools, mac-ports]
+      tags: [foundational, package-and-build, bespoke-pkg, mac-ports]
+      vars:
+        # https://www.macports.org/install.php
+        macports_version: "2.5.4"
+        macports_mac_release: "10.14-Mojave"
 
     - role: node
-      tags: [foundational, programming-languages, node]
+      tags: [foundational, programming-languages, bespoke-pkg, node]
+      vars:
+        # https://nodejs.org/dist/
+        # https://github.com/nodejs/node/releases
+        node_version: "15.11.0"
 
     - role: maven
-      tags: [foundational, package-build-tools, maven]
+      tags: [foundational, package-and-build, brew-pkg, maven]
+
+    #############################################################################
+    # Fonts #####################################################################
+    #############################################################################
+
+    - role: consolas
+      tags: [fonts, bespoke-pkg, consolas]
 
     #############################################################################
     # Configuration #############################################################
@@ -58,19 +82,32 @@
     #############################################################################
 
     - role: build-emacs
-      tags: [text-editors, build-emacs]
+      tags: [text-editors, brew-pkg, build-emacs]
 
     - role: emacs-pre-built
-      tags: [text-editors, emacs-pre-built]
+      tags: [text-editors, bespoke-pkg, emacs-pre-built]
+      vars:
+        emacs_pre_built_version: "27.1"
+        emacs_pre_built_patch: "-1"
+        # emacs_pre_built_version: "26.1-rc1"
+        # emacs_pre_built_pretest: "yes"
 
     - role: vim
-      tags: [text-editors, vim]
-
-    - role: macvim
-      tags: [text-editors, macvim]
+      tags: [text-editors, bespoke-pkg, vim]
+      vars:
+        vim_version: "8.1"
 
     - role: neovim
-      tags: [text-editors, neovim]
+      tags: [text-editors, bespoke-pkg, neovim]
+      vars:
+        # https://github.com/neovim/neovim/releases
+        neovim_version: "0.4.4"
+
+    - role: macvim
+      tags: [text-editors, bespoke-pkg, macvim]
+      vars:
+        # https://github.com/macvim-dev/macvim/releases
+        macvim_version: "snapshot-165"
 
     #############################################################################
     # Behaviors #################################################################
@@ -84,68 +121,81 @@
     #############################################################################
 
     - role: prey
-      tags: [security, prey]
+      tags: [security, bespoke-pkg, prey]
+      vars:
+        prey_version: "1.9.2"
 
     - role: vault
-      tags: [security, vault]
+      tags: [security, npm-pkg, vault]
+      vars:
+        vault_version: "0.3.0"
 
     - role: gnupg
-      tags: [security, gnupg]
+      tags: [security, bespoke-pkg, gnupg]
+      vars:
+        gnupg_version: "2.2.17"
 
     ############################################################################
     # Observability ############################################################
     ############################################################################
 
     - role: glances
-      tags: [observability, glances]
+      tags: [observability, pip-pkg, glances]
 
     - role: ngrep
-      tags: [observability, ngrep]
+      tags: [observability, brew-pkg, ngrep]
 
     - role: jmeter
-      tags: [observability, jmeter]
+      tags: [observability, brew-pkg, jmeter]
 
     - role: htop
-      tags: [observability, htop]
+      tags: [observability, brew-pkg, htop]
 
     - role: vtop
-      tags: [observability, vtop]
+      tags: [observability, npm-pkg, vtop]
 
     ############################################################################
     # Data Systems #############################################################
     ############################################################################
 
     - role: hadoop
-      tags: [data-systems, hadoop]
+      tags: [data-systems, brew-pkg, hadoop]
 
     ############################################################################
     # Document processing and plotting #########################################
     ############################################################################
 
     - role: mactex
-      tags: [mactex]
+      tags: [mactex, brew-cask-pkg]
 
     - role: gnuplot
-      tags: [gnuplot]
+      tags: [gnuplot, brew-pkg]
 
     ############################################################################
     # Markup tools #############################################################
     ############################################################################
 
     - role: grip
-      tags: [markup-tools, grip]
+      tags: [markup-tools, pip-pkg, grip]
+      vars:
+        # NOTE: installing versioned pip package.
+        grip_version: "4.5.2"
 
     - role: wkhtmltopdf
-      tags: [markup-tools, wkhtmltopdf]
+      tags: [markup-tools, brew-cask-pkg, wkhtmltopdf]
 
     - role: hugo
-      tags: [markup-tools, hugo]
+      tags: [markup-tools, brew-pkg, hugo]
+      vars:
+        # NOTE: version is not actually used because homebrew still can't
+        # install a versioned package.
+        hugo_version: "0.54.0"
 
     - role: pandoc
-      tags: [markup-tools, pandoc]
+      tags: [markup-tools, brew-pkg, pandoc]
 
     - role: markdown
-      tags: [markup-tools, markdown]
+      tags: [markup-tools, brew-pkg, markdown]
 
     ############################################################################
     # Desktop applications #####################################################
@@ -156,320 +206,375 @@
       tags: [desktop-applications, toggle-dark-mode]
 
     - role: cursorcerer
-      tags: [desktop-applications, cursorcerer]
+      tags: [desktop-applications, brew-cask-pkg, cursorcerer]
 
     - role: licecap
-      tags: [desktop-applications, licecap]
+      tags: [desktop-applications, bespoke-pkg, licecap]
+      vars:
+        licecap_version: "" # not configurable at the moment
 
-    # Disabled: using u3d instead.
-    - role: unity-download-assistant
-      tags: [desktop-applications, disabled, unity-download-assistant]
-
-    - role: u3d
-      tags: [desktop-applications, u3d]
+    - role: unity-hub
+      tags: [desktop-applications, bespoke-pkg, unity-hub]
 
     - role: unity
-      tags: [desktop-applications, unity]
+      tags: [desktop-applications, bespoke-pkg, unity]
+      vars:
+        unity_version: "2021.2.0a8"
 
     - role: xquartz
-      tags: [desktop-applications, xquartz]
+      tags: [desktop-applications, bespoke-pkg, xquartz]
+      vars:
+        xquartz_version: "2.7.11"
 
     - role: rescuetime
-      tags: [desktop-applications, rescuetime]
+      tags: [desktop-applications, bespoke-pkg, rescuetime]
 
+    # TODO: upgrade to xbar: https://github.com/matryer/xbar/issues/607.
     - role: bitbar
-      tags: [desktop-applications, bitbar]
+      tags: [desktop-applications, bespoke-pkg, bitbar]
+      vars:
+        bitbar_version: "1.10.1"
 
     - role: bitbar-plugins
       tags: [desktop-applications, bitbar, bitbar-plugins]
 
     - role: divvy
-      tags: [desktop-applications, divvy]
+      tags: [desktop-applications, bespoke-pkg, divvy]
 
     - role: android-file-transfer
-      tags: [desktop-applications, android-file-transfer]
+      tags: [desktop-applications, bespoke-pkg, android-file-transfer]
 
     - role: dropbox
-      tags: [desktop-applications, dropbox]
+      tags: [desktop-applications, bespoke-pkg, dropbox]
 
     - role: google-chrome
-      tags: [desktop-applications, google-chrome]
+      tags: [desktop-applications, bespoke-pkg, google-chrome]
 
     - role: firefox
-      tags: [desktop-applications, firefox]
+      tags: [desktop-applications, bespoke-pkg, firefox]
+      vars:
+        firefox_version: "latest"
 
     - role: google-chrome-as-default-browser
       tags: [desktop-applications, google-chrome-as-default-browser]
 
     - role: skype
-      tags: [desktop-applications, skype]
+      tags: [desktop-applications, bespoke-pkg, skype]
 
     - role: slack
-      tags: [desktop-applications, slack]
+      tags: [desktop-applications, bespoke-pkg, slack]
 
     - role: spotify
-      tags: [desktop-applications, spotify]
+      tags: [desktop-applications, bespoke-pkg, spotify]
 
     - role: steam
-      tags: [desktop-applications, steam]
+      tags: [desktop-applications, bespoke-pkg, steam]
 
     - role: teensy-loader
-      tags: [desktop-applications, teensy-loader]
+      tags: [desktop-applications, bespoke-pkg, teensy-loader]
 
     - role: ynab
-      tags: [desktop-applications, ynab]
+      tags: [desktop-applications, bespoke-pkg, ynab]
+      vars:
+        ynab_version: "4.3.855"
 
     - role: google-photos
-      tags: [desktop-applications, google-photos]
+      tags: [desktop-applications, bespoke-pkg, google-photos]
 
     - role: dash
-      tags: [desktop-applications, dash]
+      tags: [desktop-applications, bespoke-pkg, dash]
+
+    - role: persephone
+      tags: [desktop-applications, bespoke-pkg, persephone]
+      vars:
+        persephone_version: 0.18.0-alpha
 
     - role: vlc
-      tags: [desktop-applications, vlc]
+      tags: [desktop-applications, bespoke-pkg, vlc]
+      vars:
+        # http://download.videolan.org/pub/videolan/vlc/
+        vlc_version: "3.0.12"
 
     #############################################################################
     # Programming languages #####################################################
     #############################################################################
 
-    - role: jdk
-      tags: [programming-languages, jdk]
+    - role: java
+      tags: [programming-languages, brew-cask-pkg, java]
+      vars:
+        java_version: adoptopenjdk15
 
     - role: go
-      tags: [programming-languages, go]
+      tags: [programming-languages, bespoke-pkg, go]
+      vars:
+        # https://dl.google.com/go/go1.16.1.darwin-amd64.pkg
+        go_version: "1.16.1"
 
     - role: rust
       tags: [programming-languages, rust]
 
     - role: ruby
       tags: [programming-languages, ruby]
+      vars:
+        ruby_version: 3.0.0
 
     - role: lua
-      tags: [programming-languages, lua]
+      tags: [programming-languages, bespoke-pkg, lua]
+      vars:
+        # http://luabinaries.sourceforge.net/
+        lua_version: "5.4.2"
 
     - role: luajit
-      tags: [programming-languages, luajit]
+      tags: [programming-languages, bespoke-pkg, luajit]
+      vars:
+        lua_jit_version: "2.0.5"
 
     - role: octave
-      tags: [programming-languages, octave]
+      tags: [programming-languages, brew-pkg, octave]
 
     - role: r
-      tags: [programming-languages, r]
+      tags: [programming-languages, bespoke-pkg, r]
+      vars:
+        r_version: "4.0.4"
+
+    # NOTE: depends on 'stack', installed by the 'haskell' role.
+    - role: purescript
+      tags: [programming-languages, purescript]
 
     #############################################################################
     # Programming utilities #####################################################
     #############################################################################
 
     - role: black
-      tags: [programming-utilities, black]
+      tags: [programming-utilities, pip-pkg, black]
 
     - role: ktlint
-      tags: [programming-utilities, ktlint]
+      tags: [programming-utilities, bespoke-pkg, ktlint]
 
     - role: ctags
-      tags: [programming-utilities, ctags]
+      tags: [programming-utilities, brew-pkgm ctags]
 
     - role: gron
-      tags: [programming-utilities, gron]
-
-    - role: jsxhint
-      tags: [programming-utilities, jsxhint]
+      tags: [programming-utilities, bespoke-pkg, gron]
+      vars:
+        gron_version: "0.6.1"
 
     - role: yapf
-      tags: [programming-utilities, yapf]
+      tags: [programming-utilities, pip-pkg, yapf]
 
     - role: prettier
-      tags: [programming-utilities, prettier]
+      tags: [programming-utilities, npm-pkg, prettier]
 
     - role: node-cljfmt
-      tags: [programming-utilities, node-cljfmt]
+      tags: [programming-utilities, npm-pkg, node-cljfmt]
 
     - role: yq
-      tags: [programming-utilities, yq]
+      tags: [programming-utilities, bespoke-pkg, yq]
 
     - role: shfmt
-      tags: [programming-utilities, shfmt]
+      tags: [programming-utilities, brew-pkg, shfmt]
 
     - role: pyre-check
-      tags: [programming-utilities, pyre-check]
+      tags: [programming-utilities, pip-pkg, pyre-check]
 
     - role: shellcheck
-      tags: [programming-utilities, shellcheck]
+      tags: [programming-utilities, brew-pkg, shellcheck]
 
     #############################################################################
     # Shell #####################################################################
     #############################################################################
 
     - role: zsh
-      tags: [zsh]
+      tags: [shell, brew-pkg, zsh]
 
     - role: fish
-      tags: [fish]
+      tags: [shell, brew-pkg, fish]
 
     - role: fish-foreign-env
-      tags: [fish, fish-foreign-env]
+      tags: [shell, bespoke-pkg, fish, fish-foreign-env]
 
     - role: iterm
-      tags: [iterm]
-
-    - role: powerline
-      tags: [powerline]
+      tags: [shell, brew-cask-pkg, iterm]
 
     - role: tmux
-      tags: [tmux]
-
-    - role: reattach-to-user-namespace
-      tags: [tmux, reattach-to-user-namespace]
+      tags: [shell, brew-pkg, tmux]
 
     - role: tmuxinator
-      tags: [tmux, tmuxinator]
+      tags: [shell, gem-pkg, tmux, tmuxinator]
 
     #############################################################################
     # Package managers and build tools ##########################################
     #############################################################################
 
     - role: pulp
-      tags: [pulp]
+      tags: [package-and-build, npm-pkg, pulp]
 
     - role: bundler
-      tags: [bundler]
+      tags: [package-and-build, gem-pkg, bundler]
 
     - role: graalvm
-      tags: [graalvm]
+      tags: [package-and-build, bespoke-pkg, graalvm]
+      vars:
+        graalvm_version: "21.0.0.2"
 
-    # Depends on jdk.
+    # NOTE: depends on 'java'.
     - role: leiningen
-      tags: [leiningen]
+      tags: [package-and-build, brew-pkg, leiningen]
 
     #############################################################################
     # Virtualization, provisioning, containers and system tools #################
     #############################################################################
 
     - role: openzfs
-      tags: [openzfs]
+      tags: [system-tools, brew-cask-pkg, openzfs]
 
     - role: virtualbox
-      tags: [virtualbox]
+      tags: [system-tools, bespoke-pkg, virtualbox]
+      vars:
+        # Wait until Vagrant fixes this issue before upgrading to 5.2
+        # https://github.com/hashicorp/vagrant/issues/9090
+        # virtualbox_version: "5.2.0"
+        # virtualbox_build: "118431"
+        virtualbox_version: "6.0.2"
+        virtualbox_build: "128162"
 
     - role: vagrant
-      tags: [vagrant]
+      tags: [system-tools, bespoke-pkg, vagrant]
+      vars:
+        vagrant_version: "2.2.14"
 
     - role: vagrant-vbguest
-      tags: [vagrant-vbguest]
+      tags: [system-tools, vagrant-pkg, vagrant, vagrant-vbguest]
+      vars:
+        vagrant_vbguest_version: "0.29.0"
 
     - role: docker
-      tags: [docker]
+      tags: [system-tools, brew-cask-pkg, docker]
 
     - role: terraform
-      tags: [terraform]
+      tags: [system-tools, bespoke-pkg, terraform]
+      vars:
+        terraform_version: "0.14.8"
+        terraform_checksum: "sha256:30115a2ee5f61178527089d8e5da20053927b364b08dc7aee6894a162ccbd793"
 
     - role: kubectl
-      tags: [kubernetes, kubectl]
+      tags: [system-tools, bespoke-pkg, kubernetes, kubectl]
+      vars:
+        kubectl_version: "1.20.0"
 
     - role: krew
-      tags: [kubernetes, krew]
+      tags: [system-tools, bespoke-pkg, kubernetes, krew]
 
     - role: kubectl-tree
-      tags: [kubernetes, kubectl-tree]
+      tags: [system-tools, krew-pkg, kubernetes, kubectl-tree]
 
     ############################################################################
     # Browser plugins ##########################################################
     ############################################################################
 
     - role: firefox-adblock-plus
-      tags: [firefox-adblock-plus]
+      tags: [bespoke-pkg, firefox-adblock-plus]
 
     ############################################################################
     # Multimedia ###############################################################
     ############################################################################
 
     - role: beets
-      tags: [beets]
+      tags: [multimedia, pip-pkg, beets]
 
     - role: ffmpeg
-      tags: [ffmpeg]
+      tags: [multimedia, brew-pkg, ffmpeg]
 
     - role: imagemagick
-      tags: [imagemagick]
+      tags: [multimedia, brew-pkg, imagemagick]
 
     - role: gifsicle
-      tags: [gifsicle]
+      tags: [multimedia, brew-pkg, gifsicle]
+
+    - role: mpg123
+      tags: [multimedia, brew-pkg, mpg123]
 
     - role: mpd
-      tags: [mpd]
+      tags: [multimedia, brew-pkg, mpd]
 
     - role: mpc
-      tags: [mpc]
+      tags: [multimedia, brew-pkg, mpc]
 
     - role: mpdscribble
-      tags: [mpdscribble]
+      tags: [multimedia, brew-pkg, mpdscribble]
 
     - role: shpotify
-      tags: [shpotify]
+      tags: [multimedia, brew-pkg, shpotify]
 
     - role: mplayer
-      tags: [mplayer]
+      tags: [multimedia, brew-pkg, mplayer]
+
+    - role: taglib
+      tags: [multimedia, brew-pkg, taglib]
 
     #############################################################################
     # Command line tools ########################################################
     #############################################################################
 
     - role: xz
-      tags: [command-line-tools, xz]
+      tags: [command-line-tools, brew-pkg, xz]
 
     - role: p7zip
-      tags: [command-line-tools, p7zip]
+      tags: [command-line-tools, brew-pkg, p7zip]
 
     - role: awscli
-      tags: [command-line-tools, awscli]
+      tags: [command-line-tools, pip-pkg, awscli]
 
-    # Disabled: using awscli instead.
+    # DISABLED: using awscli instead.
     - role: s3cmd
-      tags: [command-line-tools, disabled, s3cmd]
+      tags: [disabled, command-line-tools, s3cmd]
 
     - role: defaultbrowser
-      tags: [command-line-tools, defaultbrowser]
+      tags: [command-line-tools, git-pkg, defaultbrowser]
+      vars:
+        defaultbrowser_version: "1.1"
 
     - role: jq
-      tags: [command-line-tools, jq]
+      tags: [command-line-tools, bespoke-pkg, jq]
 
     - role: tree
-      tags: [command-line-tools, tree]
+      tags: [command-line-tools, brew-pkg, tree]
 
     - role: pgsanity
-      tags: [command-line-tools, pgsanity]
+      tags: [command-line-tools, pip-pkg, pgsanity]
 
     - role: ripgrep
-      tags: [command-line-tools, ripgrep]
+      tags: [command-line-tools, brew-pkg, ripgrep]
 
     - role: fd
-      tags: [command-line-tools, fd]
+      tags: [command-line-tools, brew-pkg, fd]
 
     - role: tealdeer
-      tags: [command-line-tools, tealdeer]
+      tags: [command-line-tools, cargo-pkg, tealdeer]
 
     - role: wrk
-      tags: [command-line-tools, wrk]
+      tags: [command-line-tools, brew-pkg, wrk]
 
     - role: websocat
-      tags: [command-line-tools, websocat]
+      tags: [command-line-tools, bespoke-pkg, websocat]
 
     - role: terminal-notifier
-      tags: [command-line-tools, terminal-notifier]
+      tags: [command-line-tools, brew-pkg, terminal-notifier]
 
     #############################################################################
     # Miscellaneous #############################################################
     #############################################################################
 
+    # DISABLED: this was only necessary to build Cantata I think?
     - role: qt5
-      tags: [qt5, disabled]
+      tags: [disabled, bespoke-pkg, qt5]
+      vars:
+        qt_major_minor_version: "5.12"
+        qt_version: "{{ qt_major_minor_version }}.0"
 
     - role: fontforge
-      tags: [fontforge]
-
-    - role: consolas
-      tags: [consolas]
+      tags: [brew-pkg, fontforge]
 
     # Depends on xquartz.
     - role: wordnet
-      tags: [wordnet]
+      tags: [brew-pkg, wordnet]
