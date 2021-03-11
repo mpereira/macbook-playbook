@@ -60,6 +60,9 @@
     # Fonts #####################################################################
     #############################################################################
 
+    - role: font-hack
+      tags: [fonts, brew-cask-pkg, font-hack]
+
     - role: consolas
       tags: [fonts, bespoke-pkg, consolas]
 
@@ -70,6 +73,11 @@
     - role: ssh-keys
       tags: [configuration, ssh-keys]
 
+    - role: better-touch-tool
+      tags: [configuration, bespoke-pkg, better-touch-tool]
+      vars:
+        # https://folivora.ai/releases
+        better_touch_tool_version: "" # using latest
 
     - role: dotfiles
       tags: [configuration, dotfiles]
@@ -102,6 +110,9 @@
       vars:
         # https://github.com/neovim/neovim/releases
         neovim_version: "0.4.4"
+
+    - role: vscode
+      tags: [text-editors, brew-pkg, vscode]
 
     - role: macvim
       tags: [text-editors, bespoke-pkg, macvim]
@@ -201,6 +212,25 @@
     # Desktop applications #####################################################
     ############################################################################
 
+    - role: grammarly
+      tags: [desktop-applications, brew-pkg, grammarly]
+
+    - role: elgato-dock
+      tags: [desktop-applications, bespoke-pkg, elgato-dock]
+      vars:
+        elgato_dock_version: "1.2.10.131_40"
+
+    - role: istat-menus
+      tags: [desktop-applications, brew-cask-pkg, istat-menus]
+
+    - role: sound-control
+      tags: [desktop-applications, brew-cask-pkg, sound-control]
+
+    - role: pdf-expert
+      tags: [desktop-applications, brew-cask-pkg, pdf-expert]
+
+    - role: flux
+      tags: [desktop-applications, brew-cask-pkg, flux]
 
     - role: toggle-dark-mode
       tags: [desktop-applications, toggle-dark-mode]
@@ -299,6 +329,9 @@
     # Programming languages #####################################################
     #############################################################################
 
+    - role: clojure
+      tags: [programming-languages, brew-pkg, clojure]
+
     - role: java
       tags: [programming-languages, brew-cask-pkg, java]
       vars:
@@ -337,6 +370,9 @@
       vars:
         r_version: "4.0.4"
 
+    - role: haskell
+      tags: [programming-languages, brew-pkg, haskell]
+
     # NOTE: depends on 'stack', installed by the 'haskell' role.
     - role: purescript
       tags: [programming-languages, purescript]
@@ -344,6 +380,12 @@
     #############################################################################
     # Programming utilities #####################################################
     #############################################################################
+
+    - role: rust-analyzer
+      tags: [programming-utilities, brew-pkg, rust-analyzer]
+
+    - role: clojure-lsp
+      tags: [programming-utilities, bespoke-pkg, clojure-lsp]
 
     - role: black
       tags: [programming-utilities, pip-pkg, black]
@@ -384,6 +426,9 @@
     # Shell #####################################################################
     #############################################################################
 
+    - role: babashka
+      tags: [shell, bespoke-pkg, babashka]
+
     - role: zsh
       tags: [shell, brew-pkg, zsh]
 
@@ -405,6 +450,9 @@
     #############################################################################
     # Package managers and build tools ##########################################
     #############################################################################
+
+    - role: yarn
+      tags: [package-and-build, brew-pkg, yarn]
 
     - role: pulp
       tags: [package-and-build, npm-pkg, pulp]
@@ -515,6 +563,12 @@
     #############################################################################
     # Command line tools ########################################################
     #############################################################################
+
+    - role: pngpaste
+      tags: [command-line-tools, brew-pkg, pngpaste]
+
+    - role: git-delta
+      tags: [command-line-tools, brew-pkg, git-delta]
 
     - role: xz
       tags: [command-line-tools, brew-pkg, xz]

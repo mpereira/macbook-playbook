@@ -1,0 +1,26 @@
+---
+- name: Download Unity Hub image
+  get_url: >
+    url=https://public-cdn.cloud.unity3d.com/hub/prod/UnityHubSetup.dmg
+    dest={{ downloads_directory }}/UnityHubSetup.dmg
+
+- name: Mount Unity Hub image
+  command: >
+    chdir={{ downloads_directory }}
+    hdiutil attach -nobrowse {{ downloads_directory }}/UnityHubSetup.dmg
+
+- name: Get mounted Unity Hub image version
+  shell: >
+    find "/Volumes" -maxdepth 1 -iname "Unity Hub *" 2>/dev/null | sort -nr | head -1
+  register: mounted_unity_hub_dmg_output
+  ignore_errors: yes
+
+- name: Install Unity Hub
+  command: >
+    chdir={{ downloads_directory }}
+    cp -R "{{ mounted_unity_hub_dmg_output.stdout }}/Unity Hub.app" /Applications
+    creates="/Applications/Unity Hub.app"
+  become: yes
+
+- name: Unmount Unity Hub image
+  command: hdiutil detach "{{ mounted_unity_hub_dmg_output.stdout }}"

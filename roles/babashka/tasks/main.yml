@@ -1,0 +1,10 @@
+---
+- name: Download Babashka installer
+  get_url:
+    url: https://raw.githubusercontent.com/borkdude/babashka/master/install
+    dest: "{{ downloads_directory }}/install-babashka"
+    mode: u+x
+
+- name: Install Babashka
+  command: "{{ downloads_directory }}/install-babashka"
+  become: yes

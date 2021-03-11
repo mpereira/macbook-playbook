@@ -1,0 +1,8 @@
+---
+- name: Add Homebrew tap
+  command: brew tap AdoptOpenJDK/openjdk
+
+- name: Install OpenJDK
+  homebrew_cask:
+    name: "{{ java_version }}"
+    state: latest

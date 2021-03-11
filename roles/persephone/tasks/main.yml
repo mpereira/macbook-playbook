@@ -1,0 +1,11 @@
+---
+# TODO: Remove "creates" and only run this task when either
+# "/Applications/Persephone.app" doesn't exist or "persephone_version" is
+# greater than the current.
+- name: Install Persephone
+  unarchive:
+    src: "https://github.com/danbee/persephone/releases/download/{{ persephone_version }}/Persephone-{{ persephone_version }}.zip"
+    remote_src: yes
+    dest: "/Applications"
+    creates: "/Applications/Persephone.app"
+  become: yes

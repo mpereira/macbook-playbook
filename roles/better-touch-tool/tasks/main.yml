@@ -1,0 +1,21 @@
+---
+- name: Download BetterTouchTool
+  get_url: >
+    url="https://folivora.ai/releases/BetterTouchTool.zip"
+    dest="{{ downloads_directory }}/BetterTouchTool.zip"
+
+- name: Extract BetterTouchTool zip archive
+  command: >
+    chdir={{ downloads_directory }}
+    unzip "BetterTouchTool.zip" -d "BetterTouchTool"
+    creates=BetterTouchTool
+
+- name: Copy BetterTouchTool.app to Applications directory
+  command: >
+    cp -R "{{ downloads_directory }}/BetterTouchTool/BetterTouchTool.app" /Applications
+    creates=/Applications/BetterTouchTool.app
+  become: yes
+
+- name: Open BetterTouchTool.app
+  command: >
+    open /Applications/BetterTouchTool.app

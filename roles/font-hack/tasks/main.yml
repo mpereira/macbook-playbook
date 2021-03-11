@@ -1,0 +1,9 @@
+---
+- name: Download Hack font
+  homebrew_cask:
+    name: font-hack
+    state: latest
+
+- name: Reload fonts
+  command: fc-cache -vf
+  become: yes

@@ -1,0 +1,7 @@
+---
+- name: Install f.lux
+  homebrew_cask:
+    name: flux
+    state: latest
+
+# TODO: open it if it was just installed for the first time?

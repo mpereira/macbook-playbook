@@ -1,0 +1,7 @@
+---
+- name: Install PDF Expert
+  homebrew_cask:
+    name: pdf-expert
+    state: latest
+
+# TODO: open it if it was just installed for the first time?

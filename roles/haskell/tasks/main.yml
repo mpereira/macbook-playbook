@@ -1,0 +1,5 @@
+---
+- name: Install haskell-stack
+  homebrew:
+    name: haskell-stack
+    state: latest

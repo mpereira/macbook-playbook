@@ -14,6 +14,7 @@ ANSIBLE_INVENTORY               := $(ANSIBLE_DIRECTORY)/hosts
 ANSIBLE_VERBOSE                 := -v
 ANSIBLE_VAULT_PASSWORD_FILE     := $(ANSIBLE_DIRECTORY)/.ansible_vault_password
 ANSIBLE_SENSITIVE_CONTENT_FILES := \
+  $(ANSIBLE_ROLES_DIRECTORY)/better-touch-tool/files/license.xml \
   $(ANSIBLE_ROLES_DIRECTORY)/awscli/files/credentials \
   $(ANSIBLE_ROLES_DIRECTORY)/ssh-keys/files/id_rsa \
   $(ANSIBLE_ROLES_DIRECTORY)/s3cmd/files/.s3cfg \

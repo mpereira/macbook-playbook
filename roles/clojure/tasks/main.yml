@@ -1,0 +1,5 @@
+---
+- name: Install Clojure
+  homebrew:
+    name: clojure/tools/clojure
+    state: latest

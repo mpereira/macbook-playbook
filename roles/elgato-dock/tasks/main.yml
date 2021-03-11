@@ -1,0 +1,10 @@
+---
+- name: Download Elgato Dock software
+  get_url:
+    url: "https://edge.elgato.com/thunderbolt-dock/Elgato_Thunderbolt_Dock_Software_{{ elgato_dock_version }}.pkg"
+    dest: "{{ downloads_directory }}/Elgato_Thunderbolt_Dock_Software_{{ elgato_dock_version }}.pkg"
+
+- name: Install Elgato Dock software
+  command: >
+    installer -package "{{ downloads_directory}}/Elgato_Thunderbolt_Dock_Software_{{ elgato_dock_version }}.pkg" -target /
+  become: yes
