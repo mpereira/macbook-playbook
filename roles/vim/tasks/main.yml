@@ -33,8 +33,7 @@
       --enable-gui=auto \
       --disable-netbeans \
       --enable-multibyte \
-      --with-luajit \
-      --with-lua-prefix=/usr/local \
+      --with-lua-prefix=/usr/local/opt/lua \
       --with-features=huge \
       --with-compiledby='Murilo Pereira <murilo@murilopereira.com>'
 
