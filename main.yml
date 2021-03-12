@@ -177,7 +177,7 @@
       tags: [text-editors, bespoke-pkg, macvim]
       vars:
         # https://github.com/macvim-dev/macvim/releases
-        macvim_version: "snapshot-165"
+        macvim_version: "snapshot-170"
 
     #############################################################################
     # Behaviors #################################################################
