@@ -106,8 +106,11 @@
         # emacs_pre_built_version: "26.1-rc1"
         # emacs_pre_built_pretest: "yes"
 
+    # DISABLED: Vim isn't compiling on macOS Big Sur with LLVM 12, disabling
+    # until I figure it out.
+    # https://stackoverflow.com/questions/65750657/getting-an-error-on-configuring-vim-uint32-t-check-not-defined-correctly
     - role: vim
-      tags: [text-editors, bespoke-pkg, vim]
+      tags: [disabled, text-editors, bespoke-pkg, vim]
       vars:
         vim_version: "8.2"
 
