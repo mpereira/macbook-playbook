@@ -1,0 +1,5 @@
+---
+- name: Install openssl
+  homebrew:
+    name: openssl
+    state: latest

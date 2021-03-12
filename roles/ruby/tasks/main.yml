@@ -4,11 +4,6 @@
     name: ruby-build
     state: latest
 
-- name: Install openssl
-  homebrew:
-    name: openssl
-    state: latest
-
 - name: Install Ruby
   shell: >
     RUBY_CONFIGURE_OPTS="--with-openssl-dir=$(brew --prefix openssl)" \
