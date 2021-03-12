@@ -10,7 +10,7 @@
   ignore_errors: yes
 
 - set_fact:
-    installed_cmake_version_differs_or_not_installed: (cmake_version_output.rc == 1 or (cmake_version_output.stdout | regex_search('\d+\.\d+\.\d+')) is version(cmake_version, '<'))
+    installed_cmake_version_differs_or_not_installed: "{{ (cmake_version_output.rc == 1 or (cmake_version_output.stdout | regex_search('\\d+\\.\\d+\\.\\d+')) is version(cmake_version, '<')) }}"
 
 - name: Convert CMake image to a format that does not require an EULA
   command: >
