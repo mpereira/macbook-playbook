@@ -2,5 +2,4 @@
 - name: Install Grip
   pip:
     name: grip
-    version: "{{ grip_version }}"
     extra_args: --user

@@ -1,8 +1,8 @@
 ---
 - name: Download BitBar
   get_url:
-    url: https://github.com/matryer/bitbar/releases/download/v{{ bitbar_version }}/{{ bitbar_zip }}
-    dest: "{{ downloads_directory }}/{{ bitbar_zip }}"
+    url: https://github.com/matryer/bitbar/releases/download/v{{ bitbar_version }}/BitBar.app.zip
+    dest: "{{ downloads_directory }}/BitBar.app.zip"
 
 - name: Check existing BitBar version
   shell: "defaults read /Applications/BitBar.app/Contents/Info.plist CFBundleVersion --version 2>&1"
@@ -12,7 +12,7 @@
 - name: Extract BitBar zip archive
   command: >
     chdir="{{ downloads_directory }}"
-    unzip {{ bitbar_zip }} -d {{ bitbar_directory }}
+    unzip BitBar.app.zip -d {{ bitbar_directory }}
     creates="{{ bitbar_directory }}"
   when: bitbar_version_output.stdout.find(bitbar_version) == -1
 

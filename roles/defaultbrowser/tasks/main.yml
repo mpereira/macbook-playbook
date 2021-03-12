@@ -3,7 +3,14 @@
   git:
     repo: https://github.com/kerma/defaultbrowser.git
     dest: "{{ downloads_directory }}/defaultbrowser"
-    version: v{{ defaultbrowser_version }}
+    version: "{{ defaultbrowser_version }}"
+
+- name: Build defaultbrowser
+  command: 
+    cmd: make
+    chdir: "{{ downloads_directory }}/defaultbrowser"
 
 - name: Install defaultbrowser
-  command: cp "{{ downloads_directory }}/defaultbrowser/build/defaultbrowser" /usr/local/bin
+  command: 
+    cmd: make install
+    chdir: "{{ downloads_directory }}/defaultbrowser"

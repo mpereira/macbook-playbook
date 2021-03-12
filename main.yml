@@ -197,9 +197,6 @@
 
     - role: grip
       tags: [markup-tools, pip-pkg, grip]
-      vars:
-        # NOTE: installing versioned pip package.
-        grip_version: "4.5.2"
 
     - role: wkhtmltopdf
       tags: [markup-tools, brew-cask-pkg, wkhtmltopdf]

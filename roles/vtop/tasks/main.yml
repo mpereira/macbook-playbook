@@ -2,5 +2,4 @@
 - name: Install vtop
   npm:
     name: vtop
-    version: "{{ vtop_version }}"
     global: yes

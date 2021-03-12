@@ -15,11 +15,11 @@
 - name: Extract PowerPointViewer.exe
   command: cabextract "{{ downloads_directory }}/PowerPointViewer.exe" -d "{{ downloads_directory }}/PowerPointViewer"
 
-- name: Extract ppviewer directory
+- name: Make ppviewer directory to extract fonts to
   command: mkdir -p "{{ downloads_directory }}/ppviewer"
 
 - name: Extract ppviewer.cab
-  command: cabextract "{{ downloads_directory }}/ppviewer.cab" -d "{{ downloads_directory }}/ppviewer"
+  command: cabextract "{{ downloads_directory }}/PowerPointViewer/ppviewer.cab" -d "{{ downloads_directory }}/ppviewer"
 
 - name: Install Consolas
   shell: open {{ downloads_directory }}/ppviewer/CONSOLA*.TTF

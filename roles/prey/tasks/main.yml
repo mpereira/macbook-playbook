@@ -5,6 +5,7 @@
   command: >
     chdir={{ downloads_directory }}
     wget -nc -q https://downloads.preyproject.com/prey-client-releases/node-client/{{ prey_version }}/{{ prey_pkg }}
+
 - name: Load API key
   include_vars:
     file: api_key.yml
@@ -12,8 +13,9 @@
 
 - name: Check if Prey is set up
   shell: >
-    sudo /usr/local/lib/prey/current/bin/prey config gui
+    /usr/local/lib/prey/current/bin/prey config gui
   register: prey_config_gui
+  become: yes
 
 # TODO: make the "when" condition be if prey_version is different than the
 # actual version.

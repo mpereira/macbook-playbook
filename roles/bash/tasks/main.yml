@@ -2,7 +2,7 @@
 - name: Install bash
   homebrew:
     name: bash
-    # name: "bash@{{ bash_version }}"
+    state: latest
 
 - name: Register bash binary path
   register: bin_bash
@@ -17,7 +17,8 @@
 
 - name: Make bash be the default shell
   shell: >
-    chsh -s "{{ bin_bash.stdout }}"
+    chsh -s "{{ bin_bash.stdout }}" "{{ user }}"
+  become: yes
 
 - name: Install bash-completion@2
   homebrew:

@@ -1,3 +1,2 @@
 ---
 bitbar_directory: BitBar-v{{ bitbar_version }}
-bitbar_zip: "{{ bitbar_directory }}.zip"

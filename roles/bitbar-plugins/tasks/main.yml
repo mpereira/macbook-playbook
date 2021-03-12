@@ -19,5 +19,5 @@
     dest: "{{ home_directory }}/.config/bitbar/plugins/Enabled/{{ item.dest }}"
     state: link
   with_items:
-    - { src: 'Music/mpd-simple.5s.sh', dest: 'mpd-simple.2s.sh' }
-    - { src: 'Music/spotify-simple.5s.sh', dest: 'spotify-simple.5s.sh' }
+    - { src: 'Music/mpd-mpereira.5s.sh', dest: 'mpd-mpereira.5s.sh' }
+    - { src: 'Music/spotify-mpereira.5s.sh', dest: 'spotify-mpereira.5s.sh' }

@@ -2,34 +2,30 @@
 - name: Install coreutils
   homebrew:
     name: coreutils
-    state: present
+    state: latest
 
-- homebrew:
+- name: Install some GNU tools
+  homebrew:
     state: latest
     name:
-      - binutils # don't link this so that there's no conflicts with
-      # MacOS executables.
+      - binutils # don't link this so that there's no conflicts with macOS binaries.
       - diffutils
+      - ed
+      - findutils
       - gawk
+      - gnu-indent
+      - gnu-sed
+      - gnu-tar
+      - gnu-which
       - gnutls
+      - grep
       - gzip
       - screen
       - watch
       - wget
 
-- homebrew:
-    state: latest
-    name:
-      - ed
-      - findutils
-      - gnu-indent
-      - gnu-sed
-      - gnu-tar
-      - gnu-which
-      - grep
-
 - name: Install wdiff
   homebrew:
     name: wdiff
-    state: present
+    state: latest
     install_options: with-gettext
