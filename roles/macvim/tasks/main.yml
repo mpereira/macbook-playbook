@@ -1,19 +1,27 @@
 ---
 - name: Download MacVim
-  get_url: >
-    url=https://github.com/macvim-dev/macvim/releases/download/{{ macvim_version }}/MacVim.dmg
-    dest={{ downloads_directory }}/MacVim-{{ macvim_version }}.dmg
+  get_url:
+    url: "https://github.com/macvim-dev/macvim/releases/download/{{ macvim_version }}/MacVim.dmg"
+    dest: "{{ downloads_directory }}/MacVim-{{ macvim_version }}.dmg"
+
+- name: Get current MacVim version
+  shell: defaults read /Applications/MacVim.app/Contents/Info.plist CFBundleVersion
+  register: macvim_version_output
+  ignore_errors: yes
 
 - name: Mount MacVim image
-  command: >
-    chdir={{ downloads_directory }}
-    hdiutil attach -nobrowse MacVim-{{ macvim_version }}.dmg
-    creates=/Volumes/MacVim
+  command:
+    chdir: "{{ downloads_directory }}"
+    cmd: "hdiutil attach -nobrowse MacVim-{{ macvim_version }}.dmg"
+    creates: /Volumes/MacVim
+  when: macvim_version.find(macvim_version_output.stdout) == -1
 
 - name: Install MacVim
   command: >
     cp -R /Volumes/MacVim/MacVim.app /Applications
   become: yes
+  when: macvim_version.find(macvim_version_output.stdout) == -1
 
 - name: Unmount MacVim image
   command: hdiutil detach /Volumes/MacVim
+  when: macvim_version.find(macvim_version_output.stdout) == -1

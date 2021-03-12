@@ -4,8 +4,14 @@
     url="https://cran.r-project.org/bin/macosx/R-{{ r_version }}.pkg"
     dest="{{ downloads_directory }}/R-{{ r_version }}.pkg"
 
+- name: Get current R version
+  shell: defaults read /Applications/R.app/Contents/Info.plist CFBundleShortVersionString
+  register: r_version_output
+  ignore_errors: yes
+
 - name: Install R
   command: >
     chdir={{ downloads_directory }}
     installer -package "R-{{ r_version }}.pkg" -target /
   become: yes
+  when: r_version_output.stdout.find(r_version) == -1

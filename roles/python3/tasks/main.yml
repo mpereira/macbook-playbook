@@ -4,11 +4,18 @@
     url: https://www.python.org/ftp/python/{{ python3_version }}/{{ python3_pkg }}
     dest: "{{ downloads_directory }}/{{ python3_pkg }}"
 
+- name: Show current Python 3 version
+  command: python3 --version
+  register: python3_version_output
+  ignore_errors: yes
+
 - name: Install Python 3
   command: >
     installer -package {{ downloads_directory }}/{{ python3_pkg }} -target /
   become: yes
+  when: python3_version_output.stdout.find(python3_version) == -1
 
 - name: Install Python 3 SSL certificates
   command: >
     "/Applications/Python {{ python3_version_major_minor }}/Install Certificates.command"
+  when: python3_version_output.stdout.find(python3_version) == -1

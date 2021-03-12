@@ -4,7 +4,13 @@
     name: ruby-build
     state: latest
 
+- name: List installed Rubies
+  command: ruby-build --list
+  register: ruby_build_list_output
+  ignore_errors: yes
+
 - name: Install Ruby
   shell: >
     RUBY_CONFIGURE_OPTS="--with-openssl-dir=$(brew --prefix openssl)" \
       ruby-build "{{ ruby_version }}" /usr/local
+  when: ruby_build_list_output.stdout.find(ruby_version) == -1
