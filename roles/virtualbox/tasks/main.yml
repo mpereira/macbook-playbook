@@ -10,18 +10,18 @@
   ignore_errors: yes
 
 - name: Mount VirtualBox image
-  command: >
-    chdir={{ downloads_directory }}
-    hdiutil attach -nobrowse VirtualBox-{{ virtualbox_version }}-{{ virtualbox_build }}-OSX.dmg
-    creates=/Volumes/VirtualBox
-  when: virtualbox_version_output.stdout.find('VirtualBox Manager ' ~ virtualbox_version) == -1
+  command:
+    chdir: "{{ downloads_directory }}"
+    cmd: "hdiutil attach -nobrowse VirtualBox-{{ virtualbox_version }}-{{ virtualbox_build }}-OSX.dmg"
+    creates: /Volumes/VirtualBox
+  when: virtualbox_version_output.rc != 0 or virtualbox_version_output.stdout.find(virtualbox_version) == -1
 
 - name: Install VirtualBox
   command: >
     installer -package /Volumes/VirtualBox/VirtualBox.pkg -target /
   become: yes
-  when: virtualbox_version_output.stdout.find('VirtualBox Manager ' ~ virtualbox_version) == -1
+  when: virtualbox_version_output.rc != 0 or virtualbox_version_output.stdout.find(virtualbox_version) == -1
 
 - name: Unmount VirtualBox image
   command: hdiutil detach /Volumes/VirtualBox
-  when: virtualbox_version_output.stdout.find('VirtualBox Manager ' ~ virtualbox_version) == -1
+  when: virtualbox_version_output.rc != 0 or virtualbox_version_output.stdout.find(virtualbox_version) == -1

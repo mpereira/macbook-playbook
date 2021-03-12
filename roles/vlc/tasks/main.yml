@@ -1,19 +1,19 @@
 ---
 - name: Download VLC
   get_url:
-    url: http://get.videolan.org/vlc/{{ vlc_version }}/macosx/{{ vlc_dmg }}
+    url: "https://get.videolan.org/vlc/{{ vlc_version }}/macosx/{{ vlc_dmg }}"
     dest: "{{ downloads_directory }}/{{ vlc_dmg }}"
 
 - name: Mount VLC image
-  command: >
-    chdir={{ downloads_directory }}
-    hdiutil attach -nobrowse {{ vlc_dmg }}
-    creates=/Volumes/{{ vlc_volume }}
+  command:
+    chdir: "{{ downloads_directory }}"
+    cmd: hdiutil attach -nobrowse "{{ vlc_dmg }}"
+    creates: "/Volumes/{{ vlc_volume }}"
 
 - name: Copy VLC.app to Applications directory
-  command: >
-    cp -R /Volumes/{{ vlc_volume }}/VLC.app /Applications
+  shell: >
+    rm -rf /Applications/VLC.app && cp -R "/Volumes/{{ vlc_volume }}/VLC.app" /Applications
   become: yes
 
 - name: Unmount VLC image
-  command: hdiutil detach /Volumes/{{ vlc_volume }}
+  command: hdiutil detach "/Volumes/{{ vlc_volume }}"

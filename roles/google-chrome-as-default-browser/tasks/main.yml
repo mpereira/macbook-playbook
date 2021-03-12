@@ -1,8 +1,3 @@
 ---
-- name: Check if Google Chrome is the default browser
-  command: defaultbrowser
-  register: is_google_chrome_the_default_browser
-
 - name: Make Google Chrome the default browser
-  command: defaultbrowser -set chrome
-  when: "is_google_chrome_the_default_browser.stdout.find('Current: chrome') == -1"
+  command: defaultbrowser chrome

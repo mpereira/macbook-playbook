@@ -1,4 +1,4 @@
 ---
-vlc_name: vlc-{{ vlc_version }}
+vlc_name: vlc-{{ vlc_version }}-intel64
 vlc_dmg: "{{ vlc_name }}.dmg"
-vlc_volume: "{{ vlc_name }}"
+vlc_volume: "VLC media player"

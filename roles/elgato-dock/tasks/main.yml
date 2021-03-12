@@ -8,3 +8,5 @@
   command: >
     installer -package "{{ downloads_directory}}/Elgato_Thunderbolt_Dock_Software_{{ elgato_dock_version }}.pkg" -target /
   become: yes
+  # NOTE: ignoring errors because installing this seems to fail sporadically.
+  ignore_errors: yes

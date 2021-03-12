@@ -2,5 +2,4 @@
 - name: Install Yapf
   pip:
     name: yapf
-    version: "{{ yapf_version }}"
     extra_args: --user

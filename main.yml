@@ -49,7 +49,8 @@
       tags: [foundational, package-and-build, bespoke-pkg, mac-ports]
       vars:
         # https://www.macports.org/install.php
-        macports_version: "2.6.4_1"
+        macports_version: "2.6.4"
+        macports_pkg_version: "1"
         macports_mac_release: "11-BigSur"
 
     - role: node
@@ -358,8 +359,9 @@
     - role: teensy-loader
       tags: [desktop-applications, bespoke-pkg, teensy-loader]
 
+    # DISABLED: the YNAB 4 binary isn't available in the YNAB website anymore.
     - role: ynab
-      tags: [desktop-applications, bespoke-pkg, ynab]
+      tags: [disabled, desktop-applications, bespoke-pkg, ynab]
       vars:
         ynab_version: "4.3.855"
 
@@ -476,8 +478,10 @@
     # Virtualization, provisioning, containers and system tools #################
     #############################################################################
 
+    # DISABLED: not working on Big Sur yet:
+    # https://openzfsonosx.org/forum/viewtopic.php?f=20&t=3468
     - role: openzfs
-      tags: [system-tools, brew-cask-pkg, openzfs]
+      tags: [disabled, system-tools, brew-cask-pkg, openzfs]
 
     - role: virtualbox
       tags: [system-tools, bespoke-pkg, virtualbox]

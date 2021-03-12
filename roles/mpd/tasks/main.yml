@@ -3,7 +3,6 @@
   homebrew:
     name: mpd
     state: latest
-    install_options: with-libshout,with-lame,with-flac,with-lastfm
 
 # FIXME: this seems to fail if the service is already started.
 - name: Create mpd service and start mpd
