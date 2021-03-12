@@ -1,6 +1,8 @@
-# NOTE: this is the system Python version. In macOS Catalina it's 3.7.
+# NOTE: this is the system Python version. In macOS Catalina it's 3.7. On Big
+# Sur it's 3.8.
+# TODO: identify Python version programmatically.
 BOOTSTRAP_PYTHON_MAJOR_VERSION  := 3
-BOOTSTRAP_PYTHON_MINOR_VERSION  := 7
+BOOTSTRAP_PYTHON_MINOR_VERSION  := 8
 BOOTSTRAP_PYTHON_VERSION        := $(BOOTSTRAP_PYTHON_MAJOR_VERSION).$(BOOTSTRAP_PYTHON_MINOR_VERSION)
 BOOTSTRAP_PYTHON                := /usr/bin/python$(BOOTSTRAP_PYTHON_MAJOR_VERSION)
 BOOTSTRAP_PYTHON_BIN_PATH       := ~/Library/Python/$(BOOTSTRAP_PYTHON_VERSION)/bin
@@ -11,8 +13,6 @@ PYTHON_BIN_PATH                 := ~/Library/Python/$(PYTHON_VERSION)/bin
 PYTHON                          := /usr/local/bin/python$(PYTHON_VERSION)
 PIP                             := $(PYTHON) -m pip
 
-MACOS_VERSION                   := 10.14
-MACOS_SDK_HEADERS_PKG           := /Library/Developer/CommandLineTools/Packages/macOS_SDK_headers_for_macOS_$(MACOS_VERSION).pkg
 LOCAL_PROJECT_DIRECTORY         := $(shell pwd)
 ANSIBLE_DIRECTORY               := .
 ANSIBLE_PLAYBOOKS_DIRECTORY     := $(ANSIBLE_DIRECTORY)
@@ -26,8 +26,8 @@ ANSIBLE_SENSITIVE_CONTENT_FILES := \
   $(ANSIBLE_ROLES_DIRECTORY)/ssh-keys/files/id_rsa \
   $(ANSIBLE_ROLES_DIRECTORY)/s3cmd/files/.s3cfg \
   $(ANSIBLE_ROLES_DIRECTORY)/dotfiles/vars/environment.yml \
-  $(ANSIBLE_ROLES_DIRECTORY)/prey/vars/api_key.yml
-  $(ANSIBLE_ROLES_DIRECTORY)/istat-menus/files/iStat\ Menus\ Settings.ismp \
+  $(ANSIBLE_ROLES_DIRECTORY)/prey/vars/api_key.yml \
+  $(ANSIBLE_ROLES_DIRECTORY)/istat-menus/files/iStat\ Menus\ Settings.ismp
 
 ANSIBLE := \
 	$(PYTHON_BIN_PATH)/ansible-playbook $(ANSIBLE_VERBOSE) \
@@ -61,10 +61,17 @@ get_bootstrap_pip:
 		|| echo "ATTENTION: Please create '$(PWD)/$(ANSIBLE_VAULT_PASSWORD_FILE)' with this project's Ansible Vault password" && exit 1
 
 .PHONY: bootstrap
-bootstrap: upgrade_pip
+bootstrap:
 	$(BOOTSTRAP_PIP) install --user ansible
-	sudo $(BOOTSTRAP_PYTHON_BIN_PATH)/ansible-playbook $(ANSIBLE_PLAYBOOKS_DIRECTORY)/bootstrap.yml
+	$(BOOTSTRAP_PYTHON_BIN_PATH)/ansible-playbook $(ANSIBLE_PLAYBOOKS_DIRECTORY)/bootstrap.yml
 	$(PIP) install --user ansible
+
+# NOTE: this seems to be required for Big Sur. Without it, the 'cryptography'
+# pip package (a transitive dependency for the 'ansible' package) fails to
+# install.
+.PHONY: bootstrap_upgrade_pip
+bootstrap_upgrade_pip:
+	@sudo $(BOOTSTRAP_PIP) install --upgrade pip
 
 .PHONY: upgrade_pip
 upgrade_pip:
