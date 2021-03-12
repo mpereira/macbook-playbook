@@ -21,15 +21,21 @@
     - role: make
       tags: [foundational, package-and-build, brew-pkg, make]
 
-    # Depends on homebrew.
-    - role: bash
-      tags: [foundational, brew-pkg, programming-languages, bash]
-
     - role: cmake
       tags: [foundational, package-and-build, bespoke-pkg, cmake]
       vars:
         # https://cmake.org/download/
         cmake_version: "3.19.6"
+
+    - role: llvm
+      tags: [foundational, package-and-build, brew-pkg, llvm]
+
+    - role: openssl
+      tags: [foundational, package-and-build, brew-pkg, openssl]
+
+    # Depends on homebrew.
+    - role: bash
+      tags: [foundational, brew-pkg, programming-languages, bash]
 
     - role: python3
       tags: [foundational, programming-languages, bespoke-pkg, python3]
@@ -55,12 +61,6 @@
 
     - role: maven
       tags: [foundational, package-and-build, brew-pkg, maven]
-
-    - role: llvm
-      tags: [foundational, package-and-build, brew-pkg, llvm]
-
-    - role: openssl
-      tags: [foundational, package-and-build, brew-pkg, openssl]
 
     #############################################################################
     # Fonts #####################################################################
