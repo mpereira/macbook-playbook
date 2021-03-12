@@ -27,6 +27,7 @@ ANSIBLE_SENSITIVE_CONTENT_FILES := \
   $(ANSIBLE_ROLES_DIRECTORY)/s3cmd/files/.s3cfg \
   $(ANSIBLE_ROLES_DIRECTORY)/dotfiles/vars/environment.yml \
   $(ANSIBLE_ROLES_DIRECTORY)/prey/vars/api_key.yml
+  $(ANSIBLE_ROLES_DIRECTORY)/istat-menus/files/iStat\ Menus\ Settings.ismp \
 
 ANSIBLE := \
 	$(PYTHON_BIN_PATH)/ansible-playbook $(ANSIBLE_VERBOSE) \
