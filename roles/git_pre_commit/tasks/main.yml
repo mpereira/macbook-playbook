@@ -2,7 +2,7 @@
 - name: Install git pre-commit hook to encrypt credential files
   template: >
     src=pre-commit.j2
-    dest=.git/hooks/pre-commit
+    dest="{{ project_root }}/.git/hooks/pre-commit"
     backup=yes
     force=yes
     mode=755

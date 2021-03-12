@@ -32,13 +32,13 @@ ANSIBLE_SENSITIVE_CONTENT_FILES := \
 ANSIBLE := \
 	$(PYTHON_BIN_PATH)/ansible-playbook $(ANSIBLE_VERBOSE) \
 		-i $(ANSIBLE_INVENTORY) \
-		--extra-vars "local_project_directory=$(LOCAL_PROJECT_DIRECTORY)" \
+		--extra-vars "project_root=$(LOCAL_PROJECT_DIRECTORY)" \
 		$(ARGS)
 
 ANSIBLE_LOCAL := \
 	$(PYTHON_BIN_PATH)/ansible-playbook $(ANSIBLE_VERBOSE) \
 		-i $(ANSIBLE_INVENTORY) \
-		--extra-vars "local_project_directory=$(LOCAL_PROJECT_DIRECTORY)" \
+		--extra-vars "project_root=$(LOCAL_PROJECT_DIRECTORY)" \
 		$(ARGS)
 
 ANSIBLE_LOCAL_WITH_VAULT := \
@@ -63,7 +63,9 @@ get_bootstrap_pip:
 .PHONY: bootstrap
 bootstrap:
 	$(BOOTSTRAP_PIP) install --user ansible
-	$(BOOTSTRAP_PYTHON_BIN_PATH)/ansible-playbook $(ANSIBLE_PLAYBOOKS_DIRECTORY)/bootstrap.yml
+	$(BOOTSTRAP_PYTHON_BIN_PATH)/ansible-playbook \
+		--extra-vars "project_root=$(LOCAL_PROJECT_DIRECTORY)" \
+		$(ANSIBLE_PLAYBOOKS_DIRECTORY)/bootstrap.yml
 	$(PIP) install --user ansible
 
 # NOTE: this seems to be required for Big Sur. Without it, the 'cryptography'

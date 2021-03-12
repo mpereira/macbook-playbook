@@ -1,3 +1,22 @@
-#/bin/sh
+#!/bin/sh
 
-make encrypt_pre_commit 2> /dev/null && echo "pre-commit info: Sensitive files encrypted successfully" || echo "pre-commit info: Sensitive files already encrypted" && exit 0
+git diff --quiet HEAD -- ../../secrets
+rc=${?}
+
+if [ ${rc} -eq 0 ]; then
+  echo "pre-commit: no changes in secrets directory"
+  exit 0
+fi
+
+echo "pre-commit: changes in secrets directory, will try to encrypt"
+
+output="$(make encrypt_pre_commit)"
+rc=${?}
+
+if [ ${rc} -eq 0 ]; then
+  echo "pre-commit: sensitive files encrypted successfully"
+  exit 0
+else
+  printf "pre-commit: failed to encrypt sensitive files:\n%s" "${output}"
+  exit 1
+fi
