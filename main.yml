@@ -29,7 +29,7 @@
       tags: [foundational, package-and-build, bespoke-pkg, cmake]
       vars:
         # https://cmake.org/download/
-        cmake_version: "3.17.2"
+        cmake_version: "3.19.6"
 
     - role: python3
       tags: [foundational, programming-languages, bespoke-pkg, python3]
@@ -43,8 +43,8 @@
       tags: [foundational, package-and-build, bespoke-pkg, mac-ports]
       vars:
         # https://www.macports.org/install.php
-        macports_version: "2.5.4"
-        macports_mac_release: "10.14-Mojave"
+        macports_version: "2.6.4_1"
+        macports_mac_release: "11-BigSur"
 
     - role: node
       tags: [foundational, programming-languages, bespoke-pkg, node]
@@ -103,7 +103,7 @@
     - role: vim
       tags: [text-editors, bespoke-pkg, vim]
       vars:
-        vim_version: "8.1"
+        vim_version: "8.2"
 
     - role: neovim
       tags: [text-editors, bespoke-pkg, neovim]

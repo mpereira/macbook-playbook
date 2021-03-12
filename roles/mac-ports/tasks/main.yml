@@ -7,3 +7,6 @@
 - name: Install MacPorts
   command: installer -package {{ downloads_directory }}/{{ macports_pkg }} -target /
   become: yes
+  # NOTE: ignore errors because this is currently hard-coded to only work on
+  # macOS Big Sur.
+  ignore_errors: yes

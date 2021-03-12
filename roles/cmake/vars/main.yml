@@ -1,8 +1,9 @@
 ---
 # https://github.com/Kitware/CMake/releases/download
-cmake_image_name: "cmake-{{ cmake_version }}-Darwin-x86_64.dmg"
+cmake_image_name_suffix: "macos-universal"
+cmake_image_name: "cmake-{{ cmake_version }}-{{ cmake_image_name_suffix }}.dmg"
 cmake_image_url: "https://github.com/Kitware/CMake/releases/download/v{{ cmake_version }}/{{ cmake_image_name }}"
 cmake_image_path: "{{ downloads_directory }}/{{ cmake_image_name }}"
-cmake_volume_path: "/Volumes/cmake-{{ cmake_version }}-Darwin-x86_64"
+cmake_volume_path: "/Volumes/cmake-{{ cmake_version }}-{{ cmake_image_name_suffix }}"
 cmake_app_name: "CMake.app"
 cmake_app_directory: "/Applications/{{ cmake_app_name }}"
