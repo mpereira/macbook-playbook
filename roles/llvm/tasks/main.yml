@@ -1,0 +1,5 @@
+---
+- name: Install LLVM
+  homebrew:
+    name: llvm
+    state: latest
