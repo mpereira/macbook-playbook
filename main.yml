@@ -353,14 +353,9 @@
 
     - role: lua
       tags: [programming-languages, bespoke-pkg, lua]
-      vars:
-        # http://luabinaries.sourceforge.net/
-        lua_version: "5.4.2"
 
     - role: luajit
       tags: [programming-languages, bespoke-pkg, luajit]
-      vars:
-        lua_jit_version: "2.0.5"
 
     - role: octave
       tags: [programming-languages, brew-pkg, octave]

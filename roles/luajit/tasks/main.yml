@@ -1,17 +1,5 @@
 ---
-- name: Download luajit
-  get_url:
-    url="http://luajit.org/download/LuaJIT-{{ lua_jit_version }}.tar.gz"
-    dest="{{ downloads_directory }}/LuaJIT-{{ lua_jit_version }}.tar.gz"
-
-- name: Extract luajit
-  command: >
-    tar -xvf "{{ downloads_directory }}/LuaJIT-{{ lua_jit_version }}.tar.gz"
-        -C {{ downloads_directory }}
-    creates="{{ downloads_directory }}/LuaJIT-{{ lua_jit_version }}"
-
-- name: Build and install luajit
-  shell: >
-    chdir="{{ downloads_directory }}/LuaJIT-{{ lua_jit_version }}"
-    make MACOSX_DEPLOYMENT_TARGET=10.14 && sudo make install
-  become: yes
+- name: Install LuaJIT
+  homebrew:
+    name: luajit
+    state: latest

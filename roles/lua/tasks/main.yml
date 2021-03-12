@@ -1,17 +1,5 @@
 ---
-- name: Download lua
-  get_url:
-    url="http://www.lua.org/ftp/lua-{{ lua_version }}.tar.gz"
-    dest="{{ downloads_directory }}/lua-{{ lua_version }}.tar.gz"
-
-- name: Extract lua
-  unarchive:
-    src="{{ downloads_directory }}/lua-{{ lua_version }}.tar.gz"
-    dest="{{ downloads_directory }}"
-    creates="{{ downloads_directory }}/lua-{{ lua_version }}"
-
-- name: Build and install lua
-  shell: >
-    chdir={{ downloads_directory }}/lua-{{ lua_version }}
-    INSTALL_TOP=/usr/local sudo make macosx install
-  become: yes
+- name: Install Lua
+  homebrew:
+    name: lua
+    state: latest
