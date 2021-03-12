@@ -54,19 +54,27 @@ Ansible playbook to prepare and maintain macOS for development and desktop use.
     - [[#license][License]]
 
 ** Tested on
-   I've been using =macbook-playbook= for 6 years now. I've used it on at least
-   four MacBookPros with different macOS versions. The macOS version on my
-   current MacBookPros is =10.14.4= as of [2020-01-03 Fri].
+   I've been using =macbook-playbook= since 2013. I've used it on at least six
+   MacBook Pros with different macOS versions. As of March 2021 I use it on both
+   my MacBook Pros with Big Sur installed.
 
-   Please let me know if you try =macbook-playbook= out and bump into something.
+   There are a few things that are currently hard-coded to Big Sur. For example
+   the expected system Python version is 3.8 (which is what comes with Big Sur),
+   so things are mostly expected to work best with Big Sur. I should come around
+   and fix this expectation whenever I get some time. Feel free to open an issue
+   if you're seeing issues with earlier macOS versions.
 
-** Configuring machine
+** Bootstrap machine (=make bootstrap=)
+   These are one-time steps that need to be done on machines that are running
+   =macbook-playbook= for the first time.
+
 *** Install Developer Tools (xcode-select)
-    #+begin_example
-    Open the Terminal application and type `git` into the shell.
-    #+end_example
+    Open the "Terminal" application, type =git= into the shell and follow the
+    instructions to install the Apple Developer Tools.
 
 *** Clone repository
+    Now your machine should have =git= installed.
+
     #+begin_src bash
     git clone https://github.com/mpereira/macbook-playbook.git
     #+end_src
@@ -80,17 +88,21 @@ Ansible playbook to prepare and maintain macOS for development and desktop use.
     #+end_src
 
 *** Encrypted files (using Ansible Vault)
+    :PROPERTIES:
+    :CUSTOM_ID: encrypted-files
+    :END:
     The files currently checked into this git repository are encrypted with my
     personal Ansible Vault password. Unless you have my password, roles
     referencing these files will fail to run.
 
-    | Description                       | File                                  | Role              |
-    | AWS CLI credentials               | =awscli/files/credentials=            | awscli            |
-    | BetterTouchTool license           | =better-touch-tool/files/license.xml= | better-touch-tool |
-    | Enviroment variables for dotfiles | =dotfiles/vars/environment.yml=       | dotfiles          |
-    | Prey API key                      | =prey/vars/api_key.yml=               | prey              |
-    | Private SSH key                   | =ssh-keys/files/id_rsa=               | ssh-keys          |
-    | s3cmd configuration               | =s3cmd/files/.s3cfg=                  | s3cmd             |
+    | Description                       | File                                        | Role              |
+    | AWS CLI credentials               | =awscli/files/credentials=                    | awscli            |
+    | BetterTouchTool license           | =better-touch-tool/files/license.xml=         | better-touch-tool |
+    | Enviroment variables for dotfiles | =dotfiles/vars/environment.yml=               | dotfiles          |
+    | iStat Menus settings              | =istat-menus/files/iStat Menus Settings.ismp= | istat-menus       |
+    | Prey API key                      | =prey/vars/api_key.yml=                       | prey              |
+    | Private SSH key                   | =ssh-keys/files/id_rsa=                       | ssh-keys          |
+    | s3cmd configuration               | =s3cmd/files/.s3cfg=                          | s3cmd             |
 
     You have two choices: skip these roles, and/or overwrite the encrypted files
     with your own.
@@ -104,22 +116,32 @@ Ansible playbook to prepare and maintain macOS for development and desktop use.
     your own =~/.ssh/id_rsa=) and then encrypt them with ~make encrypt~.
 
 *** Prepare machine to run the Ansible playbooks
-    This installs the macOS Command Line Developer tools and Ansible.
+    This will:
+    1. Set up passwordless =sudo=
+    2. Install a user Python3
+    3. Install Ansible
+    4. Set up the Git pre-commit hook that automatically encrypts secrets before
+       Git commits
 
     #+begin_src bash
     make bootstrap
     #+end_src
 
+    Your machine should now be ready to be provisioned! You won't need to run
+    the above steps again.
+
+** Configure machine (=make converge=)
+   Now that the machine is bootstrapped, we can provision it.
+
 *** Provision machine
-    This runs all roles under =roles=.
+    This runs all non-disabled roles in [[file:main.yml][=main.yml=]].
 
     #+begin_src bash
-    make converge
+    make converge ARGS='--skip-tags disabled'
     #+end_src
 
-    ~ansible-playbook~ arguments can be passed via the =ARGS= environment
-    variable. For example, =--tags= can be passed so that only matching roles
-    are run.
+    ~ansible-playbook~ arguments can be passed via the =ARGS= environment variable.
+    For example, =--tags= can be passed so that only matching roles are run.
 
     #+begin_src bash
     make converge ARGS='--tags google-chrome'
@@ -128,16 +150,21 @@ Ansible playbook to prepare and maintain macOS for development and desktop use.
     =--skip-tags= can also be passed to avoid running certain roles.
 
     #+begin_src bash
-    make converge ARGS='--skip-tags unity'
+    make converge ARGS='--skip-tags disabled,unity'
     #+end_src
 
     All role tags can be seen in [[file:main.yml][=main.yml=]].
 
+    If a task fails you can either disable the role via =--skip-tags= or use
+    =--start-at-task 'Some task name'= and replace =Some task name= with the =name=
+    value of some task to cause Ansible to start the playbook exactly there.
+    Check the [[https://docs.ansible.com/ansible/latest/user_guide/playbooks_startnstep.html][official documentation]] for more details.
+
 *** Manual steps post =make converge=
-    These are steps that are currently not automated either because:
-    a) it would be difficult
-    b) it would be impossible
-    c) or I just didn't have the time
+    These are steps that are currently not automated because:
+    - it would be difficult
+    - it would be impossible
+    - or I just didn't have the time
 
 **** Change keyboard layout to U.S. international
      1. System Preferences -> Keyboard -> Input Sources
@@ -146,19 +173,27 @@ Ansible playbook to prepare and maintain macOS for development and desktop use.
      4. Select "U.S. International - PC" on right column
      5. Click "Add"
      6. Remove other keyboard layouts from the left column
+
+**** iStat Menus
+     1. Import license from =roles/istat-menus/files/iStat Menus Settings.ismp=
+
 **** PDF Expert
-***** Register license
+     1. Register license
+
 **** Sound Control
-***** Check "Check for updates automatically"
-***** Register license
-***** Preferences > Priority Devices > Output and Input
-      - Check "Switch to device when" "Device is attached"
-      - Reorder devices in priority list
+     1. Check "Check for updates automatically"
+     2. Register license
+     3. Preferences > Priority Devices > Output and Input
+        - Check "Switch to device when" "Device is attached"
+        - Reorder devices in priority list
+
 **** BetterTouchTool
-***** Register license
+     1. Register license
+
 **** Terminal
 ***** Preferences > Profiles > Pro > Font
       Set to =Hack Regular 18 pt.=
+
 **** System Preferences > Security & Privacy > Privacy > [[https://www.howtogeek.com/297083/why-do-some-mac-apps-need-to-control-this-computer-using-accessibility-features/][Accessibility]]
      - BetterTouchTool.app
      - Dropbox
@@ -166,6 +201,7 @@ Ansible playbook to prepare and maintain macOS for development and desktop use.
      - Persephone.app
      - RescueTime
      - VLC
+
 **** System Preferences > Keyboard > Shortcuts > Mission Control
      Uncheck:
      - Mission Control
@@ -204,14 +240,16 @@ Ansible playbook to prepare and maintain macOS for development and desktop use.
      - [[https://docs.unity3d.com/Manual/GettingStartedInstallingHub.html][Unity Hub]]
      - [[https://www.videolan.org/vlc/download-macosx.html][VLC]]
      - [[https://www.xquartz.org/][XQuartz]]
-     - [[https://classic.youneedabudget.com/][YNAB]] (disabled by default, I use the online version)
+     - [[https://classic.youneedabudget.com/][YNAB]] (disabled by default, I use the online version and the application
+       binary isn't available anymore)
 
 **** Text Editors
      - [[https://emacsformacosx.com/][Emacs 27.1]]
      - [[https://github.com/daviderestivo/homebrew-emacs-head][Emacs 28.0.50]]
      - [[http://macvim-dev.github.io/macvim/][MacVim]]
      - [[https://github.com/neovim/neovim/wiki/Installing-Neovim][Neovim]]
-     - [[http://www.vim.org/][Vim]]
+     - [[http://www.vim.org/][Vim]] (disabled by default until I figure out why it isn't compiling on
+       macOS Big Sur with LLVM 12)
      - [[https://code.visualstudio.com/][VSCode]]
 
 **** Configuration
@@ -227,7 +265,8 @@ Ansible playbook to prepare and maintain macOS for development and desktop use.
      - [[https://www.lua.org/download.html][Lua]]
      - [[http://luajit.org/download.html][LuaJIT]]
      - [[https://nodejs.org/en/download/][Node.js]]
-     - [[http://www.purescript.org/][PureScript]]
+     - [[http://www.purescript.org/][PureScript]] (disabled by default until I figure out why =stack install
+       purescript= is currently failing)
      - [[https://www.python.org/downloads/mac-osx/][Python 3]]
      - [[https://cran.r-project.org/bin/macosx/][R]]
      - [[https://www.ruby-lang.org][Ruby]]
@@ -258,7 +297,7 @@ Ansible playbook to prepare and maintain macOS for development and desktop use.
      - [[https://github.com/kubernetes-sigs/krew][krew]]
      - [[https://kubernetes.io/docs/reference/kubectl/kubectl/][kubectl]]
      - [[https://github.com/ahmetb/kubectl-tree][kubectl-tree]]
-     - [[https://openzfsonosx.org/][OpenZFS]]
+     - [[https://openzfsonosx.org/][OpenZFS]] (disabled by default until it works on macOS Big Sur)
      - [[https://www.terraform.io/][Terraform]]
      - [[https://www.vagrantup.com/downloads.html][Vagrant]]
      - [[https://github.com/dotless-de/vagrant-vbguest][Vagrant vagrant-vbguest plugin]]
@@ -333,7 +372,7 @@ Ansible playbook to prepare and maintain macOS for development and desktop use.
      - [[https://pypi.python.org/pypi/pgsanity][pgsanity]]
      - [[https://github.com/jcsalterego/pngpaste][pngpaste]]
      - [[https://github.com/BurntSushi/ripgrep][ripgrep]]
-     - [[http://s3tools.org/s3cmd][s3cmd]] (disabled by default, I use the AWS CLI now)
+     - [[http://s3tools.org/s3cmd][s3cmd]] (disabled by default, I use the AWS CLI)
      - [[https://tldr.sh/][tealdeer]]
      - [[https://github.com/julienXX/terminal-notifier][terminal-notifier]]
      - [[http://brewformulas.org/Tree][tree]]
