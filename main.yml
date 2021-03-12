@@ -134,9 +134,11 @@
     - role: haskell
       tags: [programming-languages, brew-pkg, haskell]
 
-    # NOTE: depends on 'stack', installed by the 'haskell' role.
+    # DISABLED: `stack install purescript` is currently failing, disabling until
+    # I figure it out.
+    # https://gist.github.com/mpereira/a2418c458418cd01a2d18301eaeae85e
     - role: purescript
-      tags: [programming-languages, purescript]
+      tags: [disabled, programming-languages, purescript]
 
     #############################################################################
     # Text editors ##############################################################
