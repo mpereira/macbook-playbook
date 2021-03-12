@@ -92,6 +92,53 @@
       tags: [configuration, dotemacs]
 
     #############################################################################
+    # Programming languages #####################################################
+    #############################################################################
+
+    - role: clojure
+      tags: [programming-languages, brew-pkg, clojure]
+
+    - role: java
+      tags: [programming-languages, brew-cask-pkg, java]
+      vars:
+        java_version: adoptopenjdk15
+
+    - role: go
+      tags: [programming-languages, bespoke-pkg, go]
+      vars:
+        # https://dl.google.com/go/go1.16.1.darwin-amd64.pkg
+        go_version: "1.16.1"
+
+    - role: rust
+      tags: [programming-languages, rust]
+
+    - role: ruby
+      tags: [programming-languages, ruby]
+      vars:
+        ruby_version: 3.0.0
+
+    - role: lua
+      tags: [programming-languages, bespoke-pkg, lua]
+
+    - role: luajit
+      tags: [programming-languages, bespoke-pkg, luajit]
+
+    - role: octave
+      tags: [programming-languages, brew-pkg, octave]
+
+    - role: r
+      tags: [programming-languages, bespoke-pkg, r]
+      vars:
+        r_version: "4.0.4"
+
+    - role: haskell
+      tags: [programming-languages, brew-pkg, haskell]
+
+    # NOTE: depends on 'stack', installed by the 'haskell' role.
+    - role: purescript
+      tags: [programming-languages, purescript]
+
+    #############################################################################
     # Text editors ##############################################################
     #############################################################################
 
@@ -330,53 +377,6 @@
       vars:
         # http://download.videolan.org/pub/videolan/vlc/
         vlc_version: "3.0.12"
-
-    #############################################################################
-    # Programming languages #####################################################
-    #############################################################################
-
-    - role: clojure
-      tags: [programming-languages, brew-pkg, clojure]
-
-    - role: java
-      tags: [programming-languages, brew-cask-pkg, java]
-      vars:
-        java_version: adoptopenjdk15
-
-    - role: go
-      tags: [programming-languages, bespoke-pkg, go]
-      vars:
-        # https://dl.google.com/go/go1.16.1.darwin-amd64.pkg
-        go_version: "1.16.1"
-
-    - role: rust
-      tags: [programming-languages, rust]
-
-    - role: ruby
-      tags: [programming-languages, ruby]
-      vars:
-        ruby_version: 3.0.0
-
-    - role: lua
-      tags: [programming-languages, bespoke-pkg, lua]
-
-    - role: luajit
-      tags: [programming-languages, bespoke-pkg, luajit]
-
-    - role: octave
-      tags: [programming-languages, brew-pkg, octave]
-
-    - role: r
-      tags: [programming-languages, bespoke-pkg, r]
-      vars:
-        r_version: "4.0.4"
-
-    - role: haskell
-      tags: [programming-languages, brew-pkg, haskell]
-
-    # NOTE: depends on 'stack', installed by the 'haskell' role.
-    - role: purescript
-      tags: [programming-languages, purescript]
 
     #############################################################################
     # Programming utilities #####################################################
