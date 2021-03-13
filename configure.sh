@@ -2,13 +2,14 @@
 
 # Resources:
 # - http://www.defaults-write.com
-# - https://github.com/mathiasbynens/dotfiles/blob/master/.macos
-# - https://github.com/MartinHarding/macOSuckless
-# - https://www.cs.rutgers.edu/~pxk/cs/macos-setup.html
-# - https://gist.github.com/vraravam/5e28ca1720c9dddacdc0e6db61e093fe
 # - https://gist.github.com/MatthewEppelsheimer/2269385
-# - https://www.learningosx.com/101-ways-to-tweak-os-x-using-terminal/
+# - https://gist.github.com/vraravam/5e28ca1720c9dddacdc0e6db61e093fe
+# - https://github.com/MartinHarding/macOSuckless
+# - https://github.com/ddelange/new-mac-setup
 # - https://github.com/herrbischoff/awesome-macos-command-line
+# - https://github.com/mathiasbynens/dotfiles/blob/master/.macos
+# - https://www.cs.rutgers.edu/~pxk/cs/macos-setup.html
+# - https://www.learningosx.com/101-ways-to-tweak-os-x-using-terminal/
 
 set -euxo pipefail
 
