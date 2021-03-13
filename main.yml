@@ -40,6 +40,7 @@
     - role: python3
       tags: [foundational, programming-languages, bespoke-pkg, python3]
       vars:
+        # NOTE: update PYTHON_VERSION in Makefile when changing this.
         # https://www.python.org/ftp/python/
         python3_version: "3.9.2"
         python3_macos_version: "10.9" # this is used in the .pkg file name.

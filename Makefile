@@ -1,8 +1,9 @@
-# NOTE: this is the system Python version. In macOS Catalina it's 3.7. On Big
+# NOTE: this is the system Python version. On macOS Catalina it's 3.7, on Big
 # Sur it's 3.8.
-# TODO: identify Python version programmatically.
-BOOTSTRAP_PYTHON_MAJOR_VERSION  := 3
-BOOTSTRAP_PYTHON_MINOR_VERSION  := 8
+SYSTEM_PYTHON										:= /usr/bin/python3
+
+BOOTSTRAP_PYTHON_MAJOR_VERSION  := $(shell ./semver.sh "$$($(SYSTEM_PYTHON) --version | cut -d' ' -f2)" | sed -n '1 p')
+BOOTSTRAP_PYTHON_MINOR_VERSION  := $(shell ./semver.sh "$$($(SYSTEM_PYTHON) --version | cut -d' ' -f2)" | sed -n '2 p')
 BOOTSTRAP_PYTHON_VERSION        := $(BOOTSTRAP_PYTHON_MAJOR_VERSION).$(BOOTSTRAP_PYTHON_MINOR_VERSION)
 BOOTSTRAP_PYTHON                := /usr/bin/python$(BOOTSTRAP_PYTHON_MAJOR_VERSION)
 BOOTSTRAP_PYTHON_BIN_PATH       := ~/Library/Python/$(BOOTSTRAP_PYTHON_VERSION)/bin

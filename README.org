@@ -56,13 +56,10 @@ Ansible playbook to prepare and maintain macOS for development and desktop use.
 ** Tested on
    I've been using =macbook-playbook= since 2013. I've used it on at least six
    MacBook Pros with different macOS versions. As of March 2021 I use it on both
-   my MacBook Pros with Big Sur installed.
+   my current MacBook Pros, one with Catalina and the other with Big Sur
+   installed.
 
-   There are a few things that are currently hard-coded to Big Sur. For example
-   the expected system Python version is 3.8 (which is what comes with Big Sur),
-   so things are mostly expected to work best with Big Sur. I should come around
-   and fix this expectation whenever I get some time. Feel free to open an issue
-   if you're seeing issues with earlier macOS versions.
+   Please open an issue if you're trying this out and bump into anything.
 
 ** Bootstrap machine (=make bootstrap=)
    These are one-time steps that need to be done on machines that are running
