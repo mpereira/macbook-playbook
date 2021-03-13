@@ -361,7 +361,7 @@ Ansible playbook to prepare and maintain macOS for development and desktop use.
      - [[http://hadoop.apache.org/][Apache Hadoop]] (disabled by default, it conflicts with the =yarn=
        JavaScript package manager)
 
-**** Configuration, Monitoring and Debugging (tag: observability)
+**** Configuration, Monitoring and Debugging
      - [[http://jmeter.apache.org/][Apache JMeter]]
      - [[https://nicolargo.github.io/glances/][Glances]]
      - [[http://hisham.hm/htop/][htop]]
@@ -423,6 +423,7 @@ Ansible playbook to prepare and maintain macOS for development and desktop use.
      - wget
 
 **** Miscellaneous
+     - [[https://mutagen.io/][Mutagen]]
      - [[http://fontforge.github.io/en-US/downloads/mac-dl/][FontForge]]
      - [[http://download.qt.io/official_releases/qt/5.9/5.9.2/][Qt 5]] (disabled by default)
      - [[https://wordnet.princeton.edu/download][WordNet]]

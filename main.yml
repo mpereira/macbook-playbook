@@ -629,6 +629,9 @@
     # Miscellaneous #############################################################
     #############################################################################
 
+    - role: mutagen
+      tags: [brew-pkg, mutagen]
+
     # DISABLED: this was only necessary to build Cantata I think?
     - role: qt5
       tags: [disabled, bespoke-pkg, qt5]

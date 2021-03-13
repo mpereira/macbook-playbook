@@ -1,0 +1,5 @@
+---
+- name: Install Mutagen
+  homebrew:
+    name: mutagen-io/mutagen/mutagen
+    state: latest
