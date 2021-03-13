@@ -70,11 +70,21 @@ Ansible playbook to prepare and maintain macOS for development and desktop use.
     instructions to install the Apple Developer Tools.
 
 *** Clone repository
-    Now your machine should have =git= installed.
+    Now your machine should have =git= and =python3= installed.
 
     #+begin_src bash
     git clone https://github.com/mpereira/macbook-playbook.git
     #+end_src
+
+*** Give Terminal/iTerm2/Emacs/etc. assistive access
+    Depending on your macOS version you will be queried or not for assistive
+    access while =make converge= runs. This is required for example to remap
+    caps lock to control.
+
+    In case that task fails, or if you want to do it beforehand just in case, go
+    to "System Preferences > Security & Privacy > Privacy > [[https://www.howtogeek.com/297083/why-do-some-mac-apps-need-to-control-this-computer-using-accessibility-features/][Accessibility]]" and
+    add the application running =macbook-playbook= (Terminal/iTerm2/Emacs/etc.)
+    to the list.
 
 *** Create an Ansible Vault password
     This password will be used to encrypt and decrypt the files referenced in
@@ -152,10 +162,20 @@ Ansible playbook to prepare and maintain macOS for development and desktop use.
 
     All role tags can be seen in [[file:main.yml][=main.yml=]].
 
-    If a task fails you can either disable the role via =--skip-tags= or use
-    =--start-at-task 'Some task name'= and replace =Some task name= with the =name=
-    value of some task to cause Ansible to start the playbook exactly there.
-    Check the [[https://docs.ansible.com/ansible/latest/user_guide/playbooks_startnstep.html][official documentation]] for more details.
+    Tasks may fail due to intermittent reasons like temporary server
+    unavailability. When a task fails you can either disable its role via
+    =--skip-tags= or use =--start-at-task= with the =name= value of some task to
+    cause Ansible to start the playbook exactly there.
+
+    For example, if the "Install Emacs" task from the "build-emacs" role fails
+    for what seems to be an intermittent issue, you can pick up provisioning
+    from there so that previous tasks don't have to re-run.
+
+    #+begin_src bash
+    make converge ARGS='--skip-tags disabled --start-at-task "Install Emacs"'
+    #+end_src
+
+    Check the [[https://docs.ansible.com/ansible/latest/user_guide/playbooks_startnstep.html][official Ansible documentation]] for more details.
 
 *** Manual steps post =make converge=
     These are steps that are currently not automated because:
