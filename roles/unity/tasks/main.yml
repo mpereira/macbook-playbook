@@ -4,7 +4,6 @@
   gem:
     name: u3d
     state: latest
-  become: yes
 
 - name: Install Unity
   command: >
