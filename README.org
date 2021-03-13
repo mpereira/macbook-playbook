@@ -338,7 +338,8 @@ Ansible playbook to prepare and maintain macOS for development and desktop use.
      - [[https://github.com/mikefarah/yq][yq]]
 
 **** Data Systems
-     - [[http://hadoop.apache.org/][Apache Hadoop]]
+     - [[http://hadoop.apache.org/][Apache Hadoop]] (disabled by default, it conflicts with the =yarn=
+       JavaScript package manager)
 
 **** Configuration, Monitoring and Debugging (tag: observability)
      - [[http://jmeter.apache.org/][Apache JMeter]]

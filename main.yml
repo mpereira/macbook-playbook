@@ -229,8 +229,10 @@
     # Data Systems #############################################################
     ############################################################################
 
+    # DISABLED: I'm not using this these days and its `yarn` binary conflicts
+    # with the "yarn" JavaScript package manager.
     - role: hadoop
-      tags: [data-systems, brew-pkg, hadoop]
+      tags: [disabled, data-systems, brew-pkg, hadoop]
 
     ############################################################################
     # Document processing and plotting #########################################
