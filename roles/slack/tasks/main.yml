@@ -1,17 +1,5 @@
 ---
-- name: Download Slack
-  get_url:
-    url: https://slack.com/ssb/download-osx
-    dest: "{{ downloads_directory }}/Slack.zip"
-
-- name: Extract Slack zip archive
-  command: >
-    chdir={{ downloads_directory }}
-    unzip Slack.zip -d Slack
-    creates=Slack
-
-- name: Copy Slack.app to Applications directory
-  command: >
-    cp -R {{ downloads_directory }}/Slack/Slack.app /Applications
-    creates=/Applications/Slack.app
-  become: yes
+- name: Install Slack
+  homebrew_cask:
+    name: slack
+    state: latest

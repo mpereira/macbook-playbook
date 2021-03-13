@@ -348,7 +348,7 @@
       tags: [desktop-applications, bespoke-pkg, skype]
 
     - role: slack
-      tags: [desktop-applications, bespoke-pkg, slack]
+      tags: [desktop-applications, brew-cask-pkg, slack]
 
     - role: spotify
       tags: [desktop-applications, bespoke-pkg, spotify]
