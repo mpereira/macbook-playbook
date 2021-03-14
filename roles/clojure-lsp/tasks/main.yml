@@ -2,7 +2,8 @@
 # NOTE: not using the Homebrew brew because it is hard-coded to depend on
 # openjdk@11 from Homebrew.
 - name: Install Clojure LSP
-  get_url:
-    url: https://github.com/snoe/clojure-lsp/releases/latest/download/clojure-lsp
-    dest: /usr/local/bin/clojure-lsp
+  unarchive:
+    src: https://github.com/clojure-lsp/clojure-lsp/releases/latest/download/clojure-lsp-native-macos-amd64.zip
+    dest: /usr/local/bin
     mode: u+x
+    remote_src: yes
