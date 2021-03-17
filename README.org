@@ -5,7 +5,7 @@
 :TOC:      ignore
 :END:
 
-Ansible playbook to prepare and maintain macOS for development and desktop use.
+Install all your applications and configure everything the way you like it with one command.
 
 ** Table of Contents
    :PROPERTIES:
