@@ -346,16 +346,17 @@ Install all your applications and configure everything the way you like it with 
      - [[https://black.readthedocs.io/en/stable/][Black]]
      - [[https://clojure-lsp.github.io/clojure-lsp/][clojure-lsp]]
      - [[https://ctags.io/][Ctags]]
+     - [[https://github.com/google/yapf][YAPF]]
+     - [[https://github.com/kkinnear/zprint][zprint]]
+     - [[https://github.com/mikefarah/yq][yq]]
+     - [[https://github.com/mvdan/sh][shfmt]]
+     - [[https://github.com/snoe/node-cljfmt][node-cljfmt]]
      - [[https://github.com/tomnomnom/gron][gron]]
      - [[https://ktlint.github.io/][ktlint]]
-     - [[https://github.com/snoe/node-cljfmt][node-cljfmt]]
      - [[https://prettier.io/][Prettier]]
      - [[https://pyre-check.org/][Pyre]]
      - [[https://rust-analyzer.github.io/][rust-analyzer]]
      - [[https://www.shellcheck.net/][ShellCheck]]
-     - [[https://github.com/mvdan/sh][shfmt]]
-     - [[https://github.com/google/yapf][YAPF]]
-     - [[https://github.com/mikefarah/yq][yq]]
 
 **** Data Systems
      - [[http://hadoop.apache.org/][Apache Hadoop]] (disabled by default, it conflicts with the =yarn=

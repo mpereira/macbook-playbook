@@ -409,6 +409,11 @@
       vars:
         gron_version: "0.6.1"
 
+    - role: zprint
+      tags: [programming-utilities, bespoke-pkg, zprint]
+      vars:
+        zprint_version: "1.1.1"
+
     - role: yapf
       tags: [programming-utilities, pip-pkg, yapf]
 
