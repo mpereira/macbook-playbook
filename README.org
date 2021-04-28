@@ -243,6 +243,7 @@ Install all your applications and configure everything the way you like it with 
      - [[https://www.grammarly.com/native/mac][Grammarly]]
      - [[https://bjango.com/mac/istatmenus/][iStat Menus]]
      - [[https://www.cockos.com/licecap/][LICEcap]]
+     - [[https://maccy.app/][Maccy]]
      - [[https://pdfexpert.com/][PDF Expert]]
      - [[https://persephone.fm/][Persephone]]
      - [[https://www.rescuetime.com/][RescueTime]]

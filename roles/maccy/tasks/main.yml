@@ -1,0 +1,5 @@
+---
+- name: Install Maccy
+  homebrew_cask:
+    name: maccy
+    state: latest

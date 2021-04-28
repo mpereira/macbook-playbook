@@ -297,6 +297,9 @@
     - role: cursorcerer
       tags: [desktop-applications, brew-cask-pkg, cursorcerer]
 
+    - role: maccy
+      tags: [desktop-applications, brew-cask-pkg, maccy]
+
     - role: licecap
       tags: [desktop-applications, bespoke-pkg, licecap]
       vars:
