@@ -1,0 +1,9 @@
+---
+- name: Install DaisyDisk
+  homebrew_cask:
+    name: daisydisk
+    state: latest
+
+- command: open /Applications/DaisyDisk.app
+
+# TODO: open it if it was just installed for the first time?

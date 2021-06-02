@@ -232,6 +232,7 @@ Install all your applications and configure everything the way you like it with 
      - [[https://www.android.com/filetransfer/][Android File Transfer]]
      - [[https://getbitbar.com/][BitBar]]
      - [[http://doomlaser.com/cursorcerer-hide-your-cursor-at-will/][Cursorcerer]]
+     - [[https://daisydiskapp.com/][DaisyDisk]]
      - [[https://kapeli.com/dash][Dash]]
      - [[http://mizage.com/divvy/][Divvy]]
      - [[https://www.dropbox.com/install][Dropbox]]

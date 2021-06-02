@@ -282,6 +282,9 @@
     - role: istat-menus
       tags: [desktop-applications, brew-cask-pkg, istat-menus]
 
+    - role: daisydisk
+      tags: [desktop-applications, brew-cask-pkg, daisydisk]
+
     - role: sound-control
       tags: [desktop-applications, brew-cask-pkg, sound-control]
 
