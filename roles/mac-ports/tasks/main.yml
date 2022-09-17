@@ -1,7 +1,7 @@
 ---
 - name: Download MacPorts
   get_url:
-    url: https://distfiles.macports.org/MacPorts/{{ macports_pkg }}
+    url: https://github.com/macports/macports-base/releases/download/v{{ macports_version }}/{{ macports_pkg }}
     dest: "{{ downloads_directory }}/{{ macports_pkg }}"
 
 - name: Show current MacPorts version
@@ -14,5 +14,5 @@
   become: yes
   when: port_version_output.stdout.find(macports_version) == -1
   # NOTE: ignore errors because this is currently hard-coded to only work on
-  # macOS Big Sur.
+  # macOS 12 Monterey.
   ignore_errors: yes

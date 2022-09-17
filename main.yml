@@ -25,7 +25,7 @@
       tags: [foundational, package-and-build, bespoke-pkg, cmake]
       vars:
         # https://cmake.org/download/
-        cmake_version: "3.19.6"
+        cmake_version: "3.22.0"
 
     - role: llvm
       tags: [foundational, package-and-build, brew-pkg, llvm]
@@ -52,16 +52,15 @@
       tags: [foundational, package-and-build, bespoke-pkg, mac-ports]
       vars:
         # https://www.macports.org/install.php
-        macports_version: "2.6.4"
-        macports_pkg_version: "1"
-        macports_mac_release: "11-BigSur"
+        macports_version: "2.7.1"
+        macports_mac_release: "12-Monterey"
 
     - role: node
       tags: [foundational, programming-languages, bespoke-pkg, node]
       vars:
         # https://nodejs.org/dist/
         # https://github.com/nodejs/node/releases
-        node_version: "15.11.0"
+        node_version: "17.1.0"
 
     - role: maven
       tags: [foundational, package-and-build, brew-pkg, maven]
@@ -105,13 +104,13 @@
     - role: java
       tags: [programming-languages, brew-cask-pkg, java]
       vars:
-        java_version: adoptopenjdk15
+        java_version: adoptopenjdk16
 
     - role: go
       tags: [programming-languages, bespoke-pkg, go]
       vars:
-        # https://dl.google.com/go/go1.16.1.darwin-amd64.pkg
-        go_version: "1.16.1"
+        # https://go.dev/dl/
+        go_version: "1.17.3"
 
     - role: rust
       tags: [programming-languages, rust]
@@ -119,13 +118,13 @@
     - role: ruby
       tags: [programming-languages, ruby]
       vars:
-        ruby_version: 3.0.0
+        ruby_version: 3.0.3
 
     - role: lua
-      tags: [programming-languages, bespoke-pkg, lua]
+      tags: [programming-languages, brew-pkg, lua]
 
     - role: luajit
-      tags: [programming-languages, bespoke-pkg, luajit]
+      tags: [programming-languages, brew-pkg, luajit]
 
     - role: octave
       tags: [programming-languages, brew-pkg, octave]
@@ -133,7 +132,7 @@
     - role: r
       tags: [programming-languages, bespoke-pkg, r]
       vars:
-        r_version: "4.0.4"
+        r_version: "4.1.2"
 
     - role: haskell
       tags: [programming-languages, brew-pkg, haskell]
@@ -154,16 +153,17 @@
     - role: emacs-pre-built
       tags: [text-editors, bespoke-pkg, emacs-pre-built]
       vars:
-        emacs_pre_built_version: "27.1"
-        emacs_pre_built_patch: "-1"
+        emacs_pre_built_version: "27.2"
+        emacs_pre_built_patch: "-3"
         # emacs_pre_built_version: "26.1-rc1"
         # emacs_pre_built_pretest: "yes"
 
     # DISABLED: Vim isn't compiling on macOS Big Sur with LLVM 12, disabling
     # until I figure it out.
     # https://stackoverflow.com/questions/65750657/getting-an-error-on-configuring-vim-uint32-t-check-not-defined-correctly
+    # NOTE: testing with Monterey.
     - role: vim
-      tags: [disabled, text-editors, bespoke-pkg, vim]
+      tags: [text-editors, bespoke-pkg, vim]
       vars:
         vim_version: "8.2"
 
@@ -171,7 +171,7 @@
       tags: [text-editors, bespoke-pkg, neovim]
       vars:
         # https://github.com/neovim/neovim/releases
-        neovim_version: "0.4.4"
+        neovim_version: "0.5.1"
 
     - role: vscode
       tags: [text-editors, brew-pkg, vscode]
@@ -180,7 +180,7 @@
       tags: [text-editors, bespoke-pkg, macvim]
       vars:
         # https://github.com/macvim-dev/macvim/releases
-        macvim_version: "snapshot-170"
+        macvim_version: "snapshot-172"
 
     #############################################################################
     # Behaviors #################################################################
@@ -196,17 +196,19 @@
     - role: prey
       tags: [security, bespoke-pkg, prey, uses-secrets]
       vars:
-        prey_version: "1.9.2"
+        # https://github.com/prey/prey-node-client/releases
+        prey_version: "1.9.13"
 
     - role: vault
       tags: [security, npm-pkg, vault]
       vars:
+        # https://www.npmjs.com/package/vault
         vault_version: "0.3.0"
 
     - role: gnupg
       tags: [security, bespoke-pkg, gnupg]
       vars:
-        gnupg_version: "2.2.17"
+        gnupg_version: "2.3.3"
 
     ############################################################################
     # Observability ############################################################
@@ -316,12 +318,13 @@
     - role: unity
       tags: [desktop-applications, bespoke-pkg, unity]
       vars:
-        unity_version: "2021.2.0a8"
+        unity_version: "2021.2.4"
 
     - role: xquartz
       tags: [desktop-applications, bespoke-pkg, xquartz]
       vars:
-        xquartz_version: "2.7.11"
+        # https://www.xquartz.org/
+        xquartz_version: "2.8.1"
 
     - role: rescuetime
       tags: [desktop-applications, bespoke-pkg, rescuetime]
@@ -392,7 +395,7 @@
       tags: [desktop-applications, bespoke-pkg, vlc]
       vars:
         # http://download.videolan.org/pub/videolan/vlc/
-        vlc_version: "3.0.12"
+        vlc_version: "3.0.16"
 
     #############################################################################
     # Programming utilities #####################################################
@@ -421,7 +424,8 @@
     - role: zprint
       tags: [programming-utilities, bespoke-pkg, zprint]
       vars:
-        zprint_version: "1.1.1"
+        # https://github.com/kkinnear/zprint/releases
+        zprint_version: "1.2.0"
 
     - role: yapf
       tags: [programming-utilities, pip-pkg, yapf]
@@ -485,7 +489,7 @@
     - role: graalvm
       tags: [package-and-build, bespoke-pkg, graalvm]
       vars:
-        graalvm_version: "21.0.0.2"
+        graalvm_version: "21.3.0"
 
     # NOTE: depends on 'java'.
     - role: leiningen
@@ -495,13 +499,13 @@
     # Virtualization, provisioning, containers and system tools #################
     #############################################################################
 
-    # DISABLED: not working on Big Sur yet:
-    # https://openzfsonosx.org/forum/viewtopic.php?f=20&t=3468
+    # NOTE: trying it out with Monterey (should be at least 2.1.0).
     - role: openzfs
-      tags: [disabled, system-tools, brew-cask-pkg, openzfs]
+      tags: [system-tools, brew-cask-pkg, openzfs]
 
+    # DISABLED: haven't used VirtualBox in a while.
     - role: virtualbox
-      tags: [system-tools, bespoke-pkg, virtualbox]
+      tags: [disabled, system-tools, bespoke-pkg, virtualbox]
       vars:
         # Wait until Vagrant fixes this issue before upgrading to 5.2
         # https://github.com/hashicorp/vagrant/issues/9090
@@ -510,13 +514,15 @@
         virtualbox_version: "6.0.2"
         virtualbox_build: "128162"
 
+    # DISABLED: haven't used Vagrant in a while.
     - role: vagrant
-      tags: [system-tools, bespoke-pkg, vagrant]
+      tags: [disabled, system-tools, bespoke-pkg, vagrant]
       vars:
         vagrant_version: "2.2.14"
 
+    # DISABLED: haven't used Vagrant in a while.
     - role: vagrant-vbguest
-      tags: [system-tools, vagrant-pkg, vagrant, vagrant-vbguest]
+      tags: [disabled, system-tools, vagrant-pkg, vagrant, vagrant-vbguest]
       vars:
         vagrant_vbguest_version: "0.29.0"
 
@@ -526,13 +532,14 @@
     - role: terraform
       tags: [system-tools, bespoke-pkg, terraform]
       vars:
-        terraform_version: "0.14.8"
-        terraform_checksum: "sha256:30115a2ee5f61178527089d8e5da20053927b364b08dc7aee6894a162ccbd793"
+        # https://releases.hashicorp.com/terraform/
+        terraform_version: "1.0.11"
+        terraform_checksum: "sha256:92f2e7eebb9699e23800f8accd519775a02bd25fe79e1fe4530eca123f178202"
 
     - role: kubectl
       tags: [system-tools, bespoke-pkg, kubernetes, kubectl]
       vars:
-        kubectl_version: "1.20.0"
+        kubectl_version: "1.22.4"
 
     - role: krew
       tags: [system-tools, bespoke-pkg, kubernetes, krew]
@@ -626,6 +633,9 @@
 
     - role: fd
       tags: [command-line-tools, brew-pkg, fd]
+
+    - role: parallel
+      tags: [command-line-tools, brew-pkg, parallel]
 
     - role: tealdeer
       tags: [command-line-tools, cargo-pkg, tealdeer]

@@ -1,2 +1,2 @@
 ---
-macports_pkg: MacPorts-{{ macports_version }}_{{ macports_pkg_version }}-{{ macports_mac_release }}.pkg
+macports_pkg: MacPorts-{{ macports_version }}-{{ macports_mac_release }}.pkg
