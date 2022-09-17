@@ -1,0 +1,2 @@
+---
+xbar_name: xbar.{{ xbar_version }}

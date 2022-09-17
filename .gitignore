@@ -1,2 +1,3 @@
 /.ansible_vault_password
 /main.retry
+/*.patch

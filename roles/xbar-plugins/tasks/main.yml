@@ -1,0 +1,19 @@
+---
+- name: Ensure the xbar Application Support directory exists
+  file: >
+    path="{{ home_directory }}/Library/Application Support/xbar/plugins"
+    state=directory
+
+- name: Clone xbar plugins repository
+  git:
+    repo: "git@github.com:mpereira/bitbar-plugins.git"
+    dest: "{{ home_directory }}/git/xbar-plugins"
+
+- name: Install xbar plugins
+  file:
+    src: "{{ home_directory }}/git/xbar-plugins/{{ item.src }}"
+    dest: "{{ home_directory }}/Library/Application Support/xbar/plugins/{{ item.dest }}"
+    state: link
+  with_items:
+    - { src: 'Music/mpd-mpereira.5s.sh', dest: 'mpd-mpereira.5s.sh' }
+    - { src: 'Music/spotify-mpereira.5s.sh', dest: 'spotify-mpereira.5s.sh' }

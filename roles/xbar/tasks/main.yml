@@ -1,0 +1,27 @@
+---
+- name: Download xbar
+  get_url:
+    url: "https://github.com/matryer/xbar/releases/download/{{ xbar_version }}/{{ xbar_name }}.dmg"
+    dest: "{{ downloads_directory }}/{{ xbar_name }}.dmg"
+
+- name: Check existing xbar version
+  shell: "defaults read /Applications/xbar.app/Contents/Info.plist CFBundleVersion --version 2>&1"
+  register: xbar_version_output
+  ignore_errors: yes
+
+- name: Mount xbar image
+  command:
+    chdir: "{{ downloads_directory }}"
+    cmd: "hdiutil attach -nobrowse xbar-{{ xbar_version }}.dmg"
+    creates: "/Volumes/Install xbar"
+  when: xbar_version.find(xbar_version_output.stdout) == -1
+
+- name: Install xbar
+  command: >
+    cp -R "/Volumes/Install xbar/xbar.app" /Applications
+  become: yes
+  when: xbar_version.find(xbar_version_output.stdout) == -1
+
+- name: Unmount xbar image
+  command: hdiutil detach /Volumes/xbar
+  when: xbar_version.find(xbar_version_output.stdout) == -1

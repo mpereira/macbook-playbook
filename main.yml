@@ -325,13 +325,14 @@
       tags: [desktop-applications, bespoke-pkg, rescuetime]
 
     # TODO: upgrade to xbar: https://github.com/matryer/xbar/issues/607.
-    - role: bitbar
-      tags: [desktop-applications, bespoke-pkg, bitbar]
+    - role: xbar
+      tags: [desktop-applications, bespoke-pkg, xbar]
       vars:
-        bitbar_version: "1.10.1"
+        # https://github.com/matryer/xbar/releases
+        xbar_version: "v2.1.7-beta"
 
-    - role: bitbar-plugins
-      tags: [desktop-applications, bitbar, bitbar-plugins]
+    - role: xbar-plugins
+      tags: [desktop-applications, xbar, xbar-plugins]
 
     - role: divvy
       tags: [desktop-applications, bespoke-pkg, divvy]
