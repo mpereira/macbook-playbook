@@ -62,6 +62,9 @@ bootstrap:
 		--extra-vars "project_root=$(LOCAL_PROJECT_DIRECTORY)" \
 		$(ANSIBLE_PLAYBOOKS_DIRECTORY)/bootstrap.yml
 	$(PIP) install --user ansible
+	ansible-galaxy collection install \
+		-r $(ANSIBLE_DIRECTORY)/requirements.yml \
+		-p $(ANSIBLE_DIRECTORY)/galaxy
 
 # NOTE: this seems to be required for Big Sur. Without it, the 'cryptography'
 # pip package (a transitive dependency for the 'ansible' package) fails to

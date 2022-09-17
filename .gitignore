@@ -1,3 +1,4 @@
 /.ansible_vault_password
+/galaxy
 /main.retry
 /*.patch

@@ -1,3 +1,2 @@
 ---
 ssh_directory: "{{ home_directory }}/.ssh"
-private_ssh_key: id_rsa

@@ -15,7 +15,19 @@
 
 - name: Install public SSH keys
   copy:
-    src: "{{ private_ssh_key }}.pub"
-    dest: "{{ ssh_directory }}/{{ private_ssh_key }}.pub"
+    src: "{{ item }}"
+    dest: "{{ ssh_directory }}/{{ item }}"
     mode: 0644
     owner: "{{ user }}"
+  loop:
+    - "mpereira@argonaut.pub"
+    - "mpereira@pluto.pub"
+
+- name: Add authorized keys
+  ansible.posix.authorized_key:
+    user: "{{ user }}"
+    state: present
+    key: "{{ lookup('file', item) }}"
+  loop:
+    - "mpereira@argonaut.pub"
+    - "mpereira@pluto.pub"
