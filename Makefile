@@ -9,7 +9,7 @@ BOOTSTRAP_PYTHON                := /usr/bin/python$(BOOTSTRAP_PYTHON_MAJOR_VERSI
 BOOTSTRAP_PYTHON_BIN_PATH       := ~/Library/Python/$(BOOTSTRAP_PYTHON_VERSION)/bin
 BOOTSTRAP_PIP                   := $(BOOTSTRAP_PYTHON) -m pip
 
-PYTHON_VERSION                  := 3.9
+PYTHON_VERSION                  := 3.10
 PYTHON_BIN_PATH                 := ~/Library/Python/$(PYTHON_VERSION)/bin
 PYTHON                          := /usr/local/bin/python$(PYTHON_VERSION)
 PIP                             := $(PYTHON) -m pip

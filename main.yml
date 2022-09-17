@@ -42,8 +42,10 @@
       vars:
         # NOTE: update PYTHON_VERSION in Makefile when changing this.
         # https://www.python.org/ftp/python/
-        python3_version: "3.9.2"
-        python3_macos_version: "10.9" # this is used in the .pkg file name.
+        python3_version: "3.10.0"
+        # 11 is a "Universal 2" binary which works on Apple Silicon.
+        # 10.9 does not work on Apple Silicon.
+        python3_macos_version: "11" # this is used in the .pkg file name.
         python3_version_major_minor: "{{ python3_version | regex_replace('^([0-9]+)\\.([0-9]+)(?:\\.[0-9]+)?$', '\\1.\\2') }}"
 
     - role: mac-ports
