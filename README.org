@@ -98,18 +98,19 @@ Install all your applications and configure everything the way you like it with 
     :PROPERTIES:
     :CUSTOM_ID: encrypted-files
     :END:
-    The files currently checked into this git repository are encrypted with my
+    The following files currently checked into this git repository are encrypted with my
     personal Ansible Vault password. Unless you have my password, roles
     referencing these files will fail to run.
 
-    | Description                       | File                                        | Role              |
-    | AWS CLI credentials               | =awscli/files/credentials=                    | awscli            |
-    | BetterTouchTool license           | =better-touch-tool/files/license.xml=         | better-touch-tool |
-    | Enviroment variables for dotfiles | =dotfiles/vars/environment.yml=               | dotfiles          |
-    | iStat Menus settings              | =istat-menus/files/iStat Menus Settings.ismp= | istat-menus       |
-    | Prey API key                      | =prey/vars/api_key.yml=                       | prey              |
-    | Private SSH key                   | =ssh-keys/files/id_rsa=                       | ssh-keys          |
-    | s3cmd configuration               | =s3cmd/files/.s3cfg=                          | s3cmd             |
+    | Description                       | File                                             | Role              |
+    | AWS CLI credentials               | =secrets/aws_credentials_file=                   | awscli            |
+    | BetterTouchTool license           | =secrets/better_touch_tool_license_file=         | better-touch-tool |
+    | DaisyDisk license                 | =secrets/daisydisk_registration_key_file=        | daisydisk         |
+    | Enviroment variables for [[https://github.com/mpereira/dotfiles][dotfiles]] | =secrets/mpereira_dotfiles_environment_yml_file= | dotfiles          |
+    | iStat Menus settings              | =secrets/istat_menus_settings_file=              | istat-menus       |
+    | Prey API key                      | =secrets/prey_api_key_yaml_file=                 | prey              |
+    | Private SSH key                   | =secrets/mpereira_at_pluto_ssh_private_key=      | ssh-keys          |
+    | s3cmd configuration               | =secrets/s3cmd_cfg_file=                         | s3cmd             |
 
     You have two choices: skip these roles, and/or overwrite the encrypted files
     with your own.
@@ -121,6 +122,14 @@ Install all your applications and configure everything the way you like it with 
 
     And then you'll be able to overwrite them with your own files (for example
     your own =~/.ssh/id_rsa=) and then encrypt them with ~make encrypt~.
+
+    To skip them, when you reach the [[#provision-machine][provision machine]] step, make Ansible skip
+    roles tagged with =uses-secrets=. You don't need to run this now, the
+    command below is just an example.
+
+    #+begin_src bash
+    make converge ARGS='--skip-tags uses-secrets'
+    #+end_src
 
 *** Prepare machine to run the Ansible playbooks
     This will:
@@ -141,6 +150,9 @@ Install all your applications and configure everything the way you like it with 
    Now that the machine is bootstrapped, we can provision it.
 
 *** Provision machine
+    :PROPERTIES:
+    :CUSTOM_ID: provision-machine
+    :END:
     This runs all non-disabled roles in [[file:main.yml][=main.yml=]].
 
     #+begin_src bash

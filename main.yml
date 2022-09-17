@@ -79,16 +79,16 @@
     #############################################################################
 
     - role: ssh-keys
-      tags: [configuration, ssh-keys]
+      tags: [configuration, ssh-keys, uses-secrets]
 
     - role: better-touch-tool
-      tags: [configuration, bespoke-pkg, better-touch-tool]
+      tags: [configuration, bespoke-pkg, better-touch-tool, uses-secrets]
       vars:
         # https://folivora.ai/releases
         better_touch_tool_version: "" # using latest
 
     - role: dotfiles
-      tags: [configuration, dotfiles]
+      tags: [configuration, dotfiles, uses-secrets]
 
     - role: dotemacs
       tags: [configuration, dotemacs]
@@ -192,7 +192,7 @@
     #############################################################################
 
     - role: prey
-      tags: [security, bespoke-pkg, prey]
+      tags: [security, bespoke-pkg, prey, uses-secrets]
       vars:
         prey_version: "1.9.2"
 
@@ -280,10 +280,10 @@
         elgato_dock_version: "1.2.10.131_40"
 
     - role: istat-menus
-      tags: [desktop-applications, brew-cask-pkg, istat-menus]
+      tags: [desktop-applications, brew-cask-pkg, istat-menus, uses-secrets]
 
     - role: daisydisk
-      tags: [desktop-applications, brew-cask-pkg, daisydisk]
+      tags: [desktop-applications, brew-cask-pkg, daisydisk, uses-secrets]
 
     - role: sound-control
       tags: [desktop-applications, brew-cask-pkg, sound-control]
@@ -599,11 +599,11 @@
       tags: [command-line-tools, brew-pkg, p7zip]
 
     - role: awscli
-      tags: [command-line-tools, pip-pkg, awscli]
+      tags: [command-line-tools, pip-pkg, awscli, uses-secrets]
 
     # DISABLED: using awscli instead.
     - role: s3cmd
-      tags: [disabled, command-line-tools, s3cmd]
+      tags: [disabled, command-line-tools, s3cmd, uses-secrets]
 
     - role: defaultbrowser
       tags: [command-line-tools, git-pkg, defaultbrowser]

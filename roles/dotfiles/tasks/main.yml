@@ -7,8 +7,9 @@
 
 - name: Load environment variables
   include_vars:
-    file: environment.yml
+    file: "{{ mpereira_dotfiles_environment_yml_file }}"
     name: environment_variables
+  no_log: yes
 
 - name: Install dotfiles
   environment: "{{ environment_variables }}"

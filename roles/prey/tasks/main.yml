@@ -8,8 +8,9 @@
 
 - name: Load API key
   include_vars:
-    file: api_key.yml
+    file: "{{ prey_api_key_yaml_file }}"
     name: api_key
+  no_log: yes
 
 - name: Check if Prey is set up
   shell: >

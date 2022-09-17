@@ -6,10 +6,10 @@
     owner: "{{ user }}"
     state: directory
 
-- name: Install private SSH keys
+- name: Install private SSH key
   copy:
-    src: "{{ private_ssh_key }}"
-    dest: "{{ ssh_directory }}/{{ private_ssh_key }}"
+    src: "{{ mpereira_at_pluto_ssh_private_key }}"
+    dest: "{{ ssh_directory }}/mpereira@pluto"
     mode: 0600
     owner: "{{ user }}"
 

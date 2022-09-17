@@ -6,6 +6,6 @@
 
 - name: Install ~/.s3cfg
   copy:
-    src: .s3cfg
+    src: "{{ s3cmd_cfg_file }}"
     dest: "{{ home_directory }}/.s3cfg"
     mode: 0644
