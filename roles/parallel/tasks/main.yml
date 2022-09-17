@@ -1,0 +1,5 @@
+---
+- name: Install parallel
+  homebrew:
+    name: parallel
+    state: latest
