@@ -408,6 +408,7 @@ Install all your applications and configure everything the way you like it with 
      - [[https://github.com/jcsalterego/pngpaste][pngpaste]]
      - [[https://github.com/BurntSushi/ripgrep][ripgrep]]
      - [[http://s3tools.org/s3cmd][s3cmd]] (disabled by default, I use the AWS CLI)
+     - [[https://github.com/boyter/scc][scc]]
      - [[https://tldr.sh/][tealdeer]]
      - [[https://github.com/julienXX/terminal-notifier][terminal-notifier]]
      - [[http://brewformulas.org/Tree][tree]]

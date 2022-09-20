@@ -625,6 +625,9 @@
     - role: tree
       tags: [command-line-tools, brew-pkg, tree]
 
+    - role: scc
+      tags: [command-line-tools, brew-pkg, scc]
+
     - role: pgsanity
       tags: [command-line-tools, pip-pkg, pgsanity]
 

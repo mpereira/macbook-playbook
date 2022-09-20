@@ -1,0 +1,5 @@
+---
+- name: Install scc
+  homebrew:
+    name: scc
+    state: latest
