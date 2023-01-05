@@ -442,8 +442,10 @@
     - role: shfmt
       tags: [programming-utilities, brew-pkg, shfmt]
 
+    # DISABLED: it fails to install on Monterey because a dependency
+    # (pywatchman) isn't building correctly.
     - role: pyre-check
-      tags: [programming-utilities, pip-pkg, pyre-check]
+      tags: [disabled, programming-utilities, pip-pkg, pyre-check]
 
     - role: shellcheck
       tags: [programming-utilities, brew-pkg, shellcheck]
