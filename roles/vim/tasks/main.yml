@@ -26,7 +26,6 @@
       --enable-fail-if-missing \
       --enable-luainterp \
       --enable-perlinterp \
-      --enable-pythoninterp \
       --enable-python3interp \
       --enable-rubyinterp \
       --enable-cscope \
