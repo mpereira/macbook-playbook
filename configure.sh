@@ -16,6 +16,9 @@ set -euxo pipefail
 email_address="${1}"
 hostname="${2}"
 
+# Close open System Preferences panes, to prevent them from overriding settings.
+osascript -e 'tell application "System Preferences" to quit'
+
 login_window_text="This computer is attached to an Apple iCloud account \
 and is valueless if lost.\nPlease return it by emailing ${email_address}."
 
@@ -45,11 +48,13 @@ sudo defaults write \
 # Fade transition between workspaces instead of using movement.
 defaults write com.apple.Accessibility ReduceMotionEnabled -bool true
 
+readonly icloud_directory="${HOME}/Library/Mobile Documents/com~apple~CloudDocs"
+
 # Save screenshots to the desktop.
 defaults write \
          com.apple.screencapture \
          location \
-         -string "${HOME}/Dropbox/Screenshots"
+         -string "${icloud_directory}/Screenshots"
 
 ################################################################################
 # Dock #########################################################################
@@ -131,7 +136,10 @@ defaults write com.apple.frameworks.diskimages auto-open-rw-root -bool true
 defaults write com.apple.finder OpenWindowForNewRemovableDisk -bool true
 
 # Use list view in all Finder windows by default.
-# Four-letter codes for the other view modes: `icnv`, `clmv`, `glyv`.
+# Icon View:   "icnv"
+# List View:   "Nlsv"
+# Column View: "clmv"
+# Cover Flow:  "Flwv"
 defaults write com.apple.finder FXPreferredViewStyle -string "Nlsv"
 
 # Show bar with current directory path at the bottom.
@@ -144,13 +152,23 @@ defaults write com.apple.finder QuitMenuItem -bool true
 defaults write com.apple.finder DisableAllAnimations -bool true
 
 # New Finder windows open at $HOME.
-defaults write com.apple.finder NewWindowTarget -string "PfLo"
+# Computer:       "PfCm"
+# Volume:         "PfVo"
+# $HOME:          "PfHm"
+# Desktop:        "PfDe"
+# Documents:      "PfDo"
+# All My Files:   "PfAF"
+# Other:          "PfLo"
+defaults write com.apple.finder NewWindowTarget -string "PfHm"
 defaults write com.apple.finder NewWindowTargetPath -string "file://${HOME}"
 
 # Don't show file icons in the desktop.
 defaults write com.apple.finder CreateDesktop -bool false
 
 # When performing a search, search the current folder by default.
+# This Mac:       "SCev"
+# Current Folder: "SCcf"
+# Previous Scope: "SCsp"
 defaults write com.apple.finder FXDefaultSearchScope -string "SCcf"
 
 # Display full POSIX path as Finder window title.
