@@ -4,6 +4,6 @@
 
 - name: Install Emacs
   homebrew:
-    name: emacs-head@28
+    name: emacs-head@29
     state: latest
     install_options: with-cocoa,with-crash-debug,with-imagemagick,with-modern-icon-pen,with-native-comp,with-no-frame-refocus,with-pdumper,with-xwidgets

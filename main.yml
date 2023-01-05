@@ -153,8 +153,8 @@
     - role: emacs-pre-built
       tags: [text-editors, bespoke-pkg, emacs-pre-built]
       vars:
-        emacs_pre_built_version: "27.2"
-        emacs_pre_built_patch: "-3"
+        emacs_pre_built_version: "28.2"
+        emacs_pre_built_patch: ""
         # emacs_pre_built_version: "26.1-rc1"
         # emacs_pre_built_pretest: "yes"
 
