@@ -3,3 +3,4 @@
   npm:
     name: vtop
     global: yes
+  become: yes

@@ -7,7 +7,7 @@
 - name: Create glances webserver service plist
   copy:
     src: com.mpereira.glances.webserver.plist
-    dest: ~/Library/LaunchAgents
+    dest: ~/Library/LaunchAgents/com.mpereira.glances.webserver.plist
     validate: 'plutil %s'
 
 - name: Start glances webserver service

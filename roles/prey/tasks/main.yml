@@ -16,6 +16,7 @@
   shell: >
     /usr/local/lib/prey/current/bin/prey config gui
   register: prey_config_gui
+  ignore_errors: yes
   become: yes
 
 # TODO: make the "when" condition be if prey_version is different than the

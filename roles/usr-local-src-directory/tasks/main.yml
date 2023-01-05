@@ -3,3 +3,5 @@
   file:
     path: /usr/local/src
     state: directory
+    owner: "{{ user }}"
+  become: yes

@@ -5,12 +5,16 @@
     dest: "{{ downloads_directory }}/{{ cmake_image_name }}"
 
 - name: Get current CMake version
-  command: cmake --version
+  command: /Applications/CMake.app/Contents/bin/cmake --version
   register: cmake_version_output
   ignore_errors: yes
 
+- name: Get current CMake version
+  set_fact:
+    current_cmake_version: "{{ cmake_version_output.stdout | regex_search('\\d+\\.\\d+\\.\\d+') }}"
+
 - set_fact:
-    installed_cmake_version_differs_or_not_installed: "{{ (cmake_version_output.rc == 1 or (cmake_version_output.stdout | regex_search('\\d+\\.\\d+\\.\\d+')) is version(cmake_version, '<')) }}"
+    installed_cmake_version_differs_or_not_installed: "{{ (cmake_version_output.rc != 0 or cmake_version is version(current_cmake_version, '<')) }}"
 
 - name: Convert CMake image to a format that does not require an EULA
   command: >

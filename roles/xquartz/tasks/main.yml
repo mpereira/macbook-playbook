@@ -1,8 +1,9 @@
 ---
 - name: Download XQuartz
-  get_url: >
-    url=https://dl.bintray.com/xquartz/downloads/{{ xquartz_dmg }}
-    dest={{ downloads_directory }}/{{ xquartz_dmg }}
+  get_url:
+    url: "https://github.com/XQuartz/XQuartz/releases/download/XQuartz-{{ xquartz_version }}/{{ xquartz_dmg }}"
+    dest: "{{ downloads_directory }}/{{ xquartz_dmg }}"
+
 
 - name: Mount XQuartz image
   command: >

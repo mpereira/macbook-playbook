@@ -22,10 +22,5 @@
       - gzip
       - screen
       - watch
+      - wdiff
       - wget
-
-- name: Install wdiff
-  homebrew:
-    name: wdiff
-    state: latest
-    install_options: with-gettext

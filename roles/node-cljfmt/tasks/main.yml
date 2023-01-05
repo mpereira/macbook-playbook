@@ -4,3 +4,4 @@
     name: node-cljfmt
     state: latest
     global: yes
+  become: yes

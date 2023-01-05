@@ -11,8 +11,7 @@
 
 - name: Mount xbar image
   command:
-    chdir: "{{ downloads_directory }}"
-    cmd: "hdiutil attach -nobrowse xbar-{{ xbar_version }}.dmg"
+    cmd: "hdiutil attach -nobrowse {{ downloads_directory }}/{{ xbar_name }}.dmg"
     creates: "/Volumes/Install xbar"
   when: xbar_version.find(xbar_version_output.stdout) == -1
 
@@ -23,5 +22,5 @@
   when: xbar_version.find(xbar_version_output.stdout) == -1
 
 - name: Unmount xbar image
-  command: hdiutil detach /Volumes/xbar
+  command: hdiutil detach "/Volumes/Install xbar"
   when: xbar_version.find(xbar_version_output.stdout) == -1

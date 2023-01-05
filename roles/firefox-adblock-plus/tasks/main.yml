@@ -1,7 +1,7 @@
 ---
 - name: Open Firefox
   shell: >
-    "{{ firefox_app }}/Contents/MacOS/firefox-bin" -headless & firefox_pid=$!; sleep 5; kill $firefox_pid
+    "{{ firefox_app }}/Contents/MacOS/firefox-bin" -headless & firefox_pid=$!; sleep 10; kill $firefox_pid
 
 - name: Download Adblock Plus
   get_url: >

@@ -4,3 +4,4 @@
     name: vault
     version: "{{ vault_version }}"
     global: yes
+  become: yes

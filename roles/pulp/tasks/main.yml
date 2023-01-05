@@ -4,3 +4,4 @@
     name: pulp
     state: latest
     global: yes
+  become: yes

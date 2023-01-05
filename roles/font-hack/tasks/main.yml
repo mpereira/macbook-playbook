@@ -1,7 +1,15 @@
 ---
-- name: Download Hack font
+- name: Add cask-fonts tap
+  command: brew tap homebrew/cask-fonts
+
+- name: Install Hack font
   homebrew_cask:
     name: font-hack
+    state: latest
+
+- name: Install fontconfig
+  homebrew:
+    name: fontconfig
     state: latest
 
 - name: Reload fonts

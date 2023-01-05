@@ -1,6 +1,5 @@
 ---
 - name: Install make
-  homebrew:
+  community.general.homebrew:
     name: make
-    install_options: with-default-names
     # name: "make@{{ make_version }}"
