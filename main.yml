@@ -60,7 +60,7 @@
       vars:
         # https://nodejs.org/dist/
         # https://github.com/nodejs/node/releases
-        node_version: "17.1.0"
+        node_version: "18.12.1"
 
     - role: maven
       tags: [foundational, package-and-build, brew-pkg, maven]
