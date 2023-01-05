@@ -1,7 +1,7 @@
 ---
 - name: Download R
   get_url: >
-    url="https://cran.r-project.org/bin/macosx/R-{{ r_version }}.pkg"
+    url="https://cran.r-project.org/bin/macosx/base/R-{{ r_version }}.pkg"
     dest="{{ downloads_directory }}/R-{{ r_version }}.pkg"
 
 - name: Get current R version
