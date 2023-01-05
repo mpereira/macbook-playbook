@@ -1,0 +1,5 @@
+---
+- name: Install Wireshark
+  homebrew_cask:
+    name: wireshark
+    state: latest

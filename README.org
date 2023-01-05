@@ -270,6 +270,7 @@ Install all your applications and configure everything the way you like it with 
      - [[https://unity3d.com/get-unity/download][Unity]]
      - [[https://docs.unity3d.com/Manual/GettingStartedInstallingHub.html][Unity Hub]]
      - [[https://www.videolan.org/vlc/download-macosx.html][VLC]]
+     - [[https://www.wireshark.org/][Wireshark]]
      - [[https://www.xquartz.org/][XQuartz]]
      - [[https://classic.youneedabudget.com/][YNAB]] (disabled by default, I use the online version and the application
        binary isn't available anymore)
