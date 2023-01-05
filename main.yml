@@ -352,7 +352,7 @@
       tags: [desktop-applications, bespoke-pkg, dropbox]
 
     - role: google-chrome
-      tags: [desktop-applications, bespoke-pkg, google-chrome]
+      tags: [desktop-applications, brew-cask-pkg, google-chrome]
 
     - role: firefox
       tags: [desktop-applications, bespoke-pkg, firefox]
