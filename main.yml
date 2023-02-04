@@ -535,8 +535,8 @@
       tags: [system-tools, bespoke-pkg, terraform]
       vars:
         # https://releases.hashicorp.com/terraform/
-        terraform_version: "1.0.11"
-        terraform_checksum: "sha256:92f2e7eebb9699e23800f8accd519775a02bd25fe79e1fe4530eca123f178202"
+        terraform_version: "1.3.7"
+        terraform_checksum: "sha256:b00465acc7bdef57ba468b84b9162786e472dc97ad036a9e3526dde510563e2d"
 
     - role: kubectl
       tags: [system-tools, bespoke-pkg, kubernetes, kubectl]
