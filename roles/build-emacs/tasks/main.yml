@@ -6,4 +6,21 @@
   homebrew:
     name: emacs-head@29
     state: latest
-    install_options: with-cocoa,with-crash-debug,with-imagemagick,with-modern-icon-pen,with-native-comp,with-no-frame-refocus,with-pdumper,with-xwidgets
+    # https://github.com/daviderestivo/homebrew-emacs-head/blob/master/Formula/emacs-head@29.rb
+    install_options:
+      - with-cocoa
+      - with-crash-debug
+      - with-imagemagick
+      - with-modern-icon-pen
+      - with-native-comp
+      - with-no-frame-refocus
+      - with-pdumper
+      - with-tree-sitter
+      - with-xwidgets
+
+# NOTE: spotlight doesn't seem to pick up this symlink?
+- name: Create a symbolic link
+  ansible.builtin.file:
+    src: /usr/local/opt/emacs-head@29/Emacs.app/
+    dest: /Applications/Emacs-29.app
+    state: link
