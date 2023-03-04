@@ -298,6 +298,9 @@
     - role: flux
       tags: [desktop-applications, brew-cask-pkg, flux]
 
+    - role: whatsapp
+      tags: [desktop-applications, brew-cask-pkg, whatsapp]
+
     - role: toggle-dark-mode
       tags: [desktop-applications, toggle-dark-mode]
 
