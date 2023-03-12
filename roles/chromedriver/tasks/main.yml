@@ -1,0 +1,15 @@
+---
+- name: Create directory for versioned Chromedriver Homebrew recipe
+  ansible.builtin.file:
+    path: "{{ downloads_directory }}/chromedriver/{{ git_commit_ref }}"
+    state: directory
+
+- name: Download the versioned Chromedriver Homebrew recipe
+  ansible.builtin.get_url:
+    url: "https://raw.githubusercontent.com/Homebrew/homebrew-cask/{{ git_commit_ref }}/Casks/chromedriver.rb"
+    dest: "{{ downloads_directory }}/chromedriver/{{ git_commit_ref }}/chromedriver.rb"
+
+- name: Install Chromedriver from Homebrew recipe
+  homebrew_cask:
+    name: "{{ downloads_directory }}/chromedriver/{{ git_commit_ref }}/chromedriver.rb"
+    state: present

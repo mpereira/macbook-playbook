@@ -673,6 +673,12 @@
     # Miscellaneous #############################################################
     #############################################################################
 
+    - role: chromedriver
+      tags: [brew-cask-pkg, brew-cask-pkg-versioned, chromedriver]
+      vars:
+        # Version 110.0.5481.77.
+        git_commit_ref: "711a5a29adad0e444ed25b4024ba8f9e409dfa69"
+
     - role: mutagen
       tags: [brew-pkg, mutagen]
 

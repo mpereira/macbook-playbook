@@ -448,6 +448,7 @@ Install all your applications and configure everything the way you like it with 
 
 **** Miscellaneous
      - [[https://mutagen.io/][Mutagen]]
+     - [[https://chromedriver.chromium.org/home][ChromeDriver]]
      - [[http://fontforge.github.io/en-US/downloads/mac-dl/][FontForge]]
      - [[http://download.qt.io/official_releases/qt/5.9/5.9.2/][Qt 5]] (disabled by default)
      - [[https://wordnet.princeton.edu/download][WordNet]]
