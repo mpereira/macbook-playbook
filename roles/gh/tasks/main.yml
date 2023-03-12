@@ -1,0 +1,5 @@
+---
+- name: Install gh
+  homebrew:
+    name: gh
+    state: latest

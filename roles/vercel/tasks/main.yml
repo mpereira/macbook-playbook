@@ -1,0 +1,7 @@
+---
+- name: Install vercel
+  npm:
+    name: vercel
+    state: latest
+    global: yes
+  become: yes

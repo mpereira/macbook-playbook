@@ -1,0 +1,7 @@
+---
+- name: Install local-ssl-proxy
+  npm:
+    name: local-ssl-proxy
+    state: latest
+    global: yes
+  become: yes

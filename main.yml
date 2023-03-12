@@ -278,6 +278,9 @@
     - role: grammarly
       tags: [desktop-applications, brew-pkg, grammarly]
 
+    - role: zoom
+      tags: [desktop-applications, brew-pkg, zoom]
+
     - role: elgato-dock
       tags: [desktop-applications, bespoke-pkg, elgato-dock]
       vars:
@@ -614,6 +617,15 @@
 
     - role: awscli
       tags: [command-line-tools, pip-pkg, awscli, uses-secrets]
+
+    - role: gh
+      tags: [command-line-tools, brew-pkg, gh, contextualize]
+
+    - role: vercel
+      tags: [command-line-tools, npm-pkg, vercel, contextualize]
+
+    - role: local-ssl-proxy
+      tags: [command-line-tools, npm-pkg, local-ssl-proxy, contextualize]
 
     # DISABLED: using awscli instead.
     - role: s3cmd

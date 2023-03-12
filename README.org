@@ -275,6 +275,7 @@ Install all your applications and configure everything the way you like it with 
      - [[https://www.xquartz.org/][XQuartz]]
      - [[https://classic.youneedabudget.com/][YNAB]] (disabled by default, I use the online version and the application
        binary isn't available anymore)
+     - [[https://zoom.us/][Zoom]]
 
 **** Text Editors
      - [[https://emacsformacosx.com/][Emacs 28.2]]
@@ -402,8 +403,10 @@ Install all your applications and configure everything the way you like it with 
      - [[https://github.com/dandavison/delta][delta]]
      - [[https://github.com/dandavison/delta][delta]]
      - [[https://git-scm.com/download/mac][git]]
+     - [[https://cli.github.com/][gh]]
      - [[https://github.com/sharkdp/fd][fd]]
      - [[https://stedolan.github.io/jq/][jq]]
+     - [[https://www.npmjs.com/package/local-ssl-proxy][local-ssl-proxy]]
      - [[http://www.7-zip.org/][p7zip]]
      - [[https://www.gnu.org/software/parallel/][parallel]]
      - [[https://pypi.python.org/pypi/pgsanity][pgsanity]]
@@ -414,6 +417,7 @@ Install all your applications and configure everything the way you like it with 
      - [[https://tldr.sh/][tealdeer]]
      - [[https://github.com/julienXX/terminal-notifier][terminal-notifier]]
      - [[http://brewformulas.org/Tree][tree]]
+     - [[https://vercel.com/docs/cli][vercel]]
      - [[https://github.com/vi/websocat][websocat]]
      - [[https://github.com/wg/wrk][wrk]]
      - [[https://tukaani.org/xz/][xz]]
