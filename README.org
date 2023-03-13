@@ -249,6 +249,7 @@ Install all your applications and configure everything the way you like it with 
      - [[http://mizage.com/divvy/][Divvy]]
      - [[https://www.dropbox.com/install][Dropbox]]
      - [[https://www.elgato.com/en/dock/support][Elgato Dock]]
+     - [[https://www.elgato.com/en/downloads][Elgato Control Center]]
      - [[https://justgetflux.com/][f.lux]]
      - [[https://www.mozilla.org/en-US/firefox/new][Firefox]]
      - [[https://www.google.com/chrome/index.html][Google Chrome]]

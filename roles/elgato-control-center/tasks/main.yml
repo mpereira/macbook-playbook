@@ -1,0 +1,8 @@
+---
+- name: Add Homebrew tap
+  command: brew tap homebrew/cask-drivers
+
+- name: Install elgato-control-center
+  homebrew_cask:
+    name: elgato-control-center
+    state: latest
