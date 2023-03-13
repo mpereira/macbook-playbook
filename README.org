@@ -276,6 +276,7 @@ Install all your applications and configure everything the way you like it with 
      - [[https://classic.youneedabudget.com/][YNAB]] (disabled by default, I use the online version and the application
        binary isn't available anymore)
      - [[https://zoom.us/][Zoom]]
+     - [[https://www.zwift.com/][Zwift]]
 
 **** Text Editors
      - [[https://emacsformacosx.com/][Emacs 28.2]]

@@ -1,0 +1,5 @@
+---
+- name: Install zwift
+  homebrew_cask:
+    name: zwift
+    state: latest

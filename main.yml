@@ -403,6 +403,9 @@
         # http://download.videolan.org/pub/videolan/vlc/
         vlc_version: "3.0.16"
 
+    - role: zwift
+      tags: [desktop-applications, brew-pkg, zwift]
+
     #############################################################################
     # Programming utilities #####################################################
     #############################################################################
