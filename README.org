@@ -209,13 +209,6 @@ Install all your applications and configure everything the way you like it with 
 **** PDF Expert
      1. Register license
 
-**** Sound Control
-     1. Check "Check for updates automatically"
-     2. Register license
-     3. Preferences > Priority Devices > Output and Input
-        - Check "Switch to device when" "Device is attached"
-        - Reorder devices in priority list
-
 **** BetterTouchTool
      1. Register license
 
@@ -266,7 +259,6 @@ Install all your applications and configure everything the way you like it with 
      - [[https://www.rescuetime.com/][RescueTime]]
      - [[https://www.skype.com/en/download-skype/skype-for-mac/][Skype]]
      - [[https://slack.com/downloads/osx][Slack]]
-     - [[https://staticz.com/soundcontrol/][Sound Control]]
      - [[https://www.spotify.com/br/download/other/][Spotify]]
      - [[http://store.steampowered.com/about/][Steam]]
      - [[https://www.pjrc.com/teensy/loader_mac.html][Teensy Loader]]

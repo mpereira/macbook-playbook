@@ -298,9 +298,6 @@
     - role: daisydisk
       tags: [desktop-applications, brew-cask-pkg, daisydisk, uses-secrets]
 
-    - role: sound-control
-      tags: [desktop-applications, brew-cask-pkg, sound-control]
-
     - role: pdf-expert
       tags: [desktop-applications, brew-cask-pkg, pdf-expert]
 

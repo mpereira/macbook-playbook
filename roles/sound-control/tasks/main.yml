@@ -1,7 +1,0 @@
----
-- name: Install Sound Control
-  homebrew_cask:
-    name: sound-control
-    state: latest
-
-# TODO: open it if it was just installed for the first time?
