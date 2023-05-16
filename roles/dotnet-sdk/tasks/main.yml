@@ -1,0 +1,5 @@
+---
+- name: Install .NET SDK
+  homebrew_cask:
+    name: dotnet-sdk
+    state: latest

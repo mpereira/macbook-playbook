@@ -145,6 +145,9 @@
     - role: haskell
       tags: [disabled, programming-languages, brew-pkg, haskell]
 
+    - role: dotnet-sdk
+      tags: [programming-languages, brew-cask-pkg, dotnet-sdk]
+
     # DISABLED: `stack install purescript` is currently failing, disabling until
     # I figure it out.
     # https://gist.github.com/mpereira/a2418c458418cd01a2d18301eaeae85e

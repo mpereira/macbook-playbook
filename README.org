@@ -295,6 +295,7 @@ Install all your applications and configure everything the way you like it with 
      - [[https://adoptopenjdk.net/][Java (AdoptOpenJDK)]]
      - [[https://www.lua.org/download.html][Lua]]
      - [[http://luajit.org/download.html][LuaJIT]]
+     - [[https://dotnet.microsoft.com/en-us/download/visual-studio-sdks][.NET]]
      - [[https://nodejs.org/en/download/][Node.js]]
      - [[http://www.purescript.org/][PureScript]] (disabled by default until I figure out why =stack install
        purescript= is currently failing)
