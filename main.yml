@@ -181,6 +181,9 @@
     - role: vscode
       tags: [text-editors, brew-pkg, vscode]
 
+    - role: rider
+      tags: [text-editors, brew-cask-pkg, rider]
+
     - role: macvim
       tags: [disabled, text-editors, bespoke-pkg, macvim]
       vars:

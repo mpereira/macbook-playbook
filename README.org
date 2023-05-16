@@ -279,6 +279,7 @@ Install all your applications and configure everything the way you like it with 
      - [[https://github.com/daviderestivo/homebrew-emacs-head][Emacs 29]]
      - [[http://macvim-dev.github.io/macvim/][MacVim]]
      - [[https://github.com/neovim/neovim/wiki/Installing-Neovim][Neovim]]
+     - [[https://www.jetbrains.com/rider/][Rider]]
      - [[http://www.vim.org/][Vim]] (disabled by default until I figure out why it isn't compiling on
        macOS Big Sur with LLVM 12)
      - [[https://code.visualstudio.com/][VSCode]]

@@ -1,0 +1,5 @@
+---
+- name: Install Rider
+  homebrew_cask:
+    name: rider
+    state: latest
