@@ -10,6 +10,6 @@
 
 - name: Install ~/.aws/credentials
   copy:
-    src: "{{ aws_credentials_file }}"
+    content: "{{ aws_credentials_file_base64 | b64decode }}"
     dest: "{{ home_directory }}/.aws/credentials"
     mode: 0644

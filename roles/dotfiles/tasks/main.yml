@@ -5,14 +5,8 @@
     dest: "{{ home_directory }}/.dotfiles"
     update: no
 
-- name: Load environment variables
-  include_vars:
-    file: "{{ mpereira_dotfiles_environment_yml_file }}"
-    name: environment_variables
-  no_log: yes
-
 - name: Install dotfiles
-  environment: "{{ environment_variables }}"
+  environment: "{{ dotfiles_environment_yml_file_base64 | b64decode | from_yaml }}"
   shell: rake sync
   args:
     chdir: "{{ home_directory }}/.dotfiles"

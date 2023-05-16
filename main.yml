@@ -41,7 +41,7 @@
       vars:
         # NOTE: update PYTHON_VERSION in Makefile when changing this.
         # https://www.python.org/ftp/python/
-        python3_version: "3.10.0"
+        python3_version: "3.11.2"
         # 11 is a "Universal 2" binary which works on Apple Silicon.
         # 10.9 does not work on Apple Silicon.
         python3_macos_version: "11" # this is used in the .pkg file name.

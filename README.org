@@ -54,10 +54,10 @@ Install all your applications and configure everything the way you like it with 
     - [[#license][License]]
 
 ** Tested on
-   I've been using =macbook-playbook= since 2013. I've used it on at least six
-   MacBook Pros with different macOS versions. As of March 2021 I use it on both
-   my current MacBook Pros, one with Catalina and the other with Big Sur
-   installed.
+   I've been using =macbook-playbook= since 2013. I've used it on at least eight
+   MacBook Pros with different macOS versions. As of May 2023 I use it on my
+   personal 16" 2023 Macbook Pro with Ventura installed and on my work 16" 2019
+   Macbook Pro with Monterey installed.
 
    Please open an issue if you're trying this out and bump into anything.
 
@@ -86,42 +86,31 @@ Install all your applications and configure everything the way you like it with 
     add the application running =macbook-playbook= (Terminal/iTerm2/Emacs/etc.)
     to the list.
 
-*** Create an Ansible Vault password
-    This password will be used to encrypt and decrypt the files referenced in
-    the [[#encrypted-files][Encrypted files]] section. Please make sure to use a [[https://1password.com/password-generator/][strong password]].
-
-    #+begin_src bash
-    echo 'SomePassword123$' > .ansible_vault_password
-    #+end_src
-
-*** Encrypted files (using Ansible Vault)
+*** Secrets
     :PROPERTIES:
-    :CUSTOM_ID: encrypted-files
+    :CUSTOM_ID: secrets
     :END:
-    The following files currently checked into this git repository are encrypted with my
-    personal Ansible Vault password. Unless you have my password, roles
-    referencing these files will fail to run.
+    I keep secrets encrypted in a file outside of this repository. I have a
+    project (also outside of this repository) that will write all secrets
+    required by this project's roles to =group_vars/localhost/vars.yml=. This
+    file is git-ignored in this project.
 
-    | Description                       | File                                             | Role              |
-    | AWS CLI credentials               | =secrets/aws_credentials_file=                   | awscli            |
-    | BetterTouchTool license           | =secrets/better_touch_tool_license_file=         | better-touch-tool |
-    | DaisyDisk license                 | =secrets/daisydisk_registration_key_file=        | daisydisk         |
-    | Enviroment variables for [[https://github.com/mpereira/dotfiles][dotfiles]] | =secrets/mpereira_dotfiles_environment_yml_file= | dotfiles          |
-    | iStat Menus settings              | =secrets/istat_menus_settings_file=              | istat-menus       |
-    | Prey API key                      | =secrets/prey_api_key_yaml_file=                 | prey              |
-    | Private SSH key                   | =secrets/mpereira_at_pluto_ssh_private_key=      | ssh-keys          |
-    | s3cmd configuration               | =secrets/s3cmd_cfg_file=                         | s3cmd             |
+    These are the roles that use secrets:
+    | Description                       | Secret name                                | Role              |
+    | AWS CLI credentials               | =aws_credentials_file_base64=              | awscli            |
+    | BetterTouchTool license           | =better_touch_tool_license_file_base64=    | better-touch-tool |
+    | DaisyDisk license                 | =daisydisk_registration_key_file_base64=   | daisydisk         |
+    | Enviroment variables for [[https://github.com/mpereira/dotfiles][dotfiles]] | =dotfiles_environment_yml_file_base64=     | dotfiles          |
+    | iStat Menus settings              | =istat_menus_settings_file_base64=         | istat-menus       |
+    | Prey API key                      | =prey_api_key_yaml_file_base64=            | prey              |
+    | Private SSH key                   | =mpereira_at_pluto_ssh_private_key_base64= | ssh-keys          |
+    | s3cmd configuration               | =s3cmd_cfg_file_base64=                    | s3cmd             |
 
-    You have two choices: skip these roles, and/or overwrite the encrypted files
-    with your own.
+    If a =group_vars/localhost/vars.yml= file with those secrets is absent
+    running these roles will fail.
 
-    To overwrite them first run
-    #+begin_src bash
-    make truncate-sensitive-files
-    #+end_src
-
-    And then you'll be able to overwrite them with your own files (for example
-    your own =~/.ssh/id_rsa=) and then encrypt them with ~make encrypt~.
+    You have two choices: skip these roles, or write your
+    =group_vars/localhost/vars.yml=.
 
     To skip them, when you reach the [[#provision-machine][provision machine]] step, make Ansible skip
     roles tagged with =uses-secrets=. You don't need to run this now, the
@@ -214,7 +203,7 @@ Install all your applications and configure everything the way you like it with 
 
 **** Terminal
 ***** Preferences > Profiles > Pro > Font
-      Set to =Hack Regular 18 pt.=
+      Set to =Hack Regular 18 pt=.
 
 **** System Preferences > Security & Privacy > Privacy > [[https://www.howtogeek.com/297083/why-do-some-mac-apps-need-to-control-this-computer-using-accessibility-features/][Accessibility]]
      - BetterTouchTool.app

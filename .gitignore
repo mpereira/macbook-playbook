@@ -1,4 +1,5 @@
+/*.patch
 /.ansible_vault_password
 /galaxy
+/group_vars/localhost/vars.yml
 /main.retry
-/*.patch

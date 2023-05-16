@@ -3,11 +3,3 @@
 user: "{{ lookup('env', 'USER') }}"
 home_directory: "/Users/{{ user }}"
 downloads_directory: "{{ home_directory }}/.ansible/downloads"
-
-# Secrets ######################################################################
-
-aws_credentials_file: "{{ [project_root, 'secrets', 'aws_credentials_file'] | join('/') }}"
-mpereira_dotfiles_environment_yml_file: "{{ [project_root, 'secrets', 'mpereira_dotfiles_environment_yml_file'] | join('/') }}"
-prey_api_key_yaml_file: "{{ [project_root, 'secrets', 'prey_api_key_yaml_file'] | join('/') }}"
-s3cmd_cfg_file: "{{ [project_root, 'secrets', 's3cmd_cfg_file'] | join('/') }}"
-mpereira_at_pluto_ssh_private_key: "{{ [project_root, 'secrets', 'mpereira_at_pluto_ssh_private_key'] | join('/') }}"

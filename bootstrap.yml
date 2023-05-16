@@ -10,9 +10,8 @@
       tags: [foundational, programming-languages, bespoke-pkg, python3]
       vars:
         # https://www.python.org/ftp/python/
-        python3_version: "3.10.0"
+        python3_version: "3.11.2"
         # 11 is a "Universal 2" binary which works on Apple Silicon.
         # 10.9 does not work on Apple Silicon.
         python3_macos_version: "11" # this is used in the .pkg file name.
         python3_version_major_minor: "{{ python3_version | regex_replace('^([0-9]+)\\.([0-9]+)(?:\\.[0-9]+)?$', '\\1.\\2') }}"
-    - git_pre_commit
