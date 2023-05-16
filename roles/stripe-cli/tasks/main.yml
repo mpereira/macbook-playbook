@@ -1,0 +1,5 @@
+---
+- name: Install Stripe CLI
+  homebrew:
+    name: stripe/stripe-cli/stripe
+    state: latest

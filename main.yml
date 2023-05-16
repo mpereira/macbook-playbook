@@ -635,6 +635,9 @@
     - role: vercel
       tags: [command-line-tools, npm-pkg, vercel, contextualize]
 
+    - role: stripe-cli
+      tags: [command-line-tools, npm-pkg, stripe-cli, contextualize]
+
     - role: local-ssl-proxy
       tags: [command-line-tools, npm-pkg, local-ssl-proxy, contextualize]
 
