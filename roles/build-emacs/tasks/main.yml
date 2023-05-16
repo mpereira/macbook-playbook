@@ -21,6 +21,6 @@
 # NOTE: spotlight doesn't seem to pick up this symlink?
 - name: Create a symbolic link
   ansible.builtin.file:
-    src: /usr/local/opt/emacs-head@29/Emacs.app/
+    src: /opt/homebrew/Cellar/emacs-head@29/29.0.90_1/Emacs.app/
     dest: /Applications/Emacs-29.app
     state: link

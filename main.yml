@@ -16,7 +16,6 @@
     # Depends on homebrew.
     - role: gnu-command-line-tools
       tags: [foundational, brew-pkg, gnu-command-line-tools]
-
     # Depends on homebrew.
     - role: make
       tags: [foundational, package-and-build, brew-pkg, make]
@@ -94,6 +93,15 @@
     - role: dotemacs
       tags: [configuration, dotemacs]
 
+    # IMPORTANT #################################################################
+
+    - role: build-emacs
+      tags: [text-editors, brew-pkg, build-emacs]
+
+    # NOTE: trying it out with Monterey (should be at least 2.1.0).
+    - role: openzfs
+      tags: [system-tools, brew-cask-pkg, openzfs]
+
     #############################################################################
     # Programming languages #####################################################
     #############################################################################
@@ -118,7 +126,7 @@
     - role: ruby
       tags: [programming-languages, ruby]
       vars:
-        ruby_version: 3.0.3
+        ruby_version: 3.2.1
 
     - role: lua
       tags: [programming-languages, brew-pkg, lua]
@@ -135,7 +143,7 @@
         r_version: "4.1.2"
 
     - role: haskell
-      tags: [programming-languages, brew-pkg, haskell]
+      tags: [disabled, programming-languages, brew-pkg, haskell]
 
     # DISABLED: `stack install purescript` is currently failing, disabling until
     # I figure it out.
@@ -146,9 +154,6 @@
     #############################################################################
     # Text editors ##############################################################
     #############################################################################
-
-    - role: build-emacs
-      tags: [text-editors, brew-pkg, build-emacs]
 
     - role: emacs-pre-built
       tags: [text-editors, bespoke-pkg, emacs-pre-built]
@@ -165,7 +170,7 @@
         vim_version: "8.2"
 
     - role: neovim
-      tags: [text-editors, bespoke-pkg, neovim]
+      tags: [disabled, text-editors, bespoke-pkg, neovim]
       vars:
         # https://github.com/neovim/neovim/releases
         neovim_version: "0.5.1"
@@ -174,7 +179,7 @@
       tags: [text-editors, brew-pkg, vscode]
 
     - role: macvim
-      tags: [text-editors, bespoke-pkg, macvim]
+      tags: [disabled, text-editors, bespoke-pkg, macvim]
       vars:
         # https://github.com/macvim-dev/macvim/releases
         macvim_version: "snapshot-172"
@@ -190,8 +195,9 @@
     # Security ##################################################################
     #############################################################################
 
+    # DISABLED: Apple security stuff is good enough.
     - role: prey
-      tags: [security, bespoke-pkg, prey, uses-secrets]
+      tags: [disabled, security, bespoke-pkg, prey, uses-secrets]
       vars:
         # https://github.com/prey/prey-node-client/releases
         prey_version: "1.9.13"
@@ -324,7 +330,7 @@
     - role: unity
       tags: [desktop-applications, bespoke-pkg, unity]
       vars:
-        unity_version: "2021.2.4"
+        unity_version: "2022.2.9"
 
     - role: xquartz
       tags: [desktop-applications, bespoke-pkg, xquartz]
@@ -346,13 +352,13 @@
       tags: [desktop-applications, xbar, xbar-plugins]
 
     - role: divvy
-      tags: [desktop-applications, bespoke-pkg, divvy]
+      tags: [disabled, desktop-applications, bespoke-pkg, divvy]
 
     - role: android-file-transfer
-      tags: [desktop-applications, bespoke-pkg, android-file-transfer]
+      tags: [disabled, desktop-applications, bespoke-pkg, android-file-transfer]
 
     - role: dropbox
-      tags: [desktop-applications, bespoke-pkg, dropbox]
+      tags: [disabled, desktop-applications, bespoke-pkg, dropbox]
 
     - role: google-chrome
       tags: [desktop-applications, brew-cask-pkg, google-chrome]
@@ -362,11 +368,11 @@
       vars:
         firefox_version: "latest"
 
-    - role: google-chrome-as-default-browser
-      tags: [desktop-applications, google-chrome-as-default-browser]
+    # - role: google-chrome-as-default-browser
+    #   tags: [desktop-applications, google-chrome-as-default-browser]
 
     - role: skype
-      tags: [desktop-applications, bespoke-pkg, skype]
+      tags: [disabled, desktop-applications, bespoke-pkg, skype]
 
     - role: slack
       tags: [desktop-applications, brew-cask-pkg, slack]
@@ -387,7 +393,7 @@
         ynab_version: "4.3.855"
 
     - role: google-photos
-      tags: [desktop-applications, bespoke-pkg, google-photos]
+      tags: [disabled, desktop-applications, bespoke-pkg, google-photos]
 
     - role: dash
       tags: [desktop-applications, bespoke-pkg, dash]
@@ -401,7 +407,7 @@
       tags: [desktop-applications, bespoke-pkg, vlc]
       vars:
         # http://download.videolan.org/pub/videolan/vlc/
-        vlc_version: "3.0.16"
+        vlc_version: "3.0.18"
 
     - role: elgato-control-center
       tags: [desktop-applications, brew-pkg, elgato-control-center]
@@ -501,7 +507,7 @@
       tags: [package-and-build, gem-pkg, bundler]
 
     - role: graalvm
-      tags: [package-and-build, bespoke-pkg, graalvm]
+      tags: [disabled, package-and-build, bespoke-pkg, graalvm]
       vars:
         graalvm_version: "21.3.0"
 
@@ -512,10 +518,6 @@
     #############################################################################
     # Virtualization, provisioning, containers and system tools #################
     #############################################################################
-
-    # NOTE: trying it out with Monterey (should be at least 2.1.0).
-    - role: openzfs
-      tags: [system-tools, brew-cask-pkg, openzfs]
 
     # DISABLED: haven't used VirtualBox in a while.
     - role: virtualbox
@@ -547,13 +549,13 @@
       tags: [system-tools, bespoke-pkg, terraform]
       vars:
         # https://releases.hashicorp.com/terraform/
-        terraform_version: "1.3.7"
-        terraform_checksum: "sha256:b00465acc7bdef57ba468b84b9162786e472dc97ad036a9e3526dde510563e2d"
+        terraform_version: "1.4.0"
+        terraform_checksum: "sha256:ec02ccdcc368ce307d03c1e981f3a863d9c07b312635d4aca24159ada7657562"
 
     - role: kubectl
       tags: [system-tools, bespoke-pkg, kubernetes, kubectl]
       vars:
-        kubectl_version: "1.22.4"
+        kubectl_version: "1.26.2"
 
     - role: krew
       tags: [system-tools, bespoke-pkg, kubernetes, krew]

@@ -3,3 +3,6 @@
   homebrew_cask:
     name: cursorcerer
     state: latest
+
+- name: Open Cursorcerer.prefPane
+  command: open /opt/homebrew/Caskroom/cursorcerer/latest/Cursorcerer.prefPane

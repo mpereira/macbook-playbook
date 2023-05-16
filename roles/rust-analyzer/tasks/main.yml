@@ -2,7 +2,7 @@
 - name: Fetch Rust source code
   command: rustup component add rust-src rust-docs
 
-- name: Install Rust Analyzer
+- name: Install rust-analyzer
   homebrew:
     name: rust-analyzer
     state: latest

@@ -225,11 +225,12 @@ Install all your applications and configure everything the way you like it with 
 
 **** System Preferences > Security & Privacy > Privacy > [[https://www.howtogeek.com/297083/why-do-some-mac-apps-need-to-control-this-computer-using-accessibility-features/][Accessibility]]
      - BetterTouchTool.app
-     - Dropbox
-     - Emacs.app
-     - Persephone.app
+     - Emacs-*.app
+     - MacGPT
      - RescueTime
+     - Terminal
      - VLC
+     - WhatsApp
 
 **** System Preferences > Keyboard > Shortcuts > Mission Control
      Uncheck:
@@ -237,6 +238,8 @@ Install all your applications and configure everything the way you like it with 
      - Move left a space
      - Move right a space
      - Switch to desktop 1
+
+     I use these keybindings on Emacs.
 
 ** Roles
 *** Installs
