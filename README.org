@@ -125,8 +125,6 @@ Install all your applications and configure everything the way you like it with 
     1. Set up passwordless =sudo=
     2. Install a user Python3
     3. Install Ansible
-    4. Set up the Git pre-commit hook that automatically encrypts secrets before
-       Git commits
 
     #+begin_src bash
     make bootstrap
