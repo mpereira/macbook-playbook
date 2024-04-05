@@ -59,7 +59,7 @@
       vars:
         # https://nodejs.org/dist/
         # https://github.com/nodejs/node/releases
-        node_version: "18.12.1"
+        node_version: "21.1.0"
 
     - role: maven
       tags: [foundational, package-and-build, brew-pkg, maven]
@@ -118,7 +118,7 @@
       tags: [programming-languages, bespoke-pkg, go]
       vars:
         # https://go.dev/dl/
-        go_version: "1.17.3"
+        go_version: "1.22.2"
 
     - role: rust
       tags: [programming-languages, rust]
@@ -446,7 +446,7 @@
       tags: [programming-utilities, bespoke-pkg, zprint]
       vars:
         # https://github.com/kkinnear/zprint/releases
-        zprint_version: "1.2.0"
+        zprint_version: "1.2.7"
 
     - role: yapf
       tags: [programming-utilities, pip-pkg, yapf]
@@ -690,8 +690,9 @@
     - role: chromedriver
       tags: [brew-cask-pkg, brew-cask-pkg-versioned, chromedriver]
       vars:
-        # Version 110.0.5481.77.
-        git_commit_ref: "711a5a29adad0e444ed25b4024ba8f9e409dfa69"
+        # Version 116.0.5845.96.
+        # https://github.com/Homebrew/homebrew-cask/blob/master/Casks/c/chromedriver.rb
+        git_commit_ref: "b9ee893f20b4183f9cf7e204ea408c2b11c42ca2"
 
     - role: mutagen
       tags: [brew-pkg, mutagen]

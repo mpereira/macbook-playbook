@@ -2,5 +2,5 @@
 - name: Download and install zprint binary
   get_url:
     url: https://github.com/kkinnear/zprint/releases/download/{{ zprint_version }}/zprintm-{{ zprint_version }}
-    dest: /usr/local/bin
+    dest: /usr/local/bin/zprint
     mode: u+x
