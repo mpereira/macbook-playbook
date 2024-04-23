@@ -566,6 +566,11 @@
     - role: krew
       tags: [system-tools, bespoke-pkg, kubernetes, krew]
 
+    - role: gcloud
+      tags: [system-tools, bespoke-pkg, gcloud]
+      vars:
+        gcloud_version: "472.0.0"
+
     - role: kubectl-tree
       tags: [system-tools, krew-pkg, kubernetes, kubectl-tree]
 

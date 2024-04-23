@@ -1,0 +1,11 @@
+---
+- name: Install gcloud
+  shell: >
+    set -x; cd ~ &&
+      OS="$(uname | tr '[:upper:]' '[:lower:]')" &&
+      PROCESSOR="$(uname -p)" &&
+      GCLOUD="google-cloud-cli-{{ gcloud_version }}-${OS}-${PROCESSOR}" &&
+      curl -fsSLO "https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/${GCLOUD}.tar.gz" &&
+      tar zxf "${GCLOUD}.tar.gz" &&
+      ./google-cloud-sdk/install.sh --rc-path ~/.profile &&
+      rm -f "${GCLOUD}.tar.gz"
