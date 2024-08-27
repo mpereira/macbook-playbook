@@ -558,6 +558,9 @@
         terraform_version: "1.4.0"
         terraform_checksum: "sha256:ec02ccdcc368ce307d03c1e981f3a863d9c07b312635d4aca24159ada7657562"
 
+    - role: utm
+      tags: [system-tools, brew-cask-pkg, utm]
+
     - role: kubectl
       tags: [system-tools, bespoke-pkg, kubernetes, kubectl]
       vars:
@@ -690,6 +693,9 @@
 
     - role: terminal-notifier
       tags: [command-line-tools, brew-pkg, terminal-notifier]
+    
+    - role: warp
+      tags: [command-line-tools, brew-cask-pkg, warp]
 
     #############################################################################
     # Miscellaneous #############################################################
