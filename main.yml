@@ -690,6 +690,9 @@
 
     - role: terminal-notifier
       tags: [command-line-tools, brew-pkg, terminal-notifier]
+    
+    - role: warp
+      tags: [command-line-tools, brew-cask-pkg, warp]
 
     #############################################################################
     # Miscellaneous #############################################################
