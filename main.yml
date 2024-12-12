@@ -548,8 +548,8 @@
       vars:
         vagrant_vbguest_version: "0.29.0"
 
-    - role: docker
-      tags: [system-tools, brew-cask-pkg, docker]
+    - role: orbstack
+      tags: [system-tools, brew-cask-pkg, orbstack]
 
     - role: terraform
       tags: [system-tools, bespoke-pkg, terraform]
