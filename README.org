@@ -422,6 +422,8 @@ Install all your applications and configure everything the way you like it with 
 **** Security
      - [[https://www.preyproject.com/download][Prey]]
      - [[https://www.gnupg.org/download/index.html][GnuPG]]
+     - [[https://github.com/GPGTools/pinentry][pinentry-mac]]
+     - gpg-agent-config (configures gpg-agent.conf with pinentry-mac)
      - [[https://github.com/jcoglan/vault][vault]]
 
 **** GNU Command Line Tools

@@ -219,6 +219,12 @@
       vars:
         gnupg_version: "2.3.3"
 
+    - role: pinentry-mac
+      tags: [security, brew-pkg, pinentry-mac]
+
+    - role: gpg-agent-config
+      tags: [security, configuration, gpg-agent-config]
+
     ############################################################################
     # Observability ############################################################
     ############################################################################

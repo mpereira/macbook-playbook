@@ -1,0 +1,18 @@
+---
+- name: Ensure .gnupg directory exists
+  file:
+    path: "{{ home_directory }}/.gnupg"
+    state: directory
+    mode: "0700"
+
+- name: Configure gpg-agent.conf
+  copy:
+    dest: "{{ home_directory }}/.gnupg/gpg-agent.conf"
+    content: |
+      pinentry-program /opt/homebrew/bin/pinentry-mac
+      allow-loopback-pinentry
+    mode: "0600"
+
+- name: Restart gpg-agent to apply configuration
+  command: gpgconf --kill gpg-agent
+  changed_when: true
