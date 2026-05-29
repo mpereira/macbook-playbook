@@ -295,7 +295,7 @@ Install all your applications and configure everything the way you like it with 
      - [[https://nodejs.org/en/download/][Node.js]]
      - [[http://www.purescript.org/][PureScript]] (disabled by default until I figure out why =stack install
        purescript= is currently failing)
-     - [[https://www.python.org/downloads/mac-osx/][Python 3]]
+     - [[https://www.python.org/downloads/mac-osx/][Python 3.14.4]]
      - [[https://cran.r-project.org/bin/macosx/][R]]
      - [[https://www.ruby-lang.org][Ruby]]
      - [[https://www.rust-lang.org/][Rust]]

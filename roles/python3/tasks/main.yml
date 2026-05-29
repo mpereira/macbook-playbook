@@ -4,18 +4,47 @@
     url: https://www.python.org/ftp/python/{{ python3_version }}/{{ python3_pkg }}
     dest: "{{ downloads_directory }}/{{ python3_pkg }}"
 
-- name: Show current Python 3 version
-  command: python3 --version
-  register: python3_version_output
+- name: Show current Python 3 framework version
+  command: >
+    /Library/Frameworks/Python.framework/Versions/{{ python3_version_major_minor }}/bin/python3
+    --version
+  register: python3_framework_version_output
   ignore_errors: yes
+  changed_when: no
 
 - name: Install Python 3
   command: >
     installer -package {{ downloads_directory }}/{{ python3_pkg }} -target /
   become: yes
-  when: python3_version_output.stdout.find(python3_version) == -1
+  when: python3_framework_version_output.stdout.find(python3_version) == -1
 
 - name: Install Python 3 SSL certificates
   command: >
     "/Applications/Python {{ python3_version_major_minor }}/Install Certificates.command"
-  when: python3_version_output.stdout.find(python3_version) == -1
+  when: python3_framework_version_output.stdout.find(python3_version) == -1
+
+- name: Check for Apple Silicon Homebrew
+  stat:
+    path: /opt/homebrew/bin/brew
+  register: apple_silicon_homebrew
+
+- name: Check for Intel Homebrew
+  stat:
+    path: /usr/local/bin/brew
+  register: intel_homebrew
+
+- name: Install Python 3 through Apple Silicon Homebrew
+  command: /opt/homebrew/bin/brew install {{ python3_homebrew_formula }}
+  when: apple_silicon_homebrew.stat.exists
+
+- name: Link Python 3 as Apple Silicon Homebrew python3
+  command: /opt/homebrew/bin/brew link --overwrite {{ python3_homebrew_formula }}
+  when: apple_silicon_homebrew.stat.exists
+
+- name: Install Python 3 through Intel Homebrew
+  command: /usr/local/bin/brew install {{ python3_homebrew_formula }}
+  when: intel_homebrew.stat.exists
+
+- name: Link Python 3 as Intel Homebrew python3
+  command: /usr/local/bin/brew link --overwrite {{ python3_homebrew_formula }}
+  when: intel_homebrew.stat.exists

@@ -39,9 +39,9 @@
     - role: python3
       tags: [foundational, programming-languages, bespoke-pkg, python3]
       vars:
-        # NOTE: update PYTHON_VERSION in Makefile when changing this.
+        # NOTE: Makefile derives PYTHON_VERSION from the installed framework.
         # https://www.python.org/ftp/python/
-        python3_version: "3.11.2"
+        python3_version: "3.14.4"
         # 11 is a "Universal 2" binary which works on Apple Silicon.
         # 10.9 does not work on Apple Silicon.
         python3_macos_version: "11" # this is used in the .pkg file name.

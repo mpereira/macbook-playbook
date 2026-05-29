@@ -1,2 +1,3 @@
 ---
+python3_homebrew_formula: python@{{ python3_version_major_minor }}
 python3_pkg: python-{{ python3_version }}-macos{{ python3_macos_version }}.pkg

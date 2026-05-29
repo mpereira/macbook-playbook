@@ -9,8 +9,18 @@ BOOTSTRAP_PYTHON               := /usr/bin/python$(BOOTSTRAP_PYTHON_MAJOR_VERSIO
 BOOTSTRAP_PYTHON_BIN_PATH      := ~/Library/Python/$(BOOTSTRAP_PYTHON_VERSION)/bin
 BOOTSTRAP_PIP                  := $(BOOTSTRAP_PYTHON) -m pip
 
+
+PYTHON_VERSIONS_BASE_DIR       := /Library/Frameworks/Python.framework/Versions
+LATEST_PYTHON_VERSION          := $(shell find "$(PYTHON_VERSIONS_BASE_DIR)" -maxdepth 1 -iname 3.* 2>/dev/null | sort -Vr | head -1 | xargs basename)
+
+# _ := $(error fuu "$(LATEST_PYTHON_VERSION)")
+
+ifeq ($(strip $(LATEST_PYTHON_VERSION)),)
+  $(error Could not automatically find a Python version matching "$(PYTHON_VERSION_PATTERN)" in "$(PYTHON_VERSIONS_BASE_DIR)". Please check the path and pattern or set PYTHON_VERSION manually.)
+endif
+
 # NOTE: this reflects the "python3_version" in the "python" role in main.yml.
-PYTHON_VERSION               := 3.11
+PYTHON_VERSION               := $(LATEST_PYTHON_VERSION)
 PYTHON_BIN_PATH              := ~/Library/Python/$(PYTHON_VERSION)/bin
 PYTHON                       := /usr/local/bin/python$(PYTHON_VERSION)
 PIP                          := $(PYTHON) -m pip
