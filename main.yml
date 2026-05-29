@@ -679,6 +679,9 @@
     - role: clickup-cli
       tags: [command-line-tools, brew-pkg, clickup-cli, contextualize]
 
+    - role: mole
+      tags: [command-line-tools, brew-pkg, mole]
+
     - role: vercel
       tags: [command-line-tools, npm-pkg, vercel, contextualize]
 

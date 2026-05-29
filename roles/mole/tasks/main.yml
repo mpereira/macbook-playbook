@@ -1,0 +1,8 @@
+---
+- name: Add Homebrew tap
+  command: brew tap tw93/tap
+
+- name: Install Mole
+  homebrew:
+    name: mole
+    state: latest

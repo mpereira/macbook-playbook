@@ -419,6 +419,7 @@ Install all your applications and configure everything the way you like it with 
      - [[https://github.com/sharkdp/fd][fd]]
      - [[https://stedolan.github.io/jq/][jq]]
      - [[https://www.npmjs.com/package/local-ssl-proxy][local-ssl-proxy]]
+     - [[https://github.com/tw93/Mole][Mole]]
      - [[http://www.7-zip.org/][p7zip]]
      - [[https://www.gnu.org/software/parallel/][parallel]]
      - [[https://pypi.python.org/pypi/pgsanity][pgsanity]]
