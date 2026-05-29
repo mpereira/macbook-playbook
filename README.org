@@ -247,6 +247,7 @@ Install all your applications and configure everything the way you like it with 
      - [[https://www.elgato.com/en/downloads][Elgato Control Center]]
      - [[https://justgetflux.com/][f.lux]]
      - [[https://www.mozilla.org/en-US/firefox/new][Firefox]]
+     - [[https://ghostty.org/][Ghostty]]
      - [[https://www.google.com/chrome/index.html][Google Chrome]]
      - [[https://photos.google.com/apps][Google Photos]]
      - [[https://www.grammarly.com/native/mac][Grammarly]]

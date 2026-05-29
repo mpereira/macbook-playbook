@@ -436,6 +436,9 @@
     - role: dbeaver
       tags: [desktop-applications, brew-cask-pkg, dbeaver]
 
+    - role: ghostty
+      tags: [desktop-applications, brew-cask-pkg, ghostty]
+
     - role: cleanshot
       tags: [desktop-applications, brew-cask-pkg, cleanshot]
 
