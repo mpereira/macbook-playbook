@@ -459,6 +459,7 @@ Install all your applications and configure everything the way you like it with 
 **** Passwordless sudo
 **** Puts SSH keys in place
 **** Remaps Caps-Lock to Control
+     Uses an AppleScript helper for the current System Settings flow.
 
 ** Author
    [[http://murilopereira.com][Murilo Pereira]]
