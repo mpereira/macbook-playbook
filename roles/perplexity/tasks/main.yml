@@ -1,0 +1,10 @@
+---
+- name: Install mas (Mac App Store CLI)
+  homebrew:
+    name: mas
+    state: latest
+
+- name: Install Perplexity
+  command: mas install 6714467650
+  args:
+    creates: /Applications/Perplexity.app

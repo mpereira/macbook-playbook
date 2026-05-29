@@ -430,6 +430,9 @@
     - role: chatgpt
       tags: [desktop-applications, brew-cask-pkg, chatgpt]
 
+    - role: perplexity
+      tags: [desktop-applications, mas-pkg, perplexity]
+
     - role: zwift
       tags: [desktop-applications, brew-pkg, zwift]
 
