@@ -424,6 +424,9 @@
     - role: elgato-control-center
       tags: [desktop-applications, brew-pkg, elgato-control-center]
 
+    - role: claude
+      tags: [desktop-applications, brew-cask-pkg, claude]
+
     - role: chatgpt
       tags: [desktop-applications, brew-cask-pkg, chatgpt]
 

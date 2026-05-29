@@ -1,0 +1,5 @@
+---
+- name: Install Claude
+  homebrew_cask:
+    name: claude
+    state: latest
