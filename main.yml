@@ -487,6 +487,9 @@
     - role: prettier
       tags: [programming-utilities, npm-pkg, prettier]
 
+    - role: biome
+      tags: [programming-utilities, brew-pkg, biome]
+
     - role: node-cljfmt
       tags: [programming-utilities, npm-pkg, node-cljfmt]
 

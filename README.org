@@ -291,6 +291,9 @@ Install all your applications and configure everything the way you like it with 
      - [[https://github.com/mpereira/.emacs.d][dotemacs]]
      - [[https://github.com/mpereira/dotfiles][dotfiles]]
 
+     Biome's user-level config is provisioned directly by this playbook at
+     =~/Library/Application Support/biome/biome.json=.
+
 **** Programming Languages
      - [[https://clojure.org/guides/getting_started][Clojure]]
      - [[https://www.gnu.org/software/octave/download.html][GNU Octave]]
@@ -366,6 +369,7 @@ Install all your applications and configure everything the way you like it with 
 
 **** Programming Utilities
      - [[https://black.readthedocs.io/en/stable/][Black]]
+     - [[https://biomejs.dev/][Biome]]
      - [[https://clojure-lsp.github.io/clojure-lsp/][clojure-lsp]]
      - [[https://ctags.io/][Ctags]]
      - [[https://github.com/google/yapf][YAPF]]

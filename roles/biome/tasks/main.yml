@@ -1,0 +1,16 @@
+---
+- name: Install Biome
+  homebrew:
+    name: biome
+    state: latest
+
+- name: Ensure the Biome Application Support directory exists
+  file:
+    path: "{{ home_directory }}/Library/Application Support/biome"
+    state: directory
+
+- name: Install biome.json
+  copy:
+    src: biome.json
+    dest: "{{ home_directory }}/Library/Application Support/biome/biome.json"
+    mode: "0644"
