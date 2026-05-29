@@ -3,3 +3,34 @@
   homebrew:
     name: gh
     state: latest
+
+- name: Ensure gh macOS config directory exists
+  file:
+    path: "{{ home_directory }}/Library/Application Support/gh"
+    state: directory
+    mode: "0700"
+
+- name: Ensure XDG config directory exists
+  file:
+    path: "{{ home_directory }}/.config"
+    state: directory
+
+- name: Get legacy gh config path stats
+  stat:
+    path: "{{ home_directory }}/.config/gh"
+  register: gh_legacy_config_path_stat
+
+- name: Back up legacy gh config path
+  command: >
+    mv "{{ home_directory }}/.config/gh"
+    "{{ home_directory }}/.config/gh.pre-macos-app-support-{{ ansible_date_time.iso8601_basic_short }}"
+  when:
+    - gh_legacy_config_path_stat.stat.exists
+    - not gh_legacy_config_path_stat.stat.islnk
+
+- name: Link legacy gh config path to macOS config
+  file:
+    src: "{{ home_directory }}/Library/Application Support/gh"
+    dest: "{{ home_directory }}/.config/gh"
+    state: link
+    force: yes

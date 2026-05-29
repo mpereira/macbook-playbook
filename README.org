@@ -402,6 +402,7 @@ Install all your applications and configure everything the way you like it with 
      - [[https://github.com/dandavison/delta][delta]]
      - [[https://git-scm.com/download/mac][git]]
      - [[https://cli.github.com/][gh]]
+       The =gh= role links the legacy =~/.config/gh= path to the macOS Application Support config directory.
      - [[https://github.com/sharkdp/fd][fd]]
      - [[https://stedolan.github.io/jq/][jq]]
      - [[https://www.npmjs.com/package/local-ssl-proxy][local-ssl-proxy]]
