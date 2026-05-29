@@ -1,0 +1,5 @@
+---
+- name: Install uvenv
+  pip:
+    name: uvenv
+    extra_args: --user
