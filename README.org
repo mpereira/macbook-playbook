@@ -236,6 +236,7 @@ Install all your applications and configure everything the way you like it with 
      - [[https://getbitbar.com/][BitBar]]
      - [[https://chatgpt.com/][ChatGPT]]
      - [[https://claude.com/][Claude]]
+     - [[https://getcleanshot.com/][CleanShot X]]
      - [[http://doomlaser.com/cursorcerer-hide-your-cursor-at-will/][Cursorcerer]]
      - [[https://daisydiskapp.com/][DaisyDisk]]
      - [[https://kapeli.com/dash][Dash]]

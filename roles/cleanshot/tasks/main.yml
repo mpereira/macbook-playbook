@@ -1,0 +1,5 @@
+---
+- name: Install CleanShot X
+  homebrew_cask:
+    name: cleanshot
+    state: latest

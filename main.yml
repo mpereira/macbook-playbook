@@ -433,6 +433,9 @@
     - role: perplexity
       tags: [desktop-applications, mas-pkg, perplexity]
 
+    - role: cleanshot
+      tags: [desktop-applications, brew-cask-pkg, cleanshot]
+
     - role: zwift
       tags: [desktop-applications, brew-pkg, zwift]
 
