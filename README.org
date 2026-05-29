@@ -280,6 +280,7 @@ Install all your applications and configure everything the way you like it with 
      - [[https://code.visualstudio.com/][VSCode]]
 
 **** Configuration
+     - macOS defaults in =configure.sh=
      - [[https://github.com/mpereira/.emacs.d][dotemacs]]
      - [[https://github.com/mpereira/dotfiles][dotfiles]]
 

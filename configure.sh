@@ -2,6 +2,7 @@
 
 # Resources:
 # - http://www.defaults-write.com
+# - https://github.com/sickcodes/osx-optimizer
 # - https://gist.github.com/MatthewEppelsheimer/2269385
 # - https://gist.github.com/vraravam/5e28ca1720c9dddacdc0e6db61e093fe
 # - https://github.com/MartinHarding/macOSuckless
@@ -50,7 +51,7 @@ defaults write com.apple.Accessibility ReduceMotionEnabled -bool true
 
 readonly icloud_directory="${HOME}/Library/Mobile Documents/com~apple~CloudDocs"
 
-# Save screenshots to the desktop.
+# Save screenshots to directory in iCloud drive.
 defaults write \
          com.apple.screencapture \
          location \
@@ -81,17 +82,17 @@ defaults write com.apple.dock showhidden -bool true
 defaults write com.apple.dock orientation left
 
 # Wipe all (default) app icons from the Dock.
-defaults write com.apple.dock persistent-apps -array
+# defaults write com.apple.dock persistent-apps -array
 
 # Don't rearrange spaces by most recently used.
-defaults write com.apple.dock mru-spaces -bool false
+# defaults write com.apple.dock mru-spaces -bool false
 
 # Remove the auto-hiding Dock delay.
 # NOTE: this doesn't seem to make a difference.
-defaults write com.apple.dock autohide-delay -float 0
+# defaults write com.apple.dock autohide-delay -float 0
 
-# Remove the animation when hiding/showing the Dock.
-defaults write com.apple.dock autohide-time-modifier -float 0.5
+# Mae animation when hiding/showing the Dock faster (default is 0.5).
+defaults write com.apple.dock autohide-time-modifier -float 0.25
 
 ################################################################################
 # Services #####################################################################
@@ -196,7 +197,6 @@ defaults write com.apple.systemuiserver menuExtras '(
   "/System/Library/CoreServices/Menu Extras/Battery.menu",
   "/System/Library/CoreServices/Menu Extras/Volume.menu",
   "/System/Library/CoreServices/Menu Extras/Bluetooth.menu",
-  "/System/Library/CoreServices/Menu Extras/VPN.menu"
 )'
 
 ################################################################################
@@ -232,6 +232,24 @@ sudo nvram SystemAudioVolume=" "
 
 # Disable sound effects: trash emptying, screenshot taking, file moving, etc.
 defaults write "Apple Global Domain" com.apple.sound.uiaudio.enabled -int 0
+
+# MacBookPro 2023 16"
+# $ sudo pmset -g live
+# System-wide power settings:
+#  Currently in use:
+#  standby              1
+#  Sleep On Power Button 1
+#  hibernatefile        /var/vm/sleepimage
+#  powernap             1
+#  networkoversleep     0
+#  disksleep            10
+#  sleep                1 (sleep prevented by useractivityd, bluetoothd, powerd, sharingd)
+#  hibernatemode        3
+#  ttyskeepawake        1
+#  displaysleep         2
+#  tcpkeepalive         1
+#  lowpowermode         0
+#  womp                 0
 
 # MacBookPro 2019 16"
 # $ sudo pmset -g live
@@ -283,7 +301,7 @@ defaults write "Apple Global Domain" com.apple.sound.uiaudio.enabled -int 0
 #  disksleep            10
 
 # Dark menu bar and dock.
-defaults write NSGlobalDomain AppleInterfaceStyle -string "Dark"
+# defaults write NSGlobalDomain AppleInterfaceStyle -string "Dark"
 
 # Hide mirroring options in the menu bar.
 defaults write com.apple.airplay showInMenuBarIfPresent -bool false
