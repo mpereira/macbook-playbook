@@ -1,0 +1,5 @@
+---
+- name: Install ChatGPT
+  homebrew_cask:
+    name: chatgpt
+    state: latest

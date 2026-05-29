@@ -234,6 +234,7 @@ Install all your applications and configure everything the way you like it with 
 **** Desktop Applications
      - [[https://www.android.com/filetransfer/][Android File Transfer]]
      - [[https://getbitbar.com/][BitBar]]
+     - [[https://chatgpt.com/][ChatGPT]]
      - [[http://doomlaser.com/cursorcerer-hide-your-cursor-at-will/][Cursorcerer]]
      - [[https://daisydiskapp.com/][DaisyDisk]]
      - [[https://kapeli.com/dash][Dash]]
