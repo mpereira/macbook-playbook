@@ -309,6 +309,8 @@ TODO:
      Biome's user-level config is provisioned directly by this playbook at
      =~/Library/Application Support/biome/biome.json=.
 
+     Claude local settings are ignored through =.gitignore=.
+
 **** Programming Languages
      - [[https://clojure.org/guides/getting_started][Clojure]]
      - [[https://www.gnu.org/software/octave/download.html][GNU Octave]]
