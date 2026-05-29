@@ -379,6 +379,7 @@ Install all your applications and configure everything the way you like it with 
      - [[https://github.com/snoe/node-cljfmt][node-cljfmt]]
      - [[https://github.com/tomnomnom/gron][gron]]
      - [[https://ktlint.github.io/][ktlint]]
+     - [[https://lefthook.dev/][lefthook]]
      - [[https://prettier.io/][Prettier]]
      - [[https://pyre-check.org/][Pyre]]
      - [[https://rust-analyzer.github.io/][rust-analyzer]]
