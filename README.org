@@ -7,6 +7,21 @@
 
 Install all your applications and configure everything the way you like it with one command.
 
+TODO:
+- add brew to path when installing. (/opt/homebrew/bin)
+- add GitHub to known hosts: ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
+- unencrypt and add SSH key to ssh session
+- figure out Emacs symbolic link internal directory
+- make caps lock -> ESC remapping work
+- fix glances webserver "msg: Destination directory /Users/mpereira/Library/LaunchAgents does not exist"
+- install insta360 link ap
+- wait 1s after install spotify and steam
+- GraalVM on apple silicon?
+- kubectl-krew isn't available right after installing
+- launch BTT on startup, load configuration and license
+- symlink id_rsa to mpereira@pluto SSH key
+- turn on dictation
+
 ** Table of Contents
    :PROPERTIES:
    :TOC:      :include all

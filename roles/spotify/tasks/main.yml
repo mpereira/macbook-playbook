@@ -22,6 +22,8 @@
     creates="/Applications/{{ spotify_installer_name }}"
   become: yes
 
+# TODO: wait 1s.
+
 - name: Run Spotify installer
   command: >
     open -a "Install Spotify.app"

@@ -24,5 +24,7 @@
 - name: Unmount Steam image
   command: hdiutil detach /Volumes/Steam
 
+# TODO: wait 1s.
+
 - name: Start Steam
   command: open -a Steam
