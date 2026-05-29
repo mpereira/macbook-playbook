@@ -1,0 +1,5 @@
+---
+- name: Install ClickUp CLI
+  homebrew:
+    name: krodak/tap/clickup-cli
+    state: latest

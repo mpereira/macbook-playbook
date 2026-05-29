@@ -676,6 +676,9 @@
     - role: gh
       tags: [command-line-tools, brew-pkg, gh, contextualize]
 
+    - role: clickup-cli
+      tags: [command-line-tools, brew-pkg, clickup-cli, contextualize]
+
     - role: vercel
       tags: [command-line-tools, npm-pkg, vercel, contextualize]
 

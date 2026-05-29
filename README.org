@@ -409,6 +409,7 @@ Install all your applications and configure everything the way you like it with 
 
 **** Command line tools
      - [[https://aws.amazon.com/cli/][AWS CLI]]
+     - [[https://github.com/krodak/clickup-cli][ClickUp CLI]]
      - [[https://github.com/kerma/defaultbrowser][defaultbrowser]]
      - [[https://github.com/dandavison/delta][delta]]
      - [[https://github.com/dandavison/delta][delta]]
