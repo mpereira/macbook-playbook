@@ -1,0 +1,5 @@
+---
+- name: Install Telegram
+  homebrew_cask:
+    name: telegram
+    state: latest

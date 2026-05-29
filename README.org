@@ -262,6 +262,7 @@ Install all your applications and configure everything the way you like it with 
      - [[https://slack.com/downloads/osx][Slack]]
      - [[https://www.spotify.com/br/download/other/][Spotify]]
      - [[http://store.steampowered.com/about/][Steam]]
+     - [[https://telegram.org/][Telegram]]
      - [[https://www.pjrc.com/teensy/loader_mac.html][Teensy Loader]]
      - [[https://github.com/mpereira/macbook-playbook/tree/master/roles/toggle-dark-mode/files/ToggleDarkMode.app/Contents][ToggleDarkMode]]
      - [[https://unity3d.com/get-unity/download][Unity]]

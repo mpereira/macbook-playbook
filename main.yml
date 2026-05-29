@@ -439,6 +439,9 @@
     - role: ghostty
       tags: [desktop-applications, brew-cask-pkg, ghostty]
 
+    - role: telegram
+      tags: [desktop-applications, brew-cask-pkg, telegram]
+
     - role: cleanshot
       tags: [desktop-applications, brew-cask-pkg, cleanshot]
 
