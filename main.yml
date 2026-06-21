@@ -427,6 +427,9 @@
     - role: claude
       tags: [desktop-applications, brew-cask-pkg, claude]
 
+    - role: skills
+      tags: [agent-skills, skills]
+
     - role: chatgpt
       tags: [desktop-applications, brew-cask-pkg, chatgpt]
 

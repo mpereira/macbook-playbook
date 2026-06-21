@@ -1,0 +1,77 @@
+---
+- name: Ensure the skills directories exist
+  file:
+    path: "{{ item }}"
+    state: directory
+  loop:
+    - "{{ home_directory }}/.agents/skills"
+    - "{{ home_directory }}/.claude/skills"
+    - "{{ downloads_directory }}/skills"
+
+# --- Bare-repo skills: the repository is the skill --------------------------
+- name: Clone bare-repo skills into the canonical location
+  git:
+    repo: "{{ item.repo }}"
+    dest: "{{ home_directory }}/.agents/skills/{{ item.name }}"
+    version: "{{ item.version | default(omit) }}"
+  loop: "{{ agent_skills_bare }}"
+  loop_control:
+    label: "{{ item.name }}"
+
+# --- Monorepo skills: clone once, symlink the selected subdirectories -------
+- name: Clone skill monorepos
+  git:
+    repo: "{{ item.repo }}"
+    dest: "{{ downloads_directory }}/skills/{{ item.name }}"
+    version: "{{ item.version | default(omit) }}"
+  loop: "{{ agent_skills_monorepos }}"
+  loop_control:
+    label: "{{ item.name }}"
+
+- name: Discover every skill in "all" monorepos
+  find:
+    paths: "{{ downloads_directory }}/skills/{{ item.name }}/{{ item.subpath }}"
+    file_type: directory
+    recurse: no
+  loop: "{{ agent_skills_monorepos | selectattr('all', 'defined') | selectattr('all') | list }}"
+  loop_control:
+    label: "{{ item.name }}"
+  register: monorepo_all_skills
+
+- name: Link every skill from "all" monorepos into the canonical location
+  file:
+    src: "{{ item.path }}"
+    dest: "{{ home_directory }}/.agents/skills/{{ item.path | basename }}"
+    state: link
+    force: yes
+  loop: "{{ monorepo_all_skills.results | map(attribute='files') | flatten | list }}"
+  loop_control:
+    label: "{{ item.path | basename }}"
+
+- name: Link explicitly-selected monorepo skills into the canonical location
+  file:
+    src: "{{ downloads_directory }}/skills/{{ item.0.name }}/{{ item.0.subpath }}/{{ item.1 }}"
+    dest: "{{ home_directory }}/.agents/skills/{{ item.1 }}"
+    state: link
+    force: yes
+  loop: "{{ agent_skills_monorepos | subelements('skills', skip_missing=True) }}"
+  loop_control:
+    label: "{{ item.1 }}"
+
+# --- Mirror the canonical tree into Claude Code ----------------------------
+- name: Discover every canonical skill
+  find:
+    paths: "{{ home_directory }}/.agents/skills"
+    file_type: any
+    recurse: no
+  register: canonical_skills
+
+- name: Symlink every canonical skill into Claude Code's skills directory
+  file:
+    src: "{{ item.path }}"
+    dest: "{{ home_directory }}/.claude/skills/{{ item.path | basename }}"
+    state: link
+    force: yes
+  loop: "{{ canonical_skills.files }}"
+  loop_control:
+    label: "{{ item.path | basename }}"
