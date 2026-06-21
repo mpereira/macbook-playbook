@@ -79,3 +79,6 @@ upgrade_ansible:
 .PHONY: converge
 converge:
 	@$(ANSIBLE_LOCAL) $(ANSIBLE_PLAYBOOKS_DIRECTORY)/main.yml
+
+.PHONY: provision
+provision: converge
