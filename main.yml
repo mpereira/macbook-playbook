@@ -331,6 +331,9 @@
     - role: maccy
       tags: [desktop-applications, brew-cask-pkg, maccy]
 
+    - role: obsidian
+      tags: [desktop-applications, brew-cask-pkg, obsidian]
+
     - role: licecap
       tags: [desktop-applications, bespoke-pkg, licecap]
       vars:

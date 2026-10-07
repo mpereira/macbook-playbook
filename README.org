@@ -269,6 +269,7 @@ TODO:
      - [[https://bjango.com/mac/istatmenus/][iStat Menus]]
      - [[https://www.cockos.com/licecap/][LICEcap]]
      - [[https://maccy.app/][Maccy]]
+     - [[https://obsidian.md/][Obsidian]]
      - [[https://pdfexpert.com/][PDF Expert]]
      - [[https://www.perplexity.ai/][Perplexity]]
      - [[https://persephone.fm/][Persephone]]
