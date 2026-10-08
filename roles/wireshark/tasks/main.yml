@@ -1,5 +1,6 @@
 ---
 - name: Install Wireshark
   homebrew_cask:
-    name: wireshark
+    name: wireshark-app
     state: latest
+    greedy: yes
