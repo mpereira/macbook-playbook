@@ -1,0 +1,5 @@
+---
+- name: Install mitmproxy
+  homebrew_cask:
+    name: mitmproxy
+    state: latest

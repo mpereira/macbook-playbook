@@ -250,6 +250,9 @@
     - role: wireshark
       tags: [observability, brew-cask-pkg, wireshark]
 
+    - role: mitmproxy
+      tags: [observability, brew-cask-pkg, mitmproxy]
+
     ############################################################################
     # Data Systems #############################################################
     ############################################################################
