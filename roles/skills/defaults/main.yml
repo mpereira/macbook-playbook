@@ -7,9 +7,13 @@
 # Codex already reads ~/.agents/skills, so a second copy there would make every
 # skill appear twice in its selector.
 #
-# Every entry below is backed by a git repository, so "make converge" pulls the
-# latest checkout. Add an optional "version: <branch|tag|sha>" to any git-backed
+# Git-backed entries are updated by "make converge". Add an optional
+# "version: <branch|tag|sha>" to any git-backed
 # skill to pin it; omit it to track the default branch.
+
+# Skills maintained in this playbook under roles/skills/files/<name>.
+agent_skills_local:
+  - asd-ste100
 
 # Skills whose entire git repository *is* the skill. Cloned directly into the
 # canonical location (~/.agents/skills/<name>).
@@ -23,6 +27,12 @@ agent_skills_bare:
 # to expose every skill under "subpath", or list explicit "skills" (subdirectory
 # basenames).
 agent_skills_monorepos:
+  - name: humanlayer-skills
+    repo: https://github.com/humanlayer/skills.git
+    subpath: plugins/show-me/skills
+    skills:
+      - show-me
+    auto_invoke: true
   - name: marketingskills
     repo: https://github.com/coreyhaines31/marketingskills.git
     subpath: skills

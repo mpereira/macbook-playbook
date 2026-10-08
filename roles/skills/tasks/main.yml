@@ -57,6 +57,46 @@
   loop: "{{ agent_skills_monorepos | subelements('skills', skip_missing=True) }}"
   loop_control:
     label: "{{ item.1 }}"
+  when: not (item.0.auto_invoke | default(false))
+
+# Configure copies so local invocation preferences do not dirty upstream Git.
+- name: Ensure automatically-selected skill copies have a directory
+  file:
+    path: "{{ downloads_directory }}/skills-configured/{{ item.0.name }}/{{ item.0.subpath }}/{{ item.1 }}/agents"
+    state: directory
+  loop: "{{ agent_skills_monorepos | subelements('skills', skip_missing=True) }}"
+  when: item.0.auto_invoke | default(false)
+
+- name: Copy upstream files with automatic selection enabled
+  copy:
+    dest: "{{ downloads_directory }}/skills-configured/{{ item.0.name }}/{{ item.0.subpath }}/{{ item.1 }}/{{ item.2 }}"
+    content: "{{ lookup('file', downloads_directory + '/skills/' + item.0.name + '/' + item.0.subpath + '/' + item.1 + '/' + item.2, rstrip=False) | regex_replace('(?m)^disable-model-invocation: true$', 'disable-model-invocation: false') | regex_replace('(?m)^(\\s*)allow_implicit_invocation: false$', '\\1allow_implicit_invocation: true') }}"
+    mode: '0644'
+  loop: "{{ agent_skills_monorepos | subelements('skills', skip_missing=True) | product(['SKILL.md', 'agents/openai.yaml']) | map('flatten') | list }}"
+  when: item.0.auto_invoke | default(false)
+
+- name: Link automatically-selected skill copies into the canonical location
+  file:
+    src: "{{ downloads_directory }}/skills-configured/{{ item.0.name }}/{{ item.0.subpath }}/{{ item.1 }}"
+    dest: "{{ home_directory }}/.agents/skills/{{ item.1 }}"
+    state: link
+    force: yes
+  loop: "{{ agent_skills_monorepos | subelements('skills', skip_missing=True) }}"
+  when: item.0.auto_invoke | default(false)
+
+# --- Locally maintained skills: copy from this role ------------------------
+- name: Ensure locally-maintained skill directories exist
+  file:
+    path: "{{ home_directory }}/.agents/skills/{{ item }}"
+    state: directory
+  loop: "{{ agent_skills_local }}"
+
+- name: Install locally-maintained skills
+  copy:
+    src: "{{ item }}/"
+    dest: "{{ home_directory }}/.agents/skills/{{ item }}/"
+    mode: preserve
+  loop: "{{ agent_skills_local }}"
 
 # --- Mirror the canonical tree into Claude Code ----------------------------
 - name: Discover every canonical skill
