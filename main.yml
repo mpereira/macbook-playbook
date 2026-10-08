@@ -386,6 +386,9 @@
     # - role: google-chrome-as-default-browser
     #   tags: [desktop-applications, google-chrome-as-default-browser]
 
+    - role: finicky
+      tags: [desktop-applications, configuration, brew-cask-pkg, finicky]
+
     - role: skype
       tags: [disabled, desktop-applications, bespoke-pkg, skype]
 

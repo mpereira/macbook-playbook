@@ -68,7 +68,7 @@ TODO:
     - [[#gnu-command-line-tools][GNU Command Line Tools]]
     - [[#miscellaneous][Miscellaneous]]
   - [[#configures][Configures]]
-    - [[#makes-google-chrome-the-default-browser][Makes Google Chrome the default browser]]
+    - [[#routes-links-with-finicky][Routes links with Finicky]]
     - [[#passwordless-sudo][Passwordless sudo]]
     - [[#puts-ssh-keys-in-place][Puts SSH keys in place]]
     - [[#remaps-caps-lock-to-control][Remaps Caps-Lock to Control]]
@@ -262,6 +262,7 @@ TODO:
      - [[https://www.elgato.com/en/downloads][Elgato Control Center]]
      - [[https://justgetflux.com/][f.lux]]
      - [[https://www.mozilla.org/en-US/firefox/new][Firefox]]
+     - [[https://github.com/johnste/finicky][Finicky]]
      - [[https://ghostty.org/][Ghostty]]
      - [[https://www.google.com/chrome/index.html][Google Chrome]]
      - [[https://photos.google.com/apps][Google Photos]]
@@ -507,7 +508,20 @@ TODO:
      - [[https://wordnet.princeton.edu/download][WordNet]]
 
 *** Configures
-**** Makes Google Chrome the default browser
+**** Routes links with Finicky
+     The =finicky= role sets Finicky as the HTTP/HTTPS handler, routes
+     =app.clickup.com= task and Doc links to the ClickUp desktop app, and uses
+     Google Chrome for other links. It manages =~/.finicky.js= and preserves
+     the URL path, query, and anchor. Run it with
+     =make converge ARGS="--tags finicky"=. Accept macOS's browser-change
+     prompt if one appears. ClickUp's desktop app must already be installed
+     and signed in.
+
+     Links clicked inside Chrome normally stay in Chrome. With ClickUp
+     running, open a ClickUp page in Chrome and select the notification
+     checkbox to automatically open future links in the desktop app. This is
+     ClickUp's [[https://help.clickup.com/hc/en-us/articles/6311884486423-Use-the-ClickUp-desktop-app][Detect Desktop App]] setting. Tracked notification URLs and public
+     Doc URLs are left to Chrome to resolve.
 **** Passwordless sudo
 **** Puts SSH keys in place
 **** Remaps Caps-Lock to Control

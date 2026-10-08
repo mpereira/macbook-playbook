@@ -1,0 +1,47 @@
+---
+- name: Install Finicky
+  homebrew_cask:
+    name: finicky
+    state: latest
+
+- name: Configure ClickUp URL routing
+  copy:
+    src: finicky.js
+    dest: "{{ home_directory }}/.finicky.js"
+    mode: "0644"
+    backup: true
+
+- name: Register Finicky as a URL handler
+  command:
+    argv:
+      - /System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister
+      - -f
+      - /Applications/Finicky.app
+  changed_when: false
+
+- name: Read the default HTTP and HTTPS applications
+  script: default-browser.js
+  args:
+    executable: /usr/bin/osascript -l JavaScript
+  register: finicky_current_browser
+  changed_when: false
+  check_mode: false
+
+- name: Make Finicky the default browser
+  command:
+    argv:
+      - /usr/bin/open
+      - -a
+      - /Applications/Finicky.app
+  when: finicky_current_browser.stdout_lines != ['se.johnste.finicky', 'se.johnste.finicky']
+
+- name: Verify Finicky handles HTTP and HTTPS
+  script: default-browser.js
+  args:
+    executable: /usr/bin/osascript -l JavaScript
+  register: finicky_verified_browser
+  changed_when: false
+  until: finicky_verified_browser.stdout_lines == ['se.johnste.finicky', 'se.johnste.finicky']
+  retries: 12
+  delay: 5
+  when: not ansible_check_mode
