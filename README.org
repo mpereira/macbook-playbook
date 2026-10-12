@@ -145,7 +145,7 @@ TODO:
 
 *** Prepare machine to run the Ansible playbooks
     This will:
-    1. Set up passwordless =sudo=
+    1. Set up Touch ID =sudo= with password fallback (macOS 14 or later)
     2. Install a user Python3
     3. Install Ansible
 
@@ -546,6 +546,34 @@ TODO:
      ClickUp's [[https://help.clickup.com/hc/en-us/articles/6311884486423-Use-the-ClickUp-desktop-app][Detect Desktop App]] setting. Tracked notification URLs and public
      Doc URLs are left to Chrome to resolve.
 **** Passwordless sudo
+     The =passwordless-sudo= role enables Touch ID authentication through
+     =/etc/pam.d/sudo_local= on macOS Sonoma 14 or later. This local PAM file
+     survives macOS updates. Enroll a fingerprint in System Settings under
+     Touch ID & Password before using it.
+
+     The role replaces its previous =NOPASSWD: ALL= rule with =PASSWD: ALL=,
+     so =sudo= authenticates with Touch ID and falls back to your login
+     password when Touch ID is unavailable. Existing local PAM customizations
+     are preserved, and the system =/etc/pam.d/sudo= file is left intact.
+
+     Reapply this configuration with:
+
+     #+begin_src bash
+     make converge ARGS='--tags touch-id-sudo --ask-become-pass'
+     #+end_src
+
+     For other roles that need administrator access, add =--ask-become-pass=
+     to =ARGS= if Ansible cannot authenticate with Touch ID in its session.
+     To check the fingerprint prompt from a local terminal, run:
+
+     #+begin_src bash
+     sudo -k
+     sudo whoami
+     #+end_src
+
+     A successful authentication prints =root=. Canceling Touch ID allows
+     password fallback. SSH and some terminal multiplexer sessions may need
+     the password instead. See [[https://support.apple.com/en-us/109030][Apple's macOS Sonoma enterprise release notes]].
 **** Puts SSH keys in place
 **** Remaps Caps-Lock to Control
      Uses an AppleScript helper for the current System Settings flow.

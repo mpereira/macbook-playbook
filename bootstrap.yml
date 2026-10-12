@@ -5,7 +5,8 @@
   roles:
     - ansible-download-directory
     - usr-local-src-directory
-    - passwordless-sudo
+    - role: passwordless-sudo
+      tags: [passwordless-sudo, touch-id-sudo]
     - role: python3
       tags: [foundational, programming-languages, bespoke-pkg, python3]
       vars:

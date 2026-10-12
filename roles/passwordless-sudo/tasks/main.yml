@@ -1,9 +1,54 @@
 ---
-- lineinfile:
-    path: "/etc/sudoers.d/{{ user }}"
-    line: "{{ user }} ALL=(ALL) NOPASSWD: ALL"
+- name: Check for Apple's persistent sudo PAM template
+  stat:
+    path: /etc/pam.d/sudo_local.template
+  register: sudo_local_template
+
+- name: Read the system sudo PAM configuration
+  slurp:
+    src: /etc/pam.d/sudo
+  register: sudo_pam_configuration
+
+- name: Require macOS support for persistent Touch ID sudo
+  assert:
+    that:
+      - sudo_local_template.stat.exists
+      - (sudo_pam_configuration.content | b64decode) is search('(?m)^auth\s+include\s+sudo_local\s*$')
+    fail_msg: Touch ID sudo requires macOS Sonoma 14 or later with sudo_local support.
+
+- name: Initialize the local sudo PAM configuration
+  copy:
+    src: /etc/pam.d/sudo_local.template
+    dest: /etc/pam.d/sudo_local
+    remote_src: yes
+    force: no
+    owner: root
+    group: wheel
+    mode: "0644"
+  become: yes
+
+- name: Enable Touch ID sudo with password fallback
+  lineinfile:
+    path: /etc/pam.d/sudo_local
+    regexp: '^#?\s*auth\s+sufficient\s+pam_tid\.so\s*$'
+    line: "auth       sufficient     pam_tid.so"
+    insertbefore: BOF
     create: yes
     owner: root
-    mode: 0644
-    validate: 'visudo -cf %s'
+    group: wheel
+    mode: "0644"
+    backup: yes
+  become: yes
+
+- name: Require authentication instead of bypassing Touch ID
+  lineinfile:
+    path: "/etc/sudoers.d/{{ user }}"
+    regexp: '^{{ user | regex_escape }}\s+ALL=\(ALL\)\s+(?:NOPASSWD|PASSWD):\s*ALL\s*$'
+    line: "{{ user }} ALL=(ALL) PASSWD: ALL"
+    create: yes
+    owner: root
+    group: wheel
+    mode: "0440"
+    backup: yes
+    validate: '/usr/sbin/visudo -cf %s'
   become: yes

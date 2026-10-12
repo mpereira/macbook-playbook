@@ -6,6 +6,9 @@
     # Foundational ##############################################################
     #############################################################################
 
+    - role: passwordless-sudo
+      tags: [foundational, passwordless-sudo, touch-id-sudo]
+
     - role: homebrew
       tags: [foundational, package-and-build, homebrew]
 
