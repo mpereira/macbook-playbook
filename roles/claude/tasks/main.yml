@@ -3,6 +3,8 @@
   homebrew_cask:
     name: claude
     state: latest
+    # Take over a Claude.app that wasn't installed with Homebrew.
+    install_options: adopt
 
 - name: Ensure the Claude Code managed settings directory exists
   file:
