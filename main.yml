@@ -440,7 +440,7 @@
       tags: [desktop-applications, brew-pkg, elgato-control-center]
 
     - role: claude
-      tags: [desktop-applications, brew-cask-pkg, claude]
+      tags: [desktop-applications, configuration, brew-cask-pkg, claude]
 
     - role: skills
       tags: [agent-skills, skills]

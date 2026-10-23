@@ -3,3 +3,22 @@
   homebrew_cask:
     name: claude
     state: latest
+
+- name: Ensure the Claude Code managed settings directory exists
+  file:
+    path: "{{ claude_managed_settings_directory }}"
+    state: directory
+    owner: root
+    group: wheel
+    mode: "0755"
+  become: yes
+
+- name: Install Claude Code managed settings
+  copy:
+    content: "{{ claude_managed_settings | to_nice_json(indent=2) }}\n"
+    dest: "{{ claude_managed_settings_directory }}/managed-settings.json"
+    owner: root
+    group: wheel
+    mode: "0644"
+    backup: yes
+  become: yes

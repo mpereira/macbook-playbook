@@ -1,0 +1,54 @@
+---
+# Claude Code managed settings.
+#
+# Written to /Library/Application Support/ClaudeCode/managed-settings.json,
+# owned by root. Managed settings take precedence over user, project, local,
+# and --settings values, and Claude can't edit the file without sudo. They
+# apply to the Claude Code CLI and to the Claude desktop app's Code tab.
+# The file doesn't touch ~/.claude/settings.json, which Claude Code also writes
+# to itself (theme, /model, and so on).
+#
+# See https://code.claude.com/docs/en/managed-settings and
+# https://code.claude.com/docs/en/sandboxing.
+
+claude_managed_settings_directory: /Library/Application Support/ClaudeCode
+
+# Paths Claude must not write to. Each one becomes an Edit deny rule (for
+# Claude's file tools) and a sandbox denyWrite entry (for Bash and every
+# process it starts).
+claude_write_protected_paths:
+  - ~/.ssh
+  - ~/.aws
+  - ~/.gnupg
+  - ~/.config/gh
+
+# Commands that run outside the Bash sandbox. Most git remotes here use SSH,
+# which can't reach the network from inside the sandbox.
+claude_sandbox_excluded_commands:
+  - git fetch
+  - git fetch *
+  - git pull
+  - git pull *
+  - git push
+  - git push *
+  - git ls-remote *
+
+claude_managed_settings:
+  permissions:
+    allow:
+      # Lets sandboxed commands reach any host. The sandbox only restricts
+      # file writes here.
+      - WebFetch(domain:*)
+    deny: "{{ claude_write_protected_paths | map('regex_replace', '^(.*)$', 'Edit(\\1/**)') | list }}"
+  sandbox:
+    enabled: true
+    # Refuse to start instead of running commands unsandboxed.
+    failIfUnavailable: true
+    # Don't let Claude retry a blocked command outside the sandbox.
+    allowUnsandboxedCommands: false
+    excludedCommands: "{{ claude_sandbox_excluded_commands }}"
+    filesystem:
+      denyWrite: "{{ claude_write_protected_paths }}"
+  # Keep the restrictions the desktop app passes to Claude Code. Without this,
+  # Claude Code drops them whenever a managed settings file exists.
+  parentSettingsBehavior: merge
