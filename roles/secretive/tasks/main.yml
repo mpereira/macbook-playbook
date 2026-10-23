@@ -1,0 +1,90 @@
+---
+- name: Install Secretive
+  community.general.homebrew_cask:
+    name: secretive
+    state: present
+
+- name: Check whether the Secretive agent is running
+  ansible.builtin.stat:
+    path: "{{ secretive_agent_socket }}"
+  register: secretive_socket
+
+- name: Start Secretive for agent setup
+  ansible.builtin.command:
+    argv: [/usr/bin/open, -a, /Applications/Secretive.app]
+  when: not secretive_socket.stat.exists
+  changed_when: true
+
+- name: Wait for the Secretive agent socket
+  ansible.builtin.wait_for:
+    path: "{{ secretive_agent_socket }}"
+    timeout: 15
+  when: not ansible_check_mode
+
+- name: Read public identities from Secretive
+  ansible.builtin.command:
+    argv: [/usr/bin/ssh-add, -L]
+  environment:
+    SSH_AUTH_SOCK: "{{ secretive_agent_socket }}"
+  register: secretive_identities
+  changed_when: false
+  failed_when: secretive_identities.rc not in [0, 1]
+  check_mode: false
+  when: secretive_socket.stat.exists or not ansible_check_mode
+
+- name: Select the named Secure Enclave identity
+  ansible.builtin.set_fact:
+    secretive_selected_keys: >-
+      {{ secretive_identities.stdout_lines | default([]) |
+         select('search', ' ' ~ (secretive_key_name | replace(' ', '-') | regex_escape) ~ '@secretive\.') | list }}
+
+- name: Require a unique key name
+  ansible.builtin.assert:
+    that: secretive_selected_keys | length <= 1
+    fail_msg: Give the intended Secretive key a unique name before running this role.
+
+- name: Require explicit SSH host aliases
+  ansible.builtin.assert:
+    that:
+      - secretive_hosts | length > 0
+      - secretive_hosts | select('match', '^[A-Za-z0-9][A-Za-z0-9._-]*$') | list | length == secretive_hosts | length
+    fail_msg: Specify individual SSH aliases in secretive_hosts.
+
+- name: Explain first-time key creation
+  ansible.builtin.debug:
+    msg: >-
+      Create '{{ secretive_key_name }}' in Secretive with Require Authentication,
+      then rerun --tags touch-id-ssh. Enroll its public key on your servers before connecting.
+  when: secretive_selected_keys | length == 0
+
+- name: Configure the selected identity
+  when: secretive_selected_keys | length == 1
+  block:
+    - name: Ensure the SSH directory exists
+      ansible.builtin.file:
+        path: "{{ secretive_ssh_directory }}"
+        state: directory
+        mode: "0700"
+
+    - name: Export the public key for host identity selection
+      ansible.builtin.copy:
+        content: "{{ secretive_selected_keys[0] }}\n"
+        dest: "{{ secretive_identity_file }}"
+        mode: "0644"
+
+    - name: Route selected SSH hosts through Secretive
+      ansible.builtin.blockinfile:
+        path: "{{ secretive_ssh_directory }}/config"
+        insertbefore: BOF
+        marker: "# {mark} ANSIBLE MANAGED SECRETIVE"
+        create: true
+        mode: "0600"
+        backup: true
+        block: |
+          Host {{ secretive_hosts | join(' ') }}
+              IdentityAgent "{{ secretive_agent_socket }}"
+              IdentityFile "{{ secretive_identity_file }}"
+              IdentitiesOnly yes
+              ForwardAgent no
+
+          Host *

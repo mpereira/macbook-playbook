@@ -70,6 +70,7 @@ TODO:
   - [[#configures][Configures]]
     - [[#routes-links-with-finicky][Routes links with Finicky]]
     - [[#passwordless-sudo][Passwordless sudo]]
+    - [[#touch-id-for-ssh][Touch ID for SSH]]
     - [[#puts-ssh-keys-in-place][Puts SSH keys in place]]
     - [[#remaps-caps-lock-to-control][Remaps Caps-Lock to Control]]
 - [[#author][Author]]
@@ -551,12 +552,15 @@ TODO:
      survives macOS updates. Enroll a fingerprint in System Settings under
      Touch ID & Password before using it.
 
-     The role replaces its previous =NOPASSWD: ALL= rule with =PASSWD: ALL=,
-     so =sudo= authenticates with Touch ID and falls back to your login
-     password when Touch ID is unavailable. Existing local PAM customizations
-     are preserved, and the system =/etc/pam.d/sudo= file is left intact.
+     On a MacBook, keep the lid open unless you use a compatible external
+     keyboard with Touch ID. Closing the lid makes the built-in sensor
+     inaccessible, so =sudo= falls back to your login password.
 
-     Reapply this configuration with:
+     =sudo= authenticates with Touch ID and falls back to your login password
+     when Touch ID is unavailable. The role preserves local PAM customizations
+     and leaves the system =/etc/pam.d/sudo= file intact.
+
+     Apply this configuration with:
 
      #+begin_src bash
      make converge ARGS='--tags touch-id-sudo --ask-become-pass'
@@ -574,6 +578,29 @@ TODO:
      A successful authentication prints =root=. Canceling Touch ID allows
      password fallback. SSH and some terminal multiplexer sessions may need
      the password instead. See [[https://support.apple.com/en-us/109030][Apple's macOS Sonoma enterprise release notes]].
+**** Touch ID for SSH
+     The =secretive= role installs [[https://github.com/maxgoedjen/secretive][Secretive]] and configures =terra= and =luna=
+     to use its SSH agent. Run =make converge ARGS='--tags touch-id-ssh'=
+     after creating a key named =MacBook Touch ID= in Secretive with
+     =Require Authentication= selected. The role exports only its public key
+     to =~/.ssh/secretive-macbook.pub= and sets =IdentityAgent=,
+     =IdentityFile=, =IdentitiesOnly yes= and =ForwardAgent no= for those hosts.
+     Other SSH hosts continue to use their current agent.
+
+     Enroll that public key through the servers' provisioning before connecting.
+     In =contextualize.ai=, the =operator-ssh-keys= provisioning tag adds it to
+     root's =authorized_keys= without removing existing keys. A replacement Mac
+     needs a new Secretive key and a corresponding public-key update in that
+     provisioning. Secure Enclave private keys cannot be imported or exported.
+     Keep a separately authorized recovery key outside this Mac, even after
+     the new key works on every destination.
+
+     Secretive registers its background agent during first launch. Keep the
+     MacBook lid open for Touch ID unless you have an external Touch ID keyboard.
+     Its =Require Authentication= setting also permits macOS password or Apple
+     Watch approval. The role discovers the named public identity through the
+     agent, so it can rerun without a key's device-specific identifier.
+
 **** Puts SSH keys in place
 **** Remaps Caps-Lock to Control
      Uses an AppleScript helper for the current System Settings flow.

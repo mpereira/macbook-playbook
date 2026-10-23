@@ -231,6 +231,9 @@
     - role: gpg-agent-config
       tags: [security, configuration, gpg-agent-config]
 
+    - role: secretive
+      tags: [security, configuration, brew-cask-pkg, secretive, touch-id-ssh]
+
     ############################################################################
     # Observability ############################################################
     ############################################################################
