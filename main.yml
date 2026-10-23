@@ -463,6 +463,9 @@
     - role: cleanshot
       tags: [desktop-applications, brew-cask-pkg, cleanshot]
 
+    - role: scrawl
+      tags: [desktop-applications, brew-cask-pkg, scrawl]
+
     - role: zwift
       tags: [desktop-applications, brew-pkg, zwift]
 

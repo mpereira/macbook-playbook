@@ -1,0 +1,10 @@
+---
+- name: Add Scrawl Homebrew tap
+  homebrew_tap:
+    name: kitlangton/tap
+    state: present
+
+- name: Install Scrawl
+  homebrew_cask:
+    name: kitlangton/tap/scrawl
+    state: latest

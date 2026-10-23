@@ -276,6 +276,7 @@ TODO:
      - [[https://www.perplexity.ai/][Perplexity]]
      - [[https://persephone.fm/][Persephone]]
      - [[https://www.rescuetime.com/][RescueTime]]
+     - [[https://scrawl.kitlangton.com/][Scrawl]] (Apple Silicon, macOS 26 or later)
      - [[https://www.skype.com/en/download-skype/skype-for-mac/][Skype]]
      - [[https://slack.com/downloads/osx][Slack]]
      - [[https://www.spotify.com/br/download/other/][Spotify]]
