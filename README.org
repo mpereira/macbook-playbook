@@ -570,10 +570,16 @@ TODO:
        directory. Claude can't retry a blocked command outside the sandbox,
        and Claude Code refuses to start if the sandbox is unavailable.
 
-     Sandboxed commands can reach any host. The =git= network commands in
-     =claude_sandbox_excluded_commands= run outside the sandbox, because SSH
-     remotes can't connect from inside it. Configure these lists in
-     =roles/claude/defaults/main.yml=, then apply them with:
+     Sandboxed commands can reach any host. The commands in
+     =claude_sandbox_excluded_commands= run outside the sandbox with full
+     access: =git= network commands, because SSH remotes can't connect from
+     inside it, =git commit=, because lefthook needs a pseudo-terminal, and a
+     few others the sandbox breaks. Git hooks run with them, and Claude can
+     edit hook configuration in the working directory, so the sandbox guards
+     against accidents rather than acting as a security boundary. Ansible
+     writes its temporary files under =/tmp/claude/ansible= instead of
+     =~/.ansible=. Configure these lists in =roles/claude/defaults/main.yml=,
+     then apply them with:
 
      #+begin_src bash
      make converge ARGS='--tags claude'

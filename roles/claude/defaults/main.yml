@@ -22,9 +22,13 @@ claude_write_protected_paths:
   - ~/.gnupg
   - ~/.config/gh
 
-# Commands that run outside the Bash sandbox. Most git remotes here use SSH,
-# which can't reach the network from inside the sandbox.
+# Commands that run outside the Bash sandbox, with full access. Git hooks run
+# with them, and Claude can edit hook configuration such as lefthook.yml in
+# the working directory, so these make the sandbox a guard against accidents
+# rather than a security boundary.
 claude_sandbox_excluded_commands:
+  # Most git remotes here use SSH, which can't reach the network from inside
+  # the sandbox.
   - git fetch
   - git fetch *
   - git pull
@@ -32,20 +36,44 @@ claude_sandbox_excluded_commands:
   - git push
   - git push *
   - git ls-remote *
+  # lefthook runs hooks in a pseudo-terminal, which the sandbox blocks.
+  - git commit
+  - git commit *
+  # These write .git/config, which the sandbox always protects.
+  - git worktree add *
+  - git branch --set-upstream-to*
+  # The sandbox blocks process listing.
+  - ps
+  - ps *
+
+# Unsandboxed commands that run without a permission prompt.
+claude_allowed_unsandboxed_commands:
+  - git fetch *
+  - git push *
+
+# Where Ansible writes temporary files when Claude runs it. Its default,
+# ~/.ansible, also holds the Galaxy token and the collections and plugins
+# Ansible loads, so it stays unwritable from the sandbox.
+claude_ansible_temporary_directory: /tmp/claude/ansible
 
 claude_managed_settings:
   permissions:
-    allow:
-      # Lets sandboxed commands reach any host. The sandbox only restricts
-      # file writes here.
-      - WebFetch(domain:*)
+    # WebFetch(domain:*) lets sandboxed commands reach any host. The sandbox
+    # only restricts file writes here.
+    allow: "{{ ['WebFetch(domain:*)'] + claude_allowed_unsandboxed_commands | map('regex_replace', '^(.*)$', 'Bash(\\1)') | list }}"
     deny: "{{ claude_write_protected_paths | map('regex_replace', '^(.*)$', 'Edit(\\1/**)') | list }}"
+  env:
+    ANSIBLE_LOCAL_TEMP: "{{ claude_ansible_temporary_directory }}/local"
+    ANSIBLE_REMOTE_TEMP: "{{ claude_ansible_temporary_directory }}/remote"
   sandbox:
     enabled: true
     # Refuse to start instead of running commands unsandboxed.
     failIfUnavailable: true
     # Don't let Claude retry a blocked command outside the sandbox.
     allowUnsandboxedCommands: false
+    # Go programs such as gh, terraform and gmailctl verify TLS certificates
+    # through macOS's trustd service, which the sandbox otherwise blocks.
+    enableWeakerNetworkIsolation: true
     excludedCommands: "{{ claude_sandbox_excluded_commands }}"
     filesystem:
       denyWrite: "{{ claude_write_protected_paths }}"
