@@ -703,6 +703,9 @@
     - role: mole
       tags: [command-line-tools, brew-pkg, mole]
 
+    - role: gmailctl
+      tags: [command-line-tools, brew-pkg, gmailctl, uses-secrets]
+
     - role: vercel
       tags: [command-line-tools, npm-pkg, vercel, contextualize]
 

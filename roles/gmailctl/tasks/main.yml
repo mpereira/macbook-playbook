@@ -1,0 +1,30 @@
+---
+- name: Install gmailctl
+  homebrew:
+    name: gmailctl
+    state: latest
+
+# gmailctl keeps its config (config.jsonnet) and its OAuth client secret and
+# token (credentials.json, token.json) here, so only the owner may read it. A
+# ~/.gmailctl directory would take precedence over this one, so the role never
+# creates it.
+- name: Ensure the gmailctl config directory exists
+  file:
+    path: "{{ home_directory }}/Library/Application Support/gmailctl"
+    state: directory
+    mode: "0700"
+
+- name: Install the gmailctl OAuth client
+  copy:
+    content: "{{ gmailctl_credentials_json_file_base64 | b64decode }}"
+    dest: "{{ home_directory }}/Library/Application Support/gmailctl/credentials.json"
+    mode: "0600"
+
+# The vaulted token only seeds a machine that has never authorized gmailctl. A
+# token written later by "gmailctl init" on this machine is kept.
+- name: Install the gmailctl OAuth token
+  copy:
+    content: "{{ gmailctl_token_json_file_base64 | b64decode }}"
+    dest: "{{ home_directory }}/Library/Application Support/gmailctl/token.json"
+    mode: "0600"
+    force: no
