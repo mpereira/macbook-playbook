@@ -572,7 +572,7 @@ TODO:
      =roles/claude/defaults/main.yml=, then apply them with:
 
      #+begin_src bash
-     make converge ARGS='--tags claude --ask-become-pass'
+     make converge ARGS='--tags claude'
      #+end_src
 
      Run =/status= in Claude Code and check that =Setting sources= lists
@@ -597,8 +597,11 @@ TODO:
      make converge ARGS='--tags touch-id-sudo --ask-become-pass'
      #+end_src
 
-     For other roles that need administrator access, add =--ask-become-pass=
-     to =ARGS= if Ansible cannot authenticate with Touch ID in its session.
+     The first run needs =--ask-become-pass= because Touch ID isn't enabled
+     yet. After that, =ansible.cfg= leaves out sudo's =-n= flag, so tasks that
+     need administrator access ask for Touch ID instead of a password. When
+     Touch ID is unavailable, add =--ask-become-pass= to =ARGS=. Without it,
+     =sudo= waits for a password that Ansible can't enter, and the run can hang.
      To check the fingerprint prompt from a local terminal, run:
 
      #+begin_src bash
