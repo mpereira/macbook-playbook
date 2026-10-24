@@ -45,6 +45,16 @@ claude_sandbox_excluded_commands:
   # The sandbox blocks process listing.
   - ps
   - ps *
+  # contextualize.ai database targets. The sandbox's proxy only carries web
+  # traffic, so Atlas and the type sync can't reach Postgres from inside it.
+  # The Atlas patterns end in ENV=development: make uses the last assignment
+  # of a variable on its command line, so a match always targets development.
+  # The type sync targets always read the development configuration.
+  - make apply_atlas_database_migrations PROJECT=* ENV=development
+  - make plan_atlas_database_schema PROJECT=* ENV=development
+  - make apply_atlas_database_schema PROJECT=* PLAN_SHA256=* ENV=development
+  - make python_app_write_database_types APP=*
+  - make frontend_app_write_database_types APP=*
 
 # Unsandboxed commands that run without a permission prompt.
 claude_allowed_unsandboxed_commands:
