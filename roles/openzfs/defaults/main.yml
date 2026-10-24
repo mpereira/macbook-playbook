@@ -1,0 +1,30 @@
+---
+# OpenZFS on OS X release to install, as the openzfs Homebrew cask names it.
+#
+# Homebrew can only install the version its tap currently offers, so this pin
+# doesn't select a download. It makes the role refuse to upgrade to a release
+# nobody has reviewed: when the tap moves past this version, the role stops
+# and asks for the pin to be bumped.
+#
+# Release notes: https://github.com/openzfsonosx/openzfs-fork/releases
+openzfs_version: "2.4.1p1"
+
+# Upper limit for the ARC (the ZFS read cache), in bytes. 0 leaves the
+# driver's default, which is 15/16 of half the RAM (7.5 GiB on a 16 GiB Mac).
+# This Mac uses 2 GiB, because ZFS held most of its wired memory while it
+# swapped heavily.
+#
+# The limit is written to /etc/zfs/zsysctl.conf as
+# kstat.zfs.darwin.tunable.zfs_arc.max, which OpenZFS applies at boot before
+# importing pools. It takes effect after a reboot. To apply it right away:
+#
+#   sudo sysctl -w kstat.zfs.darwin.tunable.zfs_arc.max=<bytes>
+#
+# Setting it back to 0 removes the line, but the running driver keeps the old
+# limit until the next reboot.
+#
+# The ARC limit doesn't bound the rest of the memory ZFS allocates (see
+# kstat.spl.misc.spl_misc.os_mem_alloc), so measure before and after with
+# roles/openzfs/files/zfs-memory-snapshot.sh, and raise or lower it from
+# what you see.
+openzfs_arc_max: 2147483648

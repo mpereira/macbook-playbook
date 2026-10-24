@@ -1,5 +1,114 @@
 ---
+- name: Get the installed and available OpenZFS versions
+  command: brew info --cask --json=v2 openzfs
+  environment:
+    HOMEBREW_NO_AUTO_UPDATE: "1"
+  register: openzfs_cask_info
+  check_mode: no
+  changed_when: false
+
+- name: Decide whether OpenZFS needs installing or upgrading
+  set_fact:
+    openzfs_installed_version: "{{ (openzfs_cask_info.stdout | from_json).casks[0].installed | default('', true) }}"
+    openzfs_cask_version: "{{ (openzfs_cask_info.stdout | from_json).casks[0].version }}"
+
+- set_fact:
+    openzfs_needs_install: "{{ openzfs_installed_version != openzfs_version }}"
+
+- name: Check that the cask offers the pinned OpenZFS version
+  assert:
+    that: openzfs_cask_version == openzfs_version
+    fail_msg: >-
+      The openzfs cask offers {{ openzfs_cask_version }}, but openzfs_version
+      is {{ openzfs_version }}. Review the release notes and known issues for
+      {{ openzfs_cask_version }}, then update openzfs_version in
+      roles/openzfs/defaults/main.yml.
+  when: openzfs_needs_install | bool
+
+# Upgrading replaces the kernel extension. Homebrew's uninstall step exports
+# every pool, and the installer refuses to run while a pool is imported and
+# then unloads the old driver. Neither should happen to a pool in use, so the
+# role stops and leaves exporting to a person.
+- name: Check for mounted ZFS datasets
+  command: /sbin/mount -t zfs
+  register: openzfs_mounts
+  check_mode: no
+  changed_when: false
+  when: openzfs_needs_install | bool
+
+- name: Check whether the OpenZFS driver is loaded
+  stat:
+    path: /dev/zfs
+  register: openzfs_device
+  when: openzfs_needs_install | bool
+
+- name: Check for imported pools
+  command: /usr/local/zfs/bin/zpool list -H -o name
+  register: openzfs_pools
+  check_mode: no
+  changed_when: false
+  when: openzfs_needs_install | bool and openzfs_device.stat.exists
+
+- name: Stop if a pool is imported
+  fail:
+    msg: >-
+      Upgrading OpenZFS from {{ openzfs_installed_version }} to
+      {{ openzfs_version }} needs every pool exported. Imported pools:
+      {{ openzfs_pools.stdout_lines | default([]) | join(', ') or 'none' }}.
+      Mounted datasets: {{ openzfs_mounts.stdout_lines | length }}. Close
+      whatever uses them, run `sudo zpool export -a`, and run the playbook
+      again with --tags openzfs.
+  when: >-
+    openzfs_needs_install | bool and
+    (openzfs_mounts.stdout | length > 0 or
+     openzfs_pools.stdout | default('') | length > 0)
+
 - name: Install OpenZFS
   homebrew_cask:
     name: openzfs
     state: latest
+  when: openzfs_needs_install | bool
+
+- name: Explain how to activate the new driver
+  debug:
+    msg: >-
+      OpenZFS {{ openzfs_version }} is installed. If macOS asks, allow the
+      extension in System Settings > Privacy & Security, then reboot. After
+      the reboot, `zfs version` should show the same version for zfs and
+      zfs-kmod.
+  when: openzfs_needs_install | bool
+
+- name: Check the ARC size limit
+  assert:
+    that:
+      # The driver rejects limits at or below its ARC minimum (1/32 of the
+      # memory it can use, which is 15/16 of half the RAM) and at or above
+      # that memory.
+      - openzfs_arc_memory | int > 0
+      - openzfs_arc_max | int > openzfs_arc_memory | int // 32
+      - openzfs_arc_max | int >= 67108864
+      - openzfs_arc_max | int < openzfs_arc_memory | int
+    fail_msg: >-
+      {% if openzfs_arc_memory | int > 0 %}openzfs_arc_max must be between
+      {{ openzfs_arc_memory | int // 32 }} and {{ openzfs_arc_memory }} bytes
+      on this Mac.{% else %}Couldn't read this Mac's RAM size from the
+      memtotal_mb fact.{% endif %}
+  vars:
+    openzfs_arc_memory: "{{ ansible_facts.memtotal_mb | default(0) | int * 1048576 // 2 * 15 // 16 }}"
+  when: openzfs_arc_max | int > 0
+  tags: [openzfs-arc]
+
+- name: Configure the ARC size limit
+  lineinfile:
+    path: /etc/zfs/zsysctl.conf
+    # Also replace the legacy name and the flat name, which doesn't exist.
+    regexp: '^\s*kstat\.zfs\.darwin\.tunable\.(zfs_arc\.max|zfs_arc_max|arc_max)\s*='
+    line: "kstat.zfs.darwin.tunable.zfs_arc.max={{ openzfs_arc_max | int }}"
+    state: "{{ 'present' if openzfs_arc_max | int > 0 else 'absent' }}"
+    create: yes
+    owner: root
+    group: wheel
+    mode: "0644"
+    backup: yes
+  become: yes
+  tags: [openzfs-arc]

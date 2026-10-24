@@ -105,7 +105,7 @@
     - role: build-emacs
       tags: [text-editors, brew-pkg, build-emacs]
 
-    # NOTE: trying it out with Monterey (should be at least 2.1.0).
+    # Stops instead of upgrading while a pool is imported. See README.org.
     - role: openzfs
       tags: [system-tools, brew-cask-pkg, openzfs]
 

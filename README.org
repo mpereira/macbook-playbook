@@ -70,6 +70,7 @@ TODO:
   - [[#configures][Configures]]
     - [[#routes-links-with-finicky][Routes links with Finicky]]
     - [[#restricts-claude-code-file-writes][Restricts Claude Code file writes]]
+    - [[#upgrades-openzfs-without-touching-imported-pools][Upgrades OpenZFS without touching imported pools]]
     - [[#passwordless-sudo][Passwordless sudo]]
     - [[#touch-id-for-ssh][Touch ID for SSH]]
     - [[#touch-id-secrets][Touch ID secrets]]
@@ -497,7 +498,7 @@ TODO:
      - [[https://github.com/kubernetes-sigs/krew][krew]]
      - [[https://kubernetes.io/docs/reference/kubectl/kubectl/][kubectl]]
      - [[https://github.com/ahmetb/kubectl-tree][kubectl-tree]]
-     - [[https://openzfsonosx.org/][OpenZFS]] (disabled by default until it works on macOS Big Sur)
+     - [[https://openzfsonosx.org/][OpenZFS]] (see [[#upgrades-openzfs-without-touching-imported-pools][Upgrades OpenZFS without touching imported pools]])
      - [[https://orbstack.dev/][OrbStack]]
      - [[https://www.terraform.io/][Terraform]]
      - [[https://www.vagrantup.com/downloads.html][Vagrant]]
@@ -705,6 +706,48 @@ TODO:
 
      Run =/status= in Claude Code and check that =Setting sources= lists
      =Enterprise managed settings (file)=.
+**** Upgrades OpenZFS without touching imported pools
+     The =openzfs= role installs the [[https://github.com/openzfsonosx/openzfs-fork/releases][OpenZFS on OS X]] release set in
+     =openzfs_version= in =roles/openzfs/defaults/main.yml=, using the Homebrew
+     cask. If that version is already installed, it does nothing. It stops
+     before upgrading when:
+     - the cask offers a different version, so each new release gets reviewed
+       and pinned first
+     - a pool is imported or a dataset is mounted, because the upgrade exports
+       every pool and unloads the running driver
+
+     To upgrade, close whatever uses the pools, then:
+
+     #+begin_src bash
+     sudo zpool export -a
+     make provision ARGS='--tags openzfs'
+     #+end_src
+
+     If macOS asks, allow the extension in System Settings > Privacy &
+     Security. Then reboot. Afterwards, =zfs version= should show the same
+     version for =zfs= and =zfs-kmod=. Don't run =zpool upgrade= until the new
+     release has proven itself: older releases can't import a pool with newer
+     features enabled.
+
+     =openzfs_arc_max= limits the ARC (the ZFS read cache), in bytes. It's 2
+     GiB, down from the driver's own limit of 7.5 GiB on a 16 GiB Mac; 0
+     restores the driver's limit. The role writes the limit to
+     =/etc/zfs/zsysctl.conf=, which OpenZFS applies at boot, and leaves other
+     lines there alone. =--tags openzfs= writes it too. Change it in
+     =roles/openzfs/defaults/main.yml= rather than with =--extra-vars=, since
+     the next =make provision= without it puts the default back. To write it
+     and apply it without a reboot:
+
+     #+begin_src bash
+     make provision ARGS='--tags openzfs-arc'
+     sudo sysctl -w kstat.zfs.darwin.tunable.zfs_arc.max=2147483648
+     #+end_src
+
+     Going back to 0 takes effect only after a reboot.
+
+     The ARC limit doesn't cover the rest of the memory ZFS allocates, so
+     compare before and after with
+     =roles/openzfs/files/zfs-memory-snapshot.sh <label>=.
 **** Passwordless sudo
      The =passwordless-sudo= role enables Touch ID authentication through
      =/etc/pam.d/sudo_local= on macOS Sonoma 14 or later. This local PAM file
