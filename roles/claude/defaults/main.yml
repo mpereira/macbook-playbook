@@ -59,8 +59,10 @@ claude_sandbox_excluded_commands:
   # host path, so these can write anywhere.
   - docker
   - docker *
-  # openshell's end-to-end tasks, which start gateways in Docker.
-  - mise run e2e:*
+  # openshell's end-to-end tasks, which start gateways in Docker. Claude Code
+  # reads a pattern ending in ":*" as the command before the colon followed by
+  # a space, so "e2e:*" wouldn't match "e2e:chaos".
+  - mise run e2e*
 
 # Unsandboxed commands that run without a permission prompt.
 claude_allowed_unsandboxed_commands:
