@@ -1,0 +1,5 @@
+---
+- name: Install ExifTool
+  homebrew:
+    name: exiftool
+    state: latest

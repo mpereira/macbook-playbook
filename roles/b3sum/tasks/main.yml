@@ -1,0 +1,5 @@
+---
+- name: Install b3sum
+  homebrew:
+    name: b3sum
+    state: latest

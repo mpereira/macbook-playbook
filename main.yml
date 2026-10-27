@@ -18,7 +18,7 @@
 
     # Depends on homebrew.
     - role: gnu-command-line-tools
-      tags: [foundational, brew-pkg, gnu-command-line-tools]
+      tags: [foundational, brew-pkg, gnu-command-line-tools, backup-tools]
     # Depends on homebrew.
     - role: make
       tags: [foundational, package-and-build, brew-pkg, make]
@@ -725,7 +725,7 @@
         defaultbrowser_version: "1.1"
 
     - role: jq
-      tags: [command-line-tools, bespoke-pkg, jq]
+      tags: [command-line-tools, bespoke-pkg, jq, backup-tools]
 
     - role: tree
       tags: [command-line-tools, brew-pkg, tree]
@@ -755,7 +755,28 @@
       tags: [command-line-tools, bespoke-pkg, websocat]
 
     - role: terminal-notifier
-      tags: [command-line-tools, brew-pkg, terminal-notifier]
+      tags: [command-line-tools, brew-pkg, terminal-notifier, backup-tools]
+
+    # The roles tagged backup-tools install every tool that the restic backups
+    # and the file reorganization run.
+    - role: restic
+      tags: [command-line-tools, brew-pkg, restic, backup-tools]
+
+    - role: fclones
+      tags: [command-line-tools, brew-pkg, fclones, backup-tools]
+
+    - role: b3sum
+      tags: [command-line-tools, brew-pkg, b3sum, backup-tools]
+
+    # Homebrew rsync 3.x. The macOS rsync is openrsync.
+    - role: rsync
+      tags: [command-line-tools, brew-pkg, rsync, backup-tools]
+
+    - role: exiftool
+      tags: [command-line-tools, brew-pkg, exiftool, backup-tools]
+
+    - role: smartmontools
+      tags: [command-line-tools, brew-pkg, smartmontools, backup-tools]
 
     #############################################################################
     # Miscellaneous #############################################################

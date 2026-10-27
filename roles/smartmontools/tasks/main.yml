@@ -1,0 +1,5 @@
+---
+- name: Install smartmontools
+  homebrew:
+    name: smartmontools
+    state: latest
