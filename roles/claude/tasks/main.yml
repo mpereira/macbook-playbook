@@ -2,9 +2,18 @@
 - name: Install Claude
   homebrew_cask:
     name: claude
-    state: latest
-    # Take over a Claude.app that wasn't installed with Homebrew.
+    state: present
+    # Take over a Claude.app that wasn't installed with Homebrew. brew upgrade
+    # doesn't accept --adopt, so upgrading is a separate task.
     install_options: adopt
+
+- name: Upgrade Claude
+  homebrew_cask:
+    name: claude
+    state: latest
+    # Don't quit Claude.app, which may be running this playbook. The new
+    # version starts the next time Claude opens.
+    install_options: no-quit
 
 - name: Ensure the Claude Code managed settings directory exists
   file:
