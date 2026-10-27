@@ -55,6 +55,12 @@ claude_sandbox_excluded_commands:
   - make apply_atlas_database_schema PROJECT=* PLAN_SHA256=* ENV=development
   - make python_app_write_database_types APP=*
   - make frontend_app_write_database_types APP=*
+  # The sandbox blocks OrbStack's Docker socket. A container can mount any
+  # host path, so these can write anywhere.
+  - docker
+  - docker *
+  # openshell's end-to-end tasks, which start gateways in Docker.
+  - mise run e2e:*
 
 # Unsandboxed commands that run without a permission prompt.
 claude_allowed_unsandboxed_commands:
