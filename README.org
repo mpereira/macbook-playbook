@@ -375,7 +375,7 @@ TODO:
      - [[https://www.lua.org/download.html][Lua]]
      - [[http://luajit.org/download.html][LuaJIT]]
      - [[https://dotnet.microsoft.com/en-us/download/visual-studio-sdks][.NET]]
-     - [[https://nodejs.org/en/download/][Node.js]]
+     - [[https://nodejs.org/en/download/][Node.js 24.22.1]]
      - [[http://www.purescript.org/][PureScript]] (disabled by default until I figure out why =stack install
        purescript= is currently failing)
      - [[https://www.python.org/downloads/mac-osx/][Python 3.14.4]]

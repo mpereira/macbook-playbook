@@ -62,7 +62,8 @@
       vars:
         # https://nodejs.org/dist/
         # https://github.com/nodejs/node/releases
-        node_version: "21.1.0"
+        # Mermaid CLI needs at least 22.13.0.
+        node_version: "24.22.1"
 
     - role: maven
       tags: [foundational, package-and-build, brew-pkg, maven]

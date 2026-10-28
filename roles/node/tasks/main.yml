@@ -3,12 +3,26 @@
   get_url:
     url: https://nodejs.org/dist/v{{ node_version }}/{{ node_pkg }}
     dest: "{{ downloads_directory }}/{{ node_pkg }}"
+    checksum: "sha256:https://nodejs.org/dist/v{{ node_version }}/SHASUMS256.txt"
+
+- name: Show current Node.js version
+  command: /usr/local/bin/node --version
+  register: node_version_output
+  ignore_errors: yes
+  changed_when: no
 
 - name: Install Node.js
   command: >
     chdir={{ downloads_directory }}
     installer -package {{ node_pkg }} -target /
   become: yes
+  when: node_version_output.stdout != "v" ~ node_version
+
+- name: Show npm installation prefix for global packages
+  command: npm config get prefix
+  register: node_npm_prefix_output
+  changed_when: no
 
 - name: Make sure npm installation prefix for global packages is sane
   command: npm config set prefix /usr/local
+  when: node_npm_prefix_output.stdout != "/usr/local"
