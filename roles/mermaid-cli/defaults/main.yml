@@ -1,0 +1,6 @@
+---
+# The node role installs Node.js and npm here and makes it npm's global prefix.
+mermaid_cli_npm_prefix: /usr/local
+mermaid_cli_package_directory: "{{ mermaid_cli_npm_prefix }}/lib/node_modules/@mermaid-js/mermaid-cli"
+# Puppeteer's default browser cache, which mmdc reads at run time.
+mermaid_cli_puppeteer_cache_directory: "{{ home_directory }}/.cache/puppeteer"

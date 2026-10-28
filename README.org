@@ -476,6 +476,8 @@ TODO:
      - [[https://github.com/joeyespo/grip][Grip]]
      - [[https://gohugo.io/][Hugo]]
      - [[https://daringfireball.net/projects/markdown/][Markdown]]
+     - [[https://github.com/mermaid-js/mermaid-cli][Mermaid CLI]]
+       Installed with npm, as upstream no longer supports the Homebrew formula. The role also installs the Chrome Headless Shell build that its Puppeteer pins into =~/.cache/puppeteer=, owned by the user. =make converge ARGS='--tags markdown-preview'= installs Node.js, Pandoc and Mermaid CLI for Emacs's Markdown previews.
      - [[https://pandoc.org/][Pandoc]]
      - [[https://wkhtmltopdf.org/][wkhtmltopdf]]
 

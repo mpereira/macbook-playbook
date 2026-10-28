@@ -58,7 +58,7 @@
         macports_mac_release: "12-Monterey"
 
     - role: node
-      tags: [foundational, programming-languages, bespoke-pkg, node]
+      tags: [foundational, programming-languages, bespoke-pkg, node, markdown-preview]
       vars:
         # https://nodejs.org/dist/
         # https://github.com/nodejs/node/releases
@@ -296,8 +296,14 @@
         # install a versioned package.
         hugo_version: "0.54.0"
 
+    # The roles tagged markdown-preview install what Emacs runs to preview
+    # GitHub-flavored Markdown with Mermaid diagrams.
     - role: pandoc
-      tags: [markup-tools, brew-pkg, pandoc]
+      tags: [markup-tools, brew-pkg, pandoc, markdown-preview]
+
+    # Depends on node.
+    - role: mermaid-cli
+      tags: [markup-tools, npm-pkg, mermaid-cli, markdown-preview]
 
     - role: markdown
       tags: [markup-tools, brew-pkg, markdown]

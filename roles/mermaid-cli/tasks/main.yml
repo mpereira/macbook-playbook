@@ -1,0 +1,48 @@
+---
+# The Homebrew mermaid-cli formula is no longer supported upstream, so this
+# uses the official global npm install. npm installs Puppeteer, a peer
+# dependency, alongside it. Puppeteer's install script would download Chrome
+# into root's home, because sudo runs with -H, so the download is skipped here
+# and done as the user below.
+- name: Install Mermaid CLI
+  npm:
+    name: "@mermaid-js/mermaid-cli"
+    state: latest
+    global: yes
+    executable: /usr/local/bin/npm
+  environment:
+    npm_config_prefix: "{{ mermaid_cli_npm_prefix }}"
+    PUPPETEER_SKIP_DOWNLOAD: "true"
+  become: yes
+
+- name: Ensure Puppeteer's browser cache directory exists
+  file:
+    path: "{{ mermaid_cli_puppeteer_cache_directory }}"
+    state: directory
+
+# A Puppeteer install run with sudo leaves root-owned browsers here, which
+# Puppeteer then can't update or replace when run as the user.
+- name: Give the user ownership of Puppeteer's browser cache
+  file:
+    path: "{{ mermaid_cli_puppeteer_cache_directory }}"
+    state: directory
+    owner: "{{ user }}"
+    recurse: yes
+  become: yes
+
+# mmdc launches Puppeteer with headless "shell", which runs Chrome Headless
+# Shell at the build pinned by Mermaid CLI's Puppeteer.
+- name: Find the Chrome Headless Shell build that Mermaid CLI's Puppeteer pins
+  command: >
+    /usr/local/bin/node --input-type=module --eval
+    "import puppeteer from 'puppeteer'; console.log(await puppeteer.executablePath({ headless: 'shell' }))"
+  args:
+    chdir: "{{ mermaid_cli_package_directory }}"
+  register: mermaid_cli_chrome_headless_shell_path
+  changed_when: no
+
+- name: Install the Chrome Headless Shell build that Mermaid CLI launches
+  command: node_modules/.bin/puppeteer browsers install chrome-headless-shell
+  args:
+    chdir: "{{ mermaid_cli_package_directory }}"
+    creates: "{{ mermaid_cli_chrome_headless_shell_path.stdout }}"
