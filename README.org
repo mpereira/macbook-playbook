@@ -119,7 +119,8 @@ TODO:
     I keep secrets encrypted in a file outside of this repository. I have a
     project (also outside of this repository) that will write all secrets
     required by this project's roles to =group_vars/localhost/vars.yml=. This
-    file is git-ignored in this project.
+    file is git-ignored in this project. =make= commands run in a git worktree
+    read the main checkout's copy.
 
     These are the roles that use secrets:
     | Description                       | Secret name                                | Role              |

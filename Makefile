@@ -26,10 +26,14 @@ PYTHON                       := /usr/local/bin/python$(PYTHON_VERSION)
 PIP                          := $(PYTHON) -m pip
 
 PROJECT_ROOT                 := $(shell pwd)
+# group_vars/localhost/vars.yml is git-ignored, so git worktrees don't get a
+# copy. Read it from the main checkout, which is this checkout outside a
+# worktree and "." outside a git repository.
+MAIN_CHECKOUT                := $(shell dirname "$$(git rev-parse --path-format=absolute --git-common-dir 2>/dev/null)")
 ANSIBLE_DIRECTORY            := .
 ANSIBLE_PLAYBOOKS_DIRECTORY  := $(ANSIBLE_DIRECTORY)
 ANSIBLE_ROLES_DIRECTORY      := $(ANSIBLE_DIRECTORY)/roles
-ANSIBLE_GROUP_VARS_DIRECTORY := $(ANSIBLE_DIRECTORY)/group_vars
+ANSIBLE_GROUP_VARS_DIRECTORY := $(MAIN_CHECKOUT)/group_vars
 ANSIBLE_INVENTORY            := $(ANSIBLE_DIRECTORY)/hosts
 ANSIBLE_VERBOSE              := -v
 
