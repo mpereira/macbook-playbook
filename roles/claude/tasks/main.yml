@@ -15,6 +15,20 @@
     # version starts the next time Claude opens.
     install_options: no-quit
 
+- name: Ensure the Claude Code user directory exists
+  file:
+    path: "{{ home_directory }}/.claude"
+    state: directory
+
+# Claude Code loads ~/.claude/CLAUDE.md into every session as the user's
+# instructions for all projects. Edit roles/claude/files/CLAUDE.md, not the
+# installed copy, which the next run overwrites.
+- name: Install Claude Code user instructions
+  copy:
+    src: CLAUDE.md
+    dest: "{{ home_directory }}/.claude/CLAUDE.md"
+    mode: "0644"
+
 - name: Ensure the Claude Code managed settings directory exists
   file:
     path: "{{ claude_managed_settings_directory }}"

@@ -359,6 +359,10 @@ TODO:
      Biome's user-level config is provisioned directly by this playbook at
      =~/Library/Application Support/biome/biome.json=.
 
+     The =claude= role installs =~/.claude/CLAUDE.md=, Claude Code's
+     instructions for all projects, from =roles/claude/files/CLAUDE.md=. Edit
+     that file, not the installed copy, which =make converge= overwrites.
+
      Claude local settings are ignored through =.gitignore=.
 
 **** Programming Languages
