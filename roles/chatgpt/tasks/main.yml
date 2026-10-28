@@ -3,3 +3,17 @@
   homebrew_cask:
     name: chatgpt
     state: latest
+
+- name: Ensure the user bin directory exists
+  file:
+    path: "{{ home_directory }}/.local/bin"
+    state: directory
+
+# ChatGPT bundles the Codex CLI but doesn't put it on PATH. The bundled codex
+# script follows symlinks to find the binary, so the link tracks ChatGPT's
+# updates.
+- name: Link the Codex CLI bundled with ChatGPT
+  file:
+    src: /Applications/ChatGPT.app/Contents/Resources/codex-cli/bin/codex
+    dest: "{{ home_directory }}/.local/bin/codex"
+    state: link

@@ -63,6 +63,11 @@ claude_sandbox_excluded_commands:
   # reads a pattern ending in ":*" as the command before the colon followed by
   # a space, so "e2e:*" wouldn't match "e2e:chaos".
   - mise run e2e*
+  # Codex writes its sessions to ~/.codex, and macOS won't start Codex's own
+  # sandbox inside this one. Outside it, Codex sandboxes the commands it runs.
+  # The converge skill's codex-review runs codex exec.
+  - codex exec *
+  - ~/.claude/skills/converge/bin/codex-review *
 
 # Unsandboxed commands that run without a permission prompt.
 claude_allowed_unsandboxed_commands:

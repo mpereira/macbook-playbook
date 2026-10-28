@@ -586,7 +586,9 @@ TODO:
      inside it, =git commit=, because lefthook needs a pseudo-terminal, the
      contextualize.ai database targets for development, because Postgres
      can't connect from inside it, =docker= and openshell's end-to-end
-     tasks, because the sandbox blocks the Docker socket, and a few others
+     tasks, because the sandbox blocks the Docker socket, =codex exec=,
+     because macOS won't start Codex's own sandbox inside it (the =chatgpt=
+     role links ChatGPT's bundled Codex CLI to =~/.local/bin/codex=), and a few others
      the sandbox breaks. Git hooks run with them, and Claude can
      edit hook configuration in the working directory, so the sandbox guards
      against accidents rather than acting as a security boundary. A command
