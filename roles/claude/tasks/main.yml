@@ -47,3 +47,15 @@
     mode: "0644"
     backup: yes
   become: yes
+
+# Claude Code loads this file into every session. It tells Claude how to run
+# the commands in claude_sandbox_excluded_commands.
+- name: Install Claude Code managed instructions
+  template:
+    src: CLAUDE.md.j2
+    dest: "{{ claude_managed_settings_directory }}/CLAUDE.md"
+    owner: root
+    group: wheel
+    mode: "0644"
+    backup: yes
+  become: yes

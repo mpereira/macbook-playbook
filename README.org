@@ -589,7 +589,11 @@ TODO:
      tasks, because the sandbox blocks the Docker socket, and a few others
      the sandbox breaks. Git hooks run with them, and Claude can
      edit hook configuration in the working directory, so the sandbox guards
-     against accidents rather than acting as a security boundary. Ansible
+     against accidents rather than acting as a security boundary. A command
+     only runs outside the sandbox when the Bash call is the command alone,
+     without =cd=, pipes or redirects, so the role also writes a managed
+     =CLAUDE.md= next to the settings that lists the commands and tells
+     Claude how to run them. Ansible
      writes its temporary files under =/tmp/claude/ansible= instead of
      =~/.ansible=. Configure these lists in =roles/claude/defaults/main.yml=,
      then apply them with:

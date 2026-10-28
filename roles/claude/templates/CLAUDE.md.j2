@@ -1,0 +1,28 @@
+# Commands that run outside the Bash sandbox
+
+Bash commands run in a sandbox. The commands below run outside it, but only
+when the Bash call is the command alone. `*` matches any text, and arguments
+must come in the order the pattern shows them.
+
+{% for command in claude_sandbox_excluded_commands %}
+- `{{ command }}`
+{% endfor %}
+
+A call that adds anything to one of these commands stays in the sandbox and
+fails, usually with "Operation not permitted". Don't add:
+
+- `cd <directory> &&` in front. The shell already starts in the working
+  directory.
+- An environment variable or wrapper in front, such as `VAR=value` or
+  `timeout 20`.
+- A pipe, redirect or other command after it, such as `| tail`, `2>&1`,
+  `; command` or `&& command`. Long output is fine, because Claude Code
+  truncates it. To read part of it, read the files the command writes.
+- A heredoc or `$(...)`. Write a commit message to a file in `$TMPDIR` and
+  run `git commit -F <file>`.
+- `git -C <directory>`.
+
+When one of these commands fails with "Operation not permitted", check the
+call for the forms above and run the command again on its own. Don't ask the
+user to change the sandbox settings or to run the command for you until you
+have done that.
