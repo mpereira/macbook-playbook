@@ -2,7 +2,10 @@
 - name: Install ChatGPT
   homebrew_cask:
     name: chatgpt
-    state: latest
+    # ChatGPT updates itself, and brew upgrade skips casks that do.
+    state: present
+    # Take over a ChatGPT.app that wasn't installed with Homebrew.
+    install_options: adopt
 
 - name: Ensure the user bin directory exists
   file:
