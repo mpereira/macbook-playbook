@@ -1,0 +1,49 @@
+#!/bin/bash
+# Stub of security. A keychain is a plain file holding its password, with its lock
+# state, item and timeout in files beside it. Nothing here models securityd, the idle
+# timer or sleep. Reading from a locked keychain logs what would be a password dialog.
+state_directory="$HOME/../state"
+/usr/bin/env >>"$state_directory/child-env.log"
+log="$state_directory/argv.log"
+printf 'security %s\n' "$*" >>"$log"
+run() {
+  # $1.. are the parsed arguments of one security subcommand.
+  local cmd="$1"; shift
+  case "$cmd" in
+    create-keychain)
+      [[ "$1" == -p ]] || exit 9
+      [[ -f "$state_directory/fail-create" ]] && exit 50
+      local kc="${3//\"/}"; printf '%s' "$2" >"$kc"; echo unlocked >"$kc.state"; ;;
+    unlock-keychain)
+      local kc="${3//\"/}"
+      [[ "$(cat "$kc")" == "$2" ]] || { echo "stub: bad password" >&2; exit 51; }
+      echo unlocked >"$kc.state"; echo 1 >>"$state_directory/unlocks"; ;;
+    set-keychain-settings)
+      # -l -u -t seconds path
+      printf '%s' "$4" >"$5.timeout"; ;;
+    show-keychain-info)
+      [[ "$(cat "$1.state")" == unlocked ]] || echo "DIALOG" >>"$state_directory/dialogs"
+      printf 'Keychain "%s" lock-on-sleep timeout=%ss\n' "$1" "$(cat "$1.timeout")"; ;;
+    add-generic-password)
+      # -a account -s name -w hex "path"
+      local kc="${7//\"/}"; printf '%s' "$6" >"$kc.item"; ;;
+    find-generic-password)
+      local kc="${*: -1}"
+      [[ "$(cat "$kc.state")" == unlocked ]] || { echo "DIALOG" >>"$state_directory/dialogs"; exit 44; }
+      cat "$kc.item"; printf '\n'; ;;
+    lock-keychain)
+      echo locked >"$1.state"; ;;
+    *) echo "stub: unknown $cmd" >&2; exit 52 ;;
+  esac
+}
+if [[ "$1" == -i ]]; then
+  [[ -t 0 ]] && exit 53
+  while IFS= read -r line; do
+    printf 'security -i line (redacted length %s): %s\n' "${#line}" "${line%% *}" >>"$log"
+    printf '%s\n' "$line" >>"$state_directory/stdin-lines"
+    set -- $line
+    run "$@"
+  done
+  exit 0
+fi
+run "$@"

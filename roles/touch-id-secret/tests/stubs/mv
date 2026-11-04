@@ -1,0 +1,12 @@
+#!/bin/bash
+# The real mv, then SIGTERM to the command at a chosen point of its swap.
+state_directory="$HOME/../state"
+/bin/mv "$@"
+rc=$?
+if [[ -e "$state_directory/term-after-aside" && "$2" == *.previous ]]; then
+  kill -TERM "$PPID"
+fi
+if [[ -e "$state_directory/term-after-publish" && "$1" != *.previous && "$2" != *.previous ]]; then
+  kill -TERM "$PPID"
+fi
+exit $rc

@@ -73,6 +73,7 @@ TODO:
     - [[#restricts-claude-code-file-writes][Restricts Claude Code file writes]]
     - [[#passwordless-sudo][Passwordless sudo]]
     - [[#touch-id-for-ssh][Touch ID for SSH]]
+    - [[#touch-id-secrets][Touch ID secrets]]
     - [[#puts-ssh-keys-in-place][Puts SSH keys in place]]
     - [[#remaps-caps-lock-to-control][Remaps Caps-Lock to Control]]
 - [[#author][Author]]
@@ -524,6 +525,10 @@ TODO:
      - [[https://github.com/GPGTools/pinentry][pinentry-mac]]
      - gpg-agent-config (configures gpg-agent.conf with pinentry-mac)
      - [[https://github.com/jcoglan/vault][vault]]
+     - [[https://age-encryption.org][age]]
+     - [[https://github.com/remko/age-plugin-se][age-plugin-se]]
+     - touch-id-secret (keeps a secret in an auto-locking keychain that Touch ID unlocks)
+     - touch-id-secret-lock-state (reports whether a keychain is locked without opening a dialog)
 
 **** GNU Command Line Tools
      - binutils
@@ -666,6 +671,371 @@ TODO:
      Its =Require Authentication= setting also permits macOS password or Apple
      Watch approval. The role discovers the named public identity through the
      agent, so it can rerun without a key's device-specific identifier.
+
+**** Touch ID secrets
+     The =touch-id-secret= role installs a command that replaces a plaintext
+     password file with a command printing the secret. Each secret lives in its
+     own keychain, which locks when the Mac sleeps and after 60 seconds without
+     a read. Its random password is encrypted with [[https://age-encryption.org][age]] to a Secure Enclave
+     identity from [[https://github.com/remko/age-plugin-se][age-plugin-se]] that only Touch ID can use. Install it with:
+
+     #+begin_src bash
+     make converge ARGS='--tags touch-id-secret'
+     #+end_src
+
+     The role installs into =/usr/local/bin= and needs =age-plugin-se=, whose
+     Homebrew formula requires macOS 26 on Apple silicon.
+     =touch_id_secret_idle_timeout_seconds= in the role's defaults sets the
+     timeout. Commands that need a secret only need to know this:
+
+     | Command                              | Effect                                  |
+     |--------------------------------------+-----------------------------------------|
+     | =touch-id-secret put <name>=         | Stores stdin; refuses an existing name  |
+     | =touch-id-secret put --force <name>= | Stores stdin; replaces an existing name |
+     | =touch-id-secret get <name>=         | Prints the secret to stdout             |
+
+     =get= prints exactly the bytes given to =put=, with nothing added, and
+     diagnostics go to stderr. A trailing newline in the file stays in the
+     secret. The exit status is 0 on success, 1 on any failure, including a
+     cancelled Touch ID prompt, with nothing on stdout, and 2 on bad usage or an
+     invalid name. Names use up to 64 of =A-Z a-z 0-9 . _ -=, starting with a
+     letter or digit.
+
+     Each secret's files are in =~/.local/share/touch-id-secret/<name>/=, with
+     that directory and its parent at mode =0700=: =identity.txt=,
+     =keychain-password.age= and =<name>.keychain-db=. The keychains stay off the
+     search list. The item's value is the secret in hex, which keeps every byte
+     intact.
+
+***** First setup
+      Store the secret from a file, confirm the Touch ID prompt, and check the
+      result before removing the plaintext. =put= refuses to read from a
+      terminal, where the secret would echo.
+
+      #+begin_src bash
+      touch-id-secret put example < plaintext-file
+      touch-id-secret get example | cmp - plaintext-file
+      #+end_src
+
+      Keep a recovery copy off this Mac, for example in a password manager, then
+      delete =plaintext-file=. A tool that wants a password file takes a small
+      executable instead:
+
+      #+begin_src bash
+      #!/bin/sh
+      exec touch-id-secret get example
+      #+end_src
+
+***** Rotating a secret
+      Replace the secret, then update the recovery copy. =put --force= creates a
+      new identity and keychain, and swaps them in only after the new ones work,
+      so a failure or a cancelled prompt leaves the old secret in place.
+
+      #+begin_src bash
+      touch-id-secret put --force example < new-plaintext-file
+      #+end_src
+
+      =put= writes the idle timeout into the keychain, so a changed timeout
+      reaches an existing secret only when you store it again this way.
+
+      The swap is two moves, so a =get= during it can fail with "no secret named".
+      Run it again. A signal such as =SIGTERM= between the moves puts the old
+      secret back. A =SIGKILL= or a power loss there leaves it in
+      =~/.local/share/touch-id-secret/.<name>.XXXXXX.previous=, and =get= fails
+      until you move that directory back to =<name>= or store the secret again.
+
+***** Recovery
+      The secret can't be recovered without its Secure Enclave key. That key
+      can't be exported, and =identity.txt= is its only copy, so erasing the Mac
+      erases the key too. Backups of =~/.local/share/touch-id-secret= don't help
+      elsewhere, as no other Mac can use them. Restoring one to this Mac after an
+      erase hasn't been tested, so don't rely on it. That is why the secret needs
+      a recovery copy off this Mac. If =get= stops working, store the secret again
+      from that copy:
+
+      #+begin_src bash
+      touch-id-secret put --force example < recovered-plaintext-file
+      #+end_src
+
+***** Replacing a Mac
+      Secure Enclave keys stay in the Mac that made them, so nothing here moves
+      to the new one. Converge the role on the new Mac and run =put= again from
+      the recovery copy. Don't copy =~/.local/share/touch-id-secret= across.
+
+***** How it works
+      Two locks form a chain. Touch ID and the Secure Enclave protect a random
+      password, and that password opens a keychain holding the secret. The
+      password is the only link between them. The keychain has no tie to the
+      enclave and doesn't know about Touch ID: to macOS it's an ordinary keychain
+      with a password. The keychain provides the locking, and the enclave adds
+      the Touch ID requirement.
+
+      #+begin_example
+      Touch ID
+         |  authorizes
+         v
+      Secure Enclave + identity.txt       age-plugin-se
+         |  decrypts
+         v
+      keychain-password.age               age
+         |  yields the keychain's password
+         v
+      <name>.keychain-db                  security unlock-keychain
+         |  stays unlocked until the timer runs out or the Mac sleeps
+         v
+      the item, in hex                    security find-generic-password
+         |  xxd -r -p
+         v
+      stdout: the exact secret bytes
+      #+end_example
+
+      | Component                    | Job                                                 |
+      |------------------------------+-----------------------------------------------------|
+      | =touch-id-secret=            | Runs all the others and keeps no state of its own   |
+      | =touch-id-secret-lock-state= | Reports locked or unlocked without opening a dialog |
+      | =age=                        | Encrypts and decrypts the keychain's password file  |
+      | =age-plugin-se=              | Lets age use the Secure Enclave                     |
+      | Secure Enclave               | Does the private-key operation after Touch ID       |
+      | =security=                   | Creates, unlocks, locks and reads the keychain      |
+
+      =put= generates these for each secret, so two secrets share nothing and each
+      needs its own Touch ID approval:
+
+      | File                    | Contents                                     | Protected by                 |
+      |-------------------------+----------------------------------------------+------------------------------|
+      | =identity.txt=          | The private key, wrapped                     | This Mac's enclave, Touch ID |
+      | =keychain-password.age= | 32 random bytes as 64 hex characters         | age, to that identity        |
+      | =<name>.keychain-db=    | One generic password item: the secret in hex | The keychain's password      |
+
+***** The Secure Enclave key
+      "Wrapped" means encrypted with another key. The plain private key exists
+      only inside the enclave, and everything outside it handles the wrapped copy:
+
+      1. The enclave generates a P-256 private key inside itself, and hands out
+         the wrapped copy and the public key. The copy goes in =identity.txt=, and
+         the public key is the =age1se1...= recipient.
+      2. To use the key, =age-plugin-se= loads the wrapped copy and asks for the
+         key operation. After Touch ID, the enclave does the operation and returns
+         only the result.
+
+      The enclave keeps no copy for this key that the file points to, so deleting
+      =identity.txt= loses the key. A copy of the file is useless on another Mac,
+      and on this one using it needs Touch ID.
+
+      =age-plugin-se= writes =identity.txt=, in the form age expects from a plugin:
+
+      #+begin_example
+      # created: <time>
+      # access control: any biometry
+      # public key: age1se1...
+      AGE-PLUGIN-SE-1...
+      #+end_example
+
+      The last line is the wrapped copy, Bech32-encoded. Its prefix tells age which
+      plugin to start, and age doesn't look inside it. The public key comment is
+      only for people: =age-plugin-se recipients= skips comments, and gets the
+      public key by loading the wrapped copy.
+
+      Loading passes those bytes to =PrivateKey(dataRepresentation:)=, which gives
+      the program an object that refers to the key, not the plain key. Touch ID
+      comes later, when the program asks for the key agreement. Apple doesn't
+      document what loading does inside, or the format of the wrapped copy.
+
+      Only this chip can unwrap the file because of its hardware key. Apple calls
+      the root of these keys the UID: a random value fused into the chip when it
+      is made, which Apple and its suppliers can't access. Fused means burned in
+      once, rather than kept in memory that software can read. Keys derived from it
+      stay inside the chip's crypto engines, hidden even from the enclave's own
+      operating system, and software can only ask for an operation with them. The
+      enclave also has separate non-volatile storage, for entropy and attempt
+      counters. See Apple's guide to the [[https://support.apple.com/guide/security/secure-enclave-sec59b0b31ff/web][Secure Enclave]].
+
+      Apple says the UID protects device-specific secrets, but doesn't document how
+      a wrapped key is built. So the link from the UID to =identity.txt= is an
+      inference. The [[https://github.com/remko/age-plugin-se][plugin's source]] does show that the file holds CryptoKit's
+      =dataRepresentation= of the key.
+
+      The same word applies to a second key, at a different layer:
+
+      | What's wrapped | Wrapped with                  | Stored in               | Who can unwrap it           |
+      |----------------+-------------------------------+-------------------------+-----------------------------|
+      | Private key    | The enclave's hardware key    | =identity.txt=          | Only this Mac's enclave     |
+      | age's file key | The enclave key's public half | =keychain-password.age= | The enclave, after Touch ID |
+
+      That file key is how age uses the plugin. The identity and recipient strings
+      name the plugin, so age starts =age-plugin-se= as a child process and talks
+      to it over pipes.
+
+      - Encrypting needs no Touch ID, because it only uses the public key. age
+        makes a random file key and encrypts the data with it, and the plugin wraps
+        the file key for the public key.
+      - Decrypting needs Touch ID. age passes the wrapped file key to the plugin,
+        the plugin asks the enclave for the private-key operation, which prompts,
+        and the plugin returns the file key so that age can decrypt the data.
+
+      The file key crosses that connection in the clear, which is why the command
+      clears =AGEDEBUG=.
+
+      The enclave doesn't store and return secrets, which is why this chain
+      exists. Its API has no call that takes your bytes and gives them back later.
+      It only works with private keys it generated, and programs reach those keys
+      through one of two frameworks. CryptoKit's types are under
+      =SecureEnclave.P256.Signing= and =SecureEnclave.P256.KeyAgreement=. The
+      Security framework's functions use the enclave when the key was made with
+      =kSecAttrTokenIDSecureEnclave=.
+
+      | Operation                    | CryptoKit                             | Security framework            |
+      |------------------------------+---------------------------------------+-------------------------------|
+      | Generate a key               | =PrivateKey(accessControl:)=          | =SecKeyCreateRandomKey=       |
+      | Get the public key           | =publicKey=                           | =SecKeyCopyPublicKey=         |
+      | Save the key                 | =dataRepresentation=                  | =kSecAttrIsPermanent=         |
+      | Load the key                 | =PrivateKey(dataRepresentation:)=     | =SecItemCopyMatching=         |
+      | Sign                         | =signature(for:)=                     | =SecKeyCreateSignature=       |
+      | Do a key agreement           | =sharedSecretFromKeyAgreement(with:)= | =SecKeyCopyKeyExchangeResult= |
+      | Decrypt                      | Built on key agreement                | =SecKeyCreateDecryptedData=   |
+      | Require a check for each use | =SecAccessControl=                    | =SecAccessControl=            |
+
+      - Signing is how Secretive does SSH logins.
+      - Key agreement is how this plugin decrypts. It also returns a secret to the
+        caller, but one derived from the private key and the other side's public
+        key, not one that was stored.
+      - The check is set when the key is made and can't change. Touch ID here is
+        =kSecAccessControlBiometryAny=, which the plugin's =any-biometry= selects.
+      - No call exports the plain key or imports one. To discard a key, delete its
+        saved copy.
+      - macOS 26 adds post-quantum keys: =SecureEnclave.MLKEM768= and =MLKEM1024=
+        for key exchange, and =MLDSA65= and =MLDSA87= for signing. The plugin uses
+        ML-KEM only with =--pq=, which this command doesn't pass.
+
+      The plugin imports the CryptoKit calls for generating, saving, loading, the
+      public key and key agreement. The rest of the table comes from the macOS 26.2
+      SDK and wasn't run here.
+
+      macOS also has a command for these keys, =sc_auth create-ctk-identity=. It
+      makes an identity for TLS, email and SSH, not a store for secrets. Only its
+      key types ending in =-ne= stay in the enclave. Its man page says the others
+      are exportable, encrypted with an enclave key rather than held by it.
+
+***** How this relates to Secretive and sudo
+      Two other roles use Touch ID, and this command depends on neither of them:
+
+      | Role                | Used for                  | Mechanism                    | Key                         |
+      |---------------------+---------------------------+------------------------------+-----------------------------|
+      | =passwordless-sudo= | =sudo=                    | =pam_tid.so= in =sudo_local= | None, it only checks you    |
+      | =secretive=         | SSH to =terra= and =luna= | Secretive's SSH agent signs  | Secretive's own enclave key |
+      | =touch-id-secret=   | Reading a secret          | =age-plugin-se= decrypts     | One enclave key per secret  |
+
+      Secretive and this command use the same chip but share no key. A Secretive
+      key signs SSH logins and can't open a secret here, and an identity here can't
+      log in over SSH. Secretive's =Require Authentication= also permits the macOS
+      password or an Apple Watch, while this command's keys accept only Touch ID.
+
+***** A worked example
+      Say =plaintext-file= holds =correct-horse= with no trailing newline, and the
+      name is =demo=. The password below is made up.
+
+      #+begin_src bash
+      touch-id-secret put demo < plaintext-file
+      #+end_src
+
+      | Step               | Result                                                       |
+      |--------------------+--------------------------------------------------------------|
+      | Secret read as hex | =636f72726563742d686f727365=                                 |
+      | Identity created   | =identity.txt=, with public key =age1se1...=                 |
+      | Password generated | =9f3a...c71e=, 64 hex characters                             |
+      | Password encrypted | =keychain-password.age=                                      |
+      | Touch ID check     | Decrypts the file and compares, to prove it works            |
+      | Keychain created   | =demo.keychain-db=, protected by =9f3a...c71e=               |
+      | Secret stored      | The item's value is =636f...7365=                            |
+      | Keychain locked    | Everything moves into =~/.local/share/touch-id-secret/demo/= |
+
+      After this, the password exists on disk only inside the encrypted file. The
+      secret exists on disk only inside the keychain. Reading it while locked:
+
+      #+begin_src bash
+      touch-id-secret get demo
+      #+end_src
+
+      1. The helper reports =locked=.
+      2. =age -d= prompts for Touch ID and returns =9f3a...c71e=.
+      3. =security= unlocks the keychain with that password.
+      4. =security= reads =636f...7365=, and =xxd= turns it back into =correct-horse=.
+
+      Within the next 60 seconds the helper reports =unlocked=, so age and the
+      enclave aren't involved and there's no prompt. Only step 4 runs, and the read
+      restarts the timer.
+
+***** What it protects against
+      The goal is to remove a plaintext file from disk and to require a person
+      after each lock. It doesn't isolate the secret from other software running
+      as you while the keychain is unlocked.
+
+      | Situation                                   | Result                                             |
+      |---------------------------------------------+----------------------------------------------------|
+      | Someone copies the files, as from a backup  | They can't get the secret                          |
+      | The Mac slept, or no read for 60 seconds    | Locked, and the next read needs Touch ID           |
+      | A process running as you, keychain locked   | It can start a prompt, but needs you to approve it |
+      | A process running as you, keychain unlocked | Not protected: it reads with no prompt             |
+      | A process that keeps reading                | Not protected: the keychain stays unlocked         |
+      | Root, or malware replacing the command      | Out of scope                                       |
+
+      A hostile process gains little by polling, because one read already gives it
+      the secret. The cost is a longer window for everything else, for example
+      when a harmless script polls.
+
+      None of this has been tested with a copy on another Mac, or after adding or
+      removing a fingerprint. That =securityd= holds the unlock state and the timer
+      is general macOS knowledge, also not tested here.
+
+***** Limits
+      - While the keychain is unlocked, any process running as you can read the
+        secret, with no prompt.
+      - A read restarts the timer, so the 60 seconds count from the last read. A
+        process that keeps reading can keep the keychain unlocked until the Mac
+        sleeps. The command has no lock subcommand, so to lock it sooner, run
+        =security lock-keychain ~/.local/share/touch-id-secret/<name>/<name>.keychain-db=.
+      - =put= refuses a secret above roughly 1,900 bytes, because =security -i=
+        splits long lines. The exact limit depends on the name and the home
+        directory's path. That fits a password, but not a large PEM key.
+      - Only one =put= can run per name, and a second one fails right away. A
+        =SIGKILL= or a power loss leaves the lock behind, at
+        =~/.local/share/touch-id-secret/.<name>.lock=. =put= then names that
+        directory, and you can remove it if no =put= is running. =get= ignores it.
+        A signal in the instant =put= takes the lock can leave it behind too.
+      - A =SIGKILL= or a power loss during =put= can leave a staging directory, at
+        =~/.local/share/touch-id-secret/.<name>.XXXXXX=. So can Ctrl-C in the
+        instant =put= creates it, because it also stops =mktemp=. You can remove
+        the directory if no =put= is running.
+      - The command clears the caller's environment apart from =HOME=, and sets its
+        own =PATH=. This keeps =AGEDEBUG=plugin= from making age log its file key,
+        but a setting you export doesn't reach age, =security= or the plugin.
+      - The timer can expire between =get='s lock check and its read. macOS then
+        opens its keychain password dialog. Cancel it and run =get= again.
+      - Touch ID is the only way in: there's no passcode fallback, so with the
+        lid closed =get= needs an external Touch ID keyboard.
+      - In Claude Code's Bash sandbox, =get= exits 1 while the keychain is locked,
+        because =age-plugin-se= can't reach the helper it needs. While the keychain
+        is unlocked, =get= works there too, so that sandbox doesn't protect the
+        secret during that window.
+      - The lock check uses =SecKeychainGetStatus= through =/usr/bin/python3=.
+        Apple has deprecated that API, and the interpreter comes with the
+        Developer Tools.
+
+***** Testing
+      =roles/touch-id-secret/tests/test-touch-id-secret= runs the command with a
+      dummy secret and a throwaway name, then removes them. It needs you for
+      Touch ID and for sleeping the Mac, so run it in a terminal. The sleep test
+      passes only when =pmset= records a sleep during the test. Without one it
+      reports SKIP, because a locked keychain alone doesn't show that sleep locked
+      it. Its =timer= mode checks that a read restarts the idle timer, and its
+      =rotation= mode runs =put --force= on a locked and on an unlocked keychain.
+
+      =roles/touch-id-secret/tests/test-touch-id-secret-logic= tests the role's
+      template against the stubs in =tests/stubs/=, and checks what the script
+      above reports for each result. It needs no Touch ID, Keychain or installed
+      command, and it stores only dummy values in a temp directory, so it also
+      works in an agent's sandbox, where it skips the terminal stdin check. It
+      doesn't show that the real tools behave like the stubs.
 
 **** Puts SSH keys in place
 **** Remaps Caps-Lock to Control

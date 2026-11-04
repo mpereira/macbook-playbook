@@ -1,0 +1,7 @@
+#!/bin/bash
+# Stub of mktemp: the real one, and on request a pause before it reports the path,
+# so a test can send a signal after the directory exists but before put knows it.
+state_directory="$HOME/../state"
+path="$(/usr/bin/mktemp "$@")" || exit 1
+[[ ! -f "$state_directory/slow-mktemp" ]] || sleep 1
+printf '%s\n' "$path"

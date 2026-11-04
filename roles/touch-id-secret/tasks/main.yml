@@ -1,0 +1,26 @@
+---
+- name: Install age and age-plugin-se
+  homebrew:
+    name:
+      - age
+      - age-plugin-se
+    state: latest
+
+# A keychain with a timeout of 0 never locks on idle.
+- name: Require a positive idle timeout
+  assert:
+    that: touch_id_secret_idle_timeout_seconds | int > 0
+    fail_msg: touch_id_secret_idle_timeout_seconds must be a positive number of seconds.
+    quiet: true
+
+- name: Install the touch-id-secret command
+  template:
+    src: touch-id-secret.j2
+    dest: /usr/local/bin/touch-id-secret
+    mode: "0755"
+
+- name: Install the touch-id-secret lock-state helper
+  copy:
+    src: touch-id-secret-lock-state
+    dest: /usr/local/bin/touch-id-secret-lock-state
+    mode: "0755"

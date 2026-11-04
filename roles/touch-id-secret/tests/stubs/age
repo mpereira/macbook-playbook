@@ -1,0 +1,16 @@
+#!/bin/bash
+# Stub of age. A decrypt counts as one Touch ID prompt, and "enc:" stands in for
+# encryption. AGEDEBUG=plugin prints what the real age would: the plugin protocol.
+[[ "${AGEDEBUG:-}" != plugin ]] || printf -- "-> file-key\nabc\n" >&2
+state_directory="$HOME/../state"
+/usr/bin/env >>"$state_directory/child-env.log"
+[[ ! -f "$state_directory/slow" ]] || sleep 1
+printf 'age %s\n' "$*" >>"$state_directory/argv.log"
+if [[ "$1" == -d ]]; then
+  echo 1 >>"$state_directory/prompts"
+  [[ -f "$state_directory/cancel" ]] && { echo "age: cancelled" >&2; exit 1; }
+  cat "$4" | cut -d: -f2
+else
+  # -r recipient -o out
+  printf 'enc:%s' "$(cat)" >"$4"
+fi

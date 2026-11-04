@@ -235,6 +235,9 @@
     - role: secretive
       tags: [security, configuration, brew-cask-pkg, secretive, touch-id-ssh]
 
+    - role: touch-id-secret
+      tags: [security, brew-pkg, touch-id-secret]
+
     ############################################################################
     # Observability ############################################################
     ############################################################################

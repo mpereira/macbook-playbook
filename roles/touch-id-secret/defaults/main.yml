@@ -1,0 +1,5 @@
+---
+# Seconds a secret's keychain stays unlocked after its last read. put writes
+# this into the keychain, so a new value reaches a secret that already exists
+# only when "touch-id-secret put --force" stores that secret again.
+touch_id_secret_idle_timeout_seconds: 60

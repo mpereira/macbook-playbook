@@ -1,0 +1,9 @@
+#!/bin/bash
+# Stub of age-plugin-se: enough for put to create an identity and read its recipient.
+state_directory="$HOME/../state"
+/usr/bin/env >>"$state_directory/child-env.log"
+printf 'age-plugin-se %s\n' "$*" >>"$state_directory/argv.log"
+case "$1" in
+  keygen) echo "Public key: age1se1stub"; echo "AGE-PLUGIN-SE-STUB" >"$4" ;;
+  recipients) echo age1se1stub ;;
+esac
