@@ -79,10 +79,7 @@ upgrade_pip:
 upgrade_ansible:
 	@$(PIP) install --user --upgrade ansible
 
-.PHONY: converge
-converge:
+.PHONY: provision
+provision:
 	$(if $(ANSIBLE_SECRETS_ARGS),,$(warning ANSIBLE_SECRETS_ARGS is not set in $(SECRETS_SETTINGS_FILE), so roles that use secrets will fail. See "Secrets" in README.org.))
 	@$(ANSIBLE_LOCAL) $(ANSIBLE_SECRETS_ARGS) $(ARGS) $(ANSIBLE_PLAYBOOKS_DIRECTORY)/main.yml
-
-.PHONY: provision
-provision: converge

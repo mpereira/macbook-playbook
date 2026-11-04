@@ -35,9 +35,9 @@ TODO:
   - [[#give-terminaliterm2emacsetc-assistive-access][Give Terminal/iTerm2/Emacs/etc. assistive access]]
   - [[#secrets][Secrets]]
   - [[#prepare-machine-to-run-the-ansible-playbooks][Prepare machine to run the Ansible playbooks]]
-- [[#configure-machine-make-converge][Configure machine (make converge)]]
+- [[#configure-machine-make-provision][Configure machine (make provision)]]
   - [[#provision-machine][Provision machine]]
-  - [[#manual-steps-post-make-converge][Manual steps post make converge]]
+  - [[#manual-steps-post-make-provision][Manual steps post make provision]]
     - [[#change-keyboard-layout-to-us-international][Change keyboard layout to U.S. international]]
     - [[#istat-menus][iStat Menus]]
     - [[#pdf-expert][PDF Expert]]
@@ -105,7 +105,7 @@ TODO:
 
 *** Give Terminal/iTerm2/Emacs/etc. assistive access
     Depending on your macOS version you will be queried or not for assistive
-    access while =make converge= runs. This is required for example to remap
+    access while =make provision= runs. This is required for example to remap
     caps lock to control.
 
     In case that task fails, or if you want to do it beforehand just in case, go
@@ -118,12 +118,12 @@ TODO:
     :CUSTOM_ID: secrets
     :END:
     This repository is public, so its secrets are kept encrypted with Ansible
-    Vault in a private repository outside of it. Each =make converge= reads them
+    Vault in a private repository outside of it. Each =make provision= reads them
     from a checkout of that repository and decrypts the values it uses, so there's
     no plaintext file of all the secrets on disk. Roles still write the files they
     install, such as an SSH key.
 
-    =make converge= finds them through =~/.config/macbook-playbook/secrets.mk=,
+    =make provision= finds them through =~/.config/macbook-playbook/secrets.mk=,
     which holds paths and no secrets. It sets =ANSIBLE_SECRETS_ARGS= to the
     Ansible arguments that name the vault password script and the variable files:
 
@@ -156,7 +156,7 @@ TODO:
     | Private SSH key                   | =mpereira_at_pluto_ssh_private_key= | ssh-keys       |
     | s3cmd configuration               | =s3cmd_cfg_file=                    | s3cmd          |
 
-    Without =secrets.mk=, =make converge= prints a warning and runs with no vault
+    Without =secrets.mk=, =make provision= prints a warning and runs with no vault
     password script, and the first role that needs a secret fails. You have two
     choices: skip these roles, or write your own =secrets.mk= and variable files.
 
@@ -165,14 +165,14 @@ TODO:
     to run this now, the command below is just an example.
 
     #+begin_src bash
-    make converge ARGS='--skip-tags uses-secrets'
+    make provision ARGS='--skip-tags uses-secrets'
     #+end_src
 
     With =secrets.mk= in place, every run calls the password script. To run without
     it, and so without a Touch ID prompt, clear the setting for that run:
 
     #+begin_src bash
-    make converge ANSIBLE_SECRETS_ARGS= ARGS='--skip-tags uses-secrets'
+    make provision ANSIBLE_SECRETS_ARGS= ARGS='--skip-tags uses-secrets'
     #+end_src
 
     On a new Mac, do these steps in this order:
@@ -182,14 +182,14 @@ TODO:
        =secrets.mk= is expected here:
 
        #+begin_src bash
-       make converge ARGS='--tags touch-id-secret'
+       make provision ARGS='--tags touch-id-secret'
        #+end_src
 
     3. Clone the private repository. The SSH key in the vault isn't available yet,
        so use other GitHub access for this.
     4. Store the vault password from its recovery copy with =touch-id-secret put=.
     5. Write =secrets.mk=.
-    6. Run =make converge=.
+    6. Run =make provision=.
 
     Keep a recovery copy of the vault password away from this Mac and outside its
     backups. It decrypts the restic passwords, so without it the backups can't be
@@ -208,7 +208,7 @@ TODO:
     Your machine should now be ready to be provisioned! You won't need to run
     the above steps again.
 
-** Configure machine (=make converge=)
+** Configure machine (=make provision=)
    Now that the machine is bootstrapped, we can provision it.
 
 *** Provision machine
@@ -218,20 +218,20 @@ TODO:
     This runs all non-disabled roles in [[file:main.yml][=main.yml=]].
 
     #+begin_src bash
-    make converge ARGS='--skip-tags disabled'
+    make provision ARGS='--skip-tags disabled'
     #+end_src
 
     ~ansible-playbook~ arguments can be passed via the =ARGS= environment variable.
     For example, =--tags= can be passed so that only matching roles are run.
 
     #+begin_src bash
-    make converge ARGS='--tags google-chrome'
+    make provision ARGS='--tags google-chrome'
     #+end_src
 
     =--skip-tags= can also be passed to avoid running certain roles.
 
     #+begin_src bash
-    make converge ARGS='--skip-tags disabled,unity'
+    make provision ARGS='--skip-tags disabled,unity'
     #+end_src
 
     All role tags can be seen in [[file:main.yml][=main.yml=]].
@@ -246,12 +246,12 @@ TODO:
     from there so that previous tasks don't have to re-run.
 
     #+begin_src bash
-    make converge ARGS='--skip-tags disabled --start-at-task "Install Emacs"'
+    make provision ARGS='--skip-tags disabled --start-at-task "Install Emacs"'
     #+end_src
 
     Check the [[https://docs.ansible.com/ansible/latest/user_guide/playbooks_startnstep.html][official Ansible documentation]] for more details.
 
-*** Manual steps post =make converge=
+*** Manual steps post =make provision=
     These are steps that are currently not automated because:
     - it would be difficult
     - it would be impossible
@@ -353,7 +353,7 @@ TODO:
      created, since that would double-list each skill in Codex. Codex's own
      =.system= and =codex-primary-runtime= directories are left untouched.
 
-     =make converge= updates git-backed skills; add a =version:= to an entry in
+     =make provision= updates git-backed skills; add a =version:= to an entry in
      the defaults to pin it. Locally-maintained skills are copied from
      =roles/skills/files= and updated with the playbook. Sources (configured in
      =roles/skills/defaults/main.yml=):
@@ -408,7 +408,7 @@ TODO:
 
      The =claude= role installs =~/.claude/CLAUDE.md=, Claude Code's
      instructions for all projects, from =roles/claude/files/CLAUDE.md=. Edit
-     that file, not the installed copy, which =make converge= overwrites.
+     that file, not the installed copy, which =make provision= overwrites.
 
      Claude local settings are ignored through =.gitignore=.
 
@@ -523,7 +523,7 @@ TODO:
      - [[https://gohugo.io/][Hugo]]
      - [[https://daringfireball.net/projects/markdown/][Markdown]]
      - [[https://github.com/mermaid-js/mermaid-cli][Mermaid CLI]]
-       Installed with npm, as upstream no longer supports the Homebrew formula. The role also installs the Chrome Headless Shell build that its Puppeteer pins into =~/.cache/puppeteer=, owned by the user. =make converge ARGS='--tags markdown-preview'= installs Node.js, Pandoc and Mermaid CLI for Emacs's Markdown previews.
+       Installed with npm, as upstream no longer supports the Homebrew formula. The role also installs the Chrome Headless Shell build that its Puppeteer pins into =~/.cache/puppeteer=, owned by the user. =make provision ARGS='--tags markdown-preview'= installs Node.js, Pandoc and Mermaid CLI for Emacs's Markdown previews.
      - [[https://pandoc.org/][Pandoc]]
      - [[https://wkhtmltopdf.org/][wkhtmltopdf]]
 
@@ -607,7 +607,7 @@ TODO:
      =app.clickup.com= task and Doc links to the ClickUp desktop app, and uses
      Google Chrome for other links. It manages =~/.finicky.js= and preserves
      the URL path, query, and anchor. Run it with
-     =make converge ARGS="--tags finicky"=. Accept macOS's browser-change
+     =make provision ARGS="--tags finicky"=. Accept macOS's browser-change
      prompt if one appears. ClickUp's desktop app must already be installed
      and signed in.
 
@@ -654,7 +654,7 @@ TODO:
      then apply them with:
 
      #+begin_src bash
-     make converge ARGS='--tags claude'
+     make provision ARGS='--tags claude'
      #+end_src
 
      Run =/status= in Claude Code and check that =Setting sources= lists
@@ -676,7 +676,7 @@ TODO:
      Apply this configuration with:
 
      #+begin_src bash
-     make converge ARGS='--tags touch-id-sudo --ask-become-pass'
+     make provision ARGS='--tags touch-id-sudo --ask-become-pass'
      #+end_src
 
      The first run needs =--ask-become-pass= because Touch ID isn't enabled
@@ -696,7 +696,7 @@ TODO:
      the password instead. See [[https://support.apple.com/en-us/109030][Apple's macOS Sonoma enterprise release notes]].
 **** Touch ID for SSH
      The =secretive= role installs [[https://github.com/maxgoedjen/secretive][Secretive]] and configures =terra= and =luna=
-     to use its SSH agent. Run =make converge ARGS='--tags touch-id-ssh'=
+     to use its SSH agent. Run =make provision ARGS='--tags touch-id-ssh'=
      after creating a key named =MacBook Touch ID= in Secretive with
      =Require Authentication= selected. The role exports only its public key
      to =~/.ssh/secretive-macbook.pub= and sets =IdentityAgent=,
@@ -725,7 +725,7 @@ TODO:
      identity from [[https://github.com/remko/age-plugin-se][age-plugin-se]] that only Touch ID can use. Install it with:
 
      #+begin_src bash
-     make converge ARGS='--tags touch-id-secret'
+     make provision ARGS='--tags touch-id-secret'
      #+end_src
 
      The role installs into =/usr/local/bin= and needs =age-plugin-se=, whose
@@ -883,7 +883,7 @@ TODO:
       runs a configured password script at the start of every run, and if the script
       fails or is missing, the run stops even when it uses no vaulted value. So
       such a playbook needs a way to run with no password configured, as =make
-      converge= does here until =secrets.mk= exists. Its values also have to be inline. Ansible
+      provision= does here until =secrets.mk= exists. Its values also have to be inline. Ansible
       decrypts a fully encrypted variable file when it loads it, so =--tags= doesn't
       help, and the run stops with "no vault secrets found". An inline
       =encrypt_string= value is only decrypted when something uses it.

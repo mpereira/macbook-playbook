@@ -7,7 +7,7 @@
 # Codex already reads ~/.agents/skills, so a second copy there would make every
 # skill appear twice in its selector.
 #
-# Git-backed entries are updated by "make converge". Add an optional
+# Git-backed entries are updated by "make provision". Add an optional
 # "version: <branch|tag|sha>" to any git-backed
 # skill to pin it; omit it to track the default branch.
 
