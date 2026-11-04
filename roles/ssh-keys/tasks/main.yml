@@ -8,10 +8,11 @@
 
 - name: Install private SSH key
   copy:
-    src: "{{ mpereira_at_pluto_ssh_private_key }}"
+    content: "{{ mpereira_at_pluto_ssh_private_key }}"
     dest: "{{ ssh_directory }}/mpereira@pluto"
     mode: 0600
     owner: "{{ user }}"
+  no_log: true
 
 - name: Install public SSH keys
   copy:

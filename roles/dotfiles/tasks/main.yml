@@ -6,7 +6,7 @@
     update: no
 
 - name: Install dotfiles
-  environment: "{{ dotfiles_environment_yml_file_base64 | b64decode | from_yaml }}"
+  environment: "{{ dotfiles_environment_yml_file | from_yaml }}"
   shell: rake sync
   args:
     chdir: "{{ home_directory }}/.dotfiles"

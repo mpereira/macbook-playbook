@@ -16,15 +16,17 @@
 
 - name: Install the gmailctl OAuth client
   copy:
-    content: "{{ gmailctl_credentials_json_file_base64 | b64decode }}"
+    content: "{{ gmailctl_credentials_json_file }}"
     dest: "{{ home_directory }}/Library/Application Support/gmailctl/credentials.json"
     mode: "0600"
+  no_log: true
 
 # The vaulted token only seeds a machine that has never authorized gmailctl. A
 # token written later by "gmailctl init" on this machine is kept.
 - name: Install the gmailctl OAuth token
   copy:
-    content: "{{ gmailctl_token_json_file_base64 | b64decode }}"
+    content: "{{ gmailctl_token_json_file }}"
     dest: "{{ home_directory }}/Library/Application Support/gmailctl/token.json"
     mode: "0600"
     force: no
+  no_log: true

@@ -117,38 +117,83 @@ TODO:
     :PROPERTIES:
     :CUSTOM_ID: secrets
     :END:
-    I keep secrets encrypted in a file outside of this repository. I have a
-    project (also outside of this repository) that will write all secrets
-    required by this project's roles to =group_vars/localhost/vars.yml=. This
-    file is git-ignored in this project. =make= commands run in a git worktree
-    read the main checkout's copy.
+    This repository is public, so its secrets are kept encrypted with Ansible
+    Vault in a private repository outside of it. Each =make converge= reads them
+    from a checkout of that repository and decrypts the values it uses, so there's
+    no plaintext file of all the secrets on disk. Roles still write the files they
+    install, such as an SSH key.
+
+    =make converge= finds them through =~/.config/macbook-playbook/secrets.mk=,
+    which holds paths and no secrets. It sets =ANSIBLE_SECRETS_ARGS= to the
+    Ansible arguments that name the vault password script and the variable files:
+
+    #+begin_src makefile
+    ANSIBLE_SECRETS_ARGS := \
+        --vault-password-file /path/to/private-repo/bin/ansible-vault-password \
+        --extra-vars @/path/to/private-repo/vars.yml \
+        --extra-vars @/path/to/private-repo/vault.yml
+    #+end_src
+
+    The vault password script calls =touch-id-secret=, so a run prompts for
+    Touch ID at most once, when it starts, and only while the keychain is locked.
+    Ansible runs the script even if no role in that run uses a secret. A run
+    from an agent's Bash sandbox fails while the keychain is locked.
+
+    The values are read from whatever that checkout has at that moment, including
+    a branch.
+
+    The variable files have to define the names in the table below. A role reads
+    each value as the vault holds it, so renaming a value in the private repository
+    breaks the role that reads it.
 
     These are the roles that use secrets:
-    | Description                       | Secret name                                | Role              |
-    | AWS CLI credentials               | =aws_credentials_file_base64=              | awscli            |
-    | BetterTouchTool license           | =better_touch_tool_license_file_base64=    | better-touch-tool |
-    | DaisyDisk license                 | =daisydisk_registration_key_file_base64=   | daisydisk         |
-    | Enviroment variables for [[https://github.com/mpereira/dotfiles][dotfiles]] | =dotfiles_environment_yml_file_base64=     | dotfiles          |
-    | gmailctl OAuth client             | =gmailctl_credentials_json_file_base64=    | gmailctl          |
-    | gmailctl OAuth token              | =gmailctl_token_json_file_base64=          | gmailctl          |
-    | iStat Menus settings              | =istat_menus_settings_file_base64=         | istat-menus       |
-    | Prey API key                      | =prey_api_key_yaml_file_base64=            | prey              |
-    | Private SSH key                   | =mpereira_at_pluto_ssh_private_key_base64= | ssh-keys          |
-    | s3cmd configuration               | =s3cmd_cfg_file_base64=                    | s3cmd             |
+    | Description                       | Secret name                         | Role           |
+    | AWS CLI credentials               | =aws_credentials_file=              | awscli         |
+    | Enviroment variables for [[https://github.com/mpereira/dotfiles][dotfiles]] | =dotfiles_environment_yml_file=     | dotfiles       |
+    | gmailctl OAuth client             | =gmailctl_credentials_json_file=    | gmailctl       |
+    | gmailctl OAuth token              | =gmailctl_token_json_file=          | gmailctl       |
+    | Prey API key                      | =prey_api_key_yaml_file=            | prey           |
+    | Private SSH key                   | =mpereira_at_pluto_ssh_private_key= | ssh-keys       |
+    | s3cmd configuration               | =s3cmd_cfg_file=                    | s3cmd          |
 
-    If a =group_vars/localhost/vars.yml= file with those secrets is absent
-    running these roles will fail.
+    Without =secrets.mk=, =make converge= prints a warning and runs with no vault
+    password script, and the first role that needs a secret fails. You have two
+    choices: skip these roles, or write your own =secrets.mk= and variable files.
 
-    You have two choices: skip these roles, or write your
-    =group_vars/localhost/vars.yml=.
-
-    To skip them, when you reach the [[#provision-machine][provision machine]] step, make Ansible skip
-    roles tagged with =uses-secrets=. You don't need to run this now, the
-    command below is just an example.
+    To skip them, when you reach the [[#provision-machine][provision machine]] step, use the command below.
+    It needs neither =touch-id-secret= nor the private repository. You don't need
+    to run this now, the command below is just an example.
 
     #+begin_src bash
     make converge ARGS='--skip-tags uses-secrets'
     #+end_src
+
+    With =secrets.mk= in place, every run calls the password script. To run without
+    it, and so without a Touch ID prompt, clear the setting for that run:
+
+    #+begin_src bash
+    make converge ANSIBLE_SECRETS_ARGS= ARGS='--skip-tags uses-secrets'
+    #+end_src
+
+    On a new Mac, do these steps in this order:
+
+    1. Run =make bootstrap=.
+    2. Install =touch-id-secret=, which needs no secrets. The warning about
+       =secrets.mk= is expected here:
+
+       #+begin_src bash
+       make converge ARGS='--tags touch-id-secret'
+       #+end_src
+
+    3. Clone the private repository. The SSH key in the vault isn't available yet,
+       so use other GitHub access for this.
+    4. Store the vault password from its recovery copy with =touch-id-secret put=.
+    5. Write =secrets.mk=.
+    6. Run =make converge=.
+
+    Keep a recovery copy of the vault password away from this Mac and outside its
+    backups. It decrypts the restic passwords, so without it the backups can't be
+    read.
 
 *** Prepare machine to run the Ansible playbooks
     This will:
@@ -759,7 +804,7 @@ TODO:
 
 ***** Replacing a Mac
       Secure Enclave keys stay in the Mac that made them, so nothing here moves
-      to the new one. Converge the role on the new Mac and run =put= again from
+      to the new one. Install the role on the new Mac and run =put= again from
       the recovery copy. Don't copy =~/.local/share/touch-id-secret= across.
 
 ***** Using it from several repositories
@@ -835,12 +880,13 @@ TODO:
         in existing worktrees.
 
       A playbook that installs this command can't depend on it on a new Mac. Ansible
-      decrypts a fully encrypted =group_vars= file when it loads it, so =--tags=
-      doesn't help, and the run stops with "no vault secrets found" even if the
-      tagged task uses no vaulted value. An inline =encrypt_string= value is only
-      decrypted when something uses it, so that run works. Keep such a playbook's
-      values inline, install this role, store the password from its recovery copy,
-      and then run the full converge.
+      runs a configured password script at the start of every run, and if the script
+      fails or is missing, the run stops even when it uses no vaulted value. So
+      such a playbook needs a way to run with no password configured, as =make
+      converge= does here until =secrets.mk= exists. Its values also have to be inline. Ansible
+      decrypts a fully encrypted variable file when it loads it, so =--tags= doesn't
+      help, and the run stops with "no vault secrets found". An inline
+      =encrypt_string= value is only decrypted when something uses it.
 
 ***** How it works
       Two locks form a chain. Touch ID and the Secure Enclave protect a random

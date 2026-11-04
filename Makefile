@@ -26,24 +26,23 @@ PYTHON                       := /usr/local/bin/python$(PYTHON_VERSION)
 PIP                          := $(PYTHON) -m pip
 
 PROJECT_ROOT                 := $(shell pwd)
-# group_vars/localhost/vars.yml is git-ignored, so git worktrees don't get a
-# copy. Read it from the main checkout, which is this checkout outside a
-# worktree and "." outside a git repository.
-MAIN_CHECKOUT                := $(shell dirname "$$(git rev-parse --path-format=absolute --git-common-dir 2>/dev/null)")
 ANSIBLE_DIRECTORY            := .
 ANSIBLE_PLAYBOOKS_DIRECTORY  := $(ANSIBLE_DIRECTORY)
 ANSIBLE_ROLES_DIRECTORY      := $(ANSIBLE_DIRECTORY)/roles
-ANSIBLE_GROUP_VARS_DIRECTORY := $(MAIN_CHECKOUT)/group_vars
 ANSIBLE_INVENTORY            := $(ANSIBLE_DIRECTORY)/hosts
 ANSIBLE_VERBOSE              := -v
+
+# Sets ANSIBLE_SECRETS_ARGS, the Ansible arguments that load the encrypted secrets
+# and name their vault password script. It holds paths and no secrets. It's outside
+# the repository so that every git worktree finds it. See "Secrets" in README.org.
+SECRETS_SETTINGS_FILE := $(HOME)/.config/macbook-playbook/secrets.mk
+-include $(SECRETS_SETTINGS_FILE)
 
 ANSIBLE_GALAXY := $(PYTHON_BIN_PATH)/ansible-galaxy
 ANSIBLE_LOCAL  := \
 	$(PYTHON_BIN_PATH)/ansible-playbook $(ANSIBLE_VERBOSE) \
 		-i $(ANSIBLE_INVENTORY) \
-		--extra-vars "project_root=$(PROJECT_ROOT)" \
-		--extra-vars "@$(ANSIBLE_GROUP_VARS_DIRECTORY)/localhost/vars.yml" \
-		$(ARGS)
+		--extra-vars "project_root=$(PROJECT_ROOT)"
 
 # NOTE: only required for Mojave?
 .PHONY: get_bootstrap_pip
@@ -82,7 +81,8 @@ upgrade_ansible:
 
 .PHONY: converge
 converge:
-	@$(ANSIBLE_LOCAL) $(ANSIBLE_PLAYBOOKS_DIRECTORY)/main.yml
+	$(if $(ANSIBLE_SECRETS_ARGS),,$(warning ANSIBLE_SECRETS_ARGS is not set in $(SECRETS_SETTINGS_FILE), so roles that use secrets will fail. See "Secrets" in README.org.))
+	@$(ANSIBLE_LOCAL) $(ANSIBLE_SECRETS_ARGS) $(ARGS) $(ANSIBLE_PLAYBOOKS_DIRECTORY)/main.yml
 
 .PHONY: provision
 provision: converge
