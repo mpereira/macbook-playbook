@@ -1,0 +1,11 @@
+---
+# A solid color, as six hexadecimal digits. Some that work:
+#
+#   Blues:   2f4565  3b5578  4a6588
+#   Muted:   6d86a3 (slate)  8ea4ba (dusty blue)  87939e (blue gray)
+#            6f9799 (teal)  84a090 (sage)  9389ab (lavender)  ad8f8c (rose)
+#            a89e7f (khaki)
+#   Whites:  f6f4ef (warm)  eef1f4 (cool)  e2e5e8 (gray)
+#   Pastels: c9d9e8 (blue)  cfe2d6 (green)  dcd6ea (lavender)  f0dbd0 (peach)
+#            efe7c8 (yellow)
+simple_wallpaper_screensaver_color: "6d86a3"

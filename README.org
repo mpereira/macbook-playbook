@@ -75,6 +75,8 @@ TODO:
     - [[#touch-id-secrets][Touch ID secrets]]
     - [[#puts-ssh-keys-in-place][Puts SSH keys in place]]
     - [[#remaps-caps-lock-to-control][Remaps Caps-Lock to Control]]
+    - [[#sets-a-simple-wallpaper-and-turns-off-the-screen-saver][Sets a simple wallpaper and turns off the screen saver]]
+    - [[#can-restore-the-default-wallpaper-and-screen-saver][Can restore the default wallpaper and screen saver]]
 - [[#author][Author]]
 - [[#license][License]]
    :END:
@@ -1213,6 +1215,64 @@ TODO:
      =~/.ssh/authorized_keys=. See =roles/ssh-keys/defaults/main.yml=.
 **** Remaps Caps-Lock to Control
      Uses an AppleScript helper for the current System Settings flow.
+**** Sets a simple wallpaper and turns off the screen saver
+     The =simple-wallpaper-screensaver= role sets a static wallpaper of one solid
+     color on every display and Space, and turns off the screen saver. This stops
+     the animated wallpaper and screen saver processes, which use memory and CPU.
+     Run it with:
+
+     #+begin_src bash
+     make provision ARGS='--tags simple-wallpaper-screensaver'
+     #+end_src
+
+     The color is =simple_wallpaper_screensaver_color= in the role's defaults, a
+     muted slate blue. To try another color:
+
+     #+begin_src bash
+     make provision ARGS='--tags simple-wallpaper-screensaver -e simple_wallpaper_screensaver_color=3b5578'
+     #+end_src
+
+     macOS has no built-in color like it, so the role writes a small PNG of the
+     color to =~/Library/Application Support/simple-wallpaper-screensaver=.
+
+     The screen saver setting is where an animated Ventura wallpaper can run:
+     =Ventura.appex= is a screen saver, and no built-in screen saver is static.
+     The role selects the small =Shell.appex= in its place, and sets "Start Screen
+     Saver when inactive" to "Never". The Mac still locks when the display sleeps,
+     if "Require password" is set in System Settings > Lock Screen.
+
+     The role edits =~/Library/Application Support/com.apple.wallpaper/Store/Index.plist=,
+     because the public API and =osascript= reach only the current Space and
+     =desktoppicture.db= no longer has an effect. The format of this file isn't
+     documented, so the role refuses a file with an unfamiliar shape, and fails if
+     WallpaperAgent doesn't keep the change. The display flashes while the agent
+     restarts. A Space or display that macOS adds later can show a different
+     wallpaper until the next =make provision=. The first run keeps the original file
+     at
+     =~/Library/Application Support/com.apple.wallpaper/Index.plist.before-simple-wallpaper-screensaver=.
+
+     =roles/simple-wallpaper-screensaver/tests/test-set-simple-wallpaper-screensaver=
+     tests the script against a temporary home and stubs.
+
+**** Can restore the default wallpaper and screen saver
+     The =default-wallpaper-screensaver= role undoes
+     =simple-wallpaper-screensaver=. It runs only when its tag is given:
+
+     #+begin_src bash
+     make provision ARGS='--tags default-wallpaper-screensaver'
+     #+end_src
+
+     It selects the system's default wallpaper on every display and Space, and the
+     Ventura screen saver after 20 minutes. It replaces any wallpaper that you
+     selected yourself. Ventura is the screen saver this Mac had before
+     =simple-wallpaper-screensaver=, and it may not be the factory selection for a
+     macOS version.
+
+     A full =make provision= runs =simple-wallpaper-screensaver= again. To stay on the
+     defaults, remove =simple-wallpaper-screensaver= from =main.yml=.
+
+     =roles/default-wallpaper-screensaver/tests/test-set-default-wallpaper-screensaver=
+     tests the script against a temporary home and stubs.
 
 ** Author
    [[http://murilopereira.com][Murilo Pereira]]

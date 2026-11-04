@@ -1,0 +1,389 @@
+#!/usr/bin/python3
+"""Set a static wallpaper of one solid color on every display and Space, and stop
+the animated wallpaper and screen saver processes.
+
+Since Sonoma, WallpaperAgent keeps the wallpaper in Store/Index.plist. The old
+desktoppicture.db has no effect, and the public API and osascript reach only the
+current Space, so this edits the store. Apple doesn't document the store's
+format, so this refuses a store whose shape it doesn't recognize, and checks the
+result after it restarts the agent.
+
+A store entry has a Desktop slot and an Idle slot. The Idle slot is the screen
+saver, which is where Ventura.appex is selected. There is no static screen saver,
+so this turns the screen saver off and selects Shell.appex, which is small, in
+place of Ventura.appex.
+
+Usage: set-simple-wallpaper-screensaver --color RRGGBB [--check]
+
+--check changes nothing, and exits 1 if the wallpaper isn't set yet.
+"""
+import argparse
+import datetime
+import os
+import pathlib
+import plistlib
+import re
+import shutil
+import struct
+import subprocess
+import sys
+import tempfile
+import time
+import urllib.parse
+import zlib
+
+IMAGE_DIRECTORY = "~/Library/Application Support/simple-wallpaper-screensaver"
+IMAGE_PIXELS = 128
+IMAGE_PROVIDER = "com.apple.wallpaper.choice.image"
+# Fill. A 128-pixel image placed at its native size wouldn't cover the display.
+PLACEMENT_FILL = 1
+
+SAVER_NAME = "Shell"
+SAVER = "/System/Library/ExtensionKit/Extensions/Shell.appex"
+SAVER_PROVIDER = "com.apple.wallpaper.choice.screen-saver"
+
+AGENT = "WallpaperAgent"
+ANIMATED_PROCESSES = [
+    "/System/Library/ExtensionKit/Extensions/Ventura.appex/Contents/MacOS/Ventura",
+    "/System/Library/ExtensionKit/Extensions/WallpaperAerialsExtension.appex"
+    "/Contents/MacOS/WallpaperAerialsExtension",
+]
+AGENT_START_TIMEOUT_SECONDS = 10
+AGENT_SETTLE_SECONDS = 3
+PROCESS_EXIT_SECONDS = 5
+
+CHANGED = "simple-wallpaper-screensaver: changed"
+UNCHANGED = "simple-wallpaper-screensaver: unchanged"
+
+
+def wallpaper_directory():
+    return os.path.expanduser("~/Library/Application Support/com.apple.wallpaper")
+
+
+def binary_plist(value):
+    return plistlib.dumps(value, fmt=plistlib.FMT_BINARY, sort_keys=False)
+
+
+def content(choice):
+    return {"Choices": [choice], "Shuffle": "$null", "EncodedOptionValues": "$null"}
+
+
+def image_path(color):
+    # macOS caches a wallpaper by its file name, so each color has its own file.
+    return os.path.join(os.path.expanduser(IMAGE_DIRECTORY), f"solid-{color}.png")
+
+
+def solid_png(color):
+    """Return a PNG of one sRGB color. Solid, so it has no gradient to band."""
+
+    def chunk(kind, data):
+        checksum = zlib.crc32(kind + data)
+        return struct.pack(">I", len(data)) + kind + data + struct.pack(">I", checksum)
+
+    size = struct.pack(">II", IMAGE_PIXELS, IMAGE_PIXELS)
+    row = b"\x00" + bytes.fromhex(color) * IMAGE_PIXELS
+    return (
+        b"\x89PNG\r\n\x1a\n"
+        + chunk(b"IHDR", size + bytes([8, 2, 0, 0, 0]))
+        + chunk(b"sRGB", b"\x00")
+        + chunk(b"IDAT", zlib.compress(row * IMAGE_PIXELS))
+        + chunk(b"IEND", b"")
+    )
+
+
+def install_image(color):
+    path = pathlib.Path(image_path(color))
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_bytes(solid_png(color))
+
+
+def remove_other_images(color):
+    directory = pathlib.Path(image_path(color)).parent
+    for image in directory.glob("solid-*.png"):
+        if str(image) != image_path(color):
+            image.unlink()
+
+
+def desktop_content(color):
+    red, green, blue = bytes.fromhex(color)
+    return content(
+        {
+            "Provider": IMAGE_PROVIDER,
+            "Files": [{"relative": pathlib.Path(image_path(color)).as_uri()}],
+            "Configuration": binary_plist(
+                {
+                    "backgroundColor": {
+                        "colorSpace": binary_plist("kCGColorSpaceGenericRGB"),
+                        "components": [red / 255, green / 255, blue / 255, 1.0],
+                    },
+                    "placement": PLACEMENT_FILL,
+                }
+            ),
+        }
+    )
+
+
+def idle_content():
+    return content(
+        {
+            "Provider": SAVER_PROVIDER,
+            "Files": [],
+            "Configuration": binary_plist(
+                {"module": {"relative": pathlib.Path(SAVER).as_uri()}}
+            ),
+        }
+    )
+
+
+def path_of(file_reference):
+    return urllib.parse.unquote(urllib.parse.urlparse(file_reference["relative"]).path)
+
+
+def only_choice(slot, provider):
+    """Return the slot's choice if it is the only one and from this provider."""
+    slot_content = slot["Content"]
+    choices = slot_content["Choices"]
+    if len(choices) != 1 or choices[0]["Provider"] != provider:
+        return None
+    if slot_content.get("Shuffle", "$null") != "$null":
+        return None
+    return choices[0]
+
+
+# The agent rewrites the store when it starts, so these compare what the values
+# mean, and not their bytes.
+def desktop_is_set(slot, color):
+    try:
+        choice = only_choice(slot, IMAGE_PROVIDER)
+        if choice is None:
+            return False
+        if [path_of(f) for f in choice["Files"]] != [image_path(color)]:
+            return False
+        return plistlib.loads(choice["Configuration"])["placement"] == PLACEMENT_FILL
+    except (KeyError, IndexError, TypeError, ValueError):
+        return False
+
+
+def idle_is_saver(slot):
+    try:
+        choice = only_choice(slot, SAVER_PROVIDER)
+        if choice is None:
+            return False
+        return path_of(plistlib.loads(choice["Configuration"])["module"]) == SAVER
+    except (KeyError, IndexError, TypeError, ValueError):
+        return False
+
+
+def entries(store):
+    """Return every entry of the store, or exit if its shape is unfamiliar."""
+    try:
+        found = [store["AllSpacesAndDisplays"], store["SystemDefault"]]
+        found += store["Displays"].values()
+        for space in store["Spaces"].values():
+            if "Default" in space:
+                found.append(space["Default"])
+            found += space.get("Displays", {}).values()
+    except (KeyError, TypeError, AttributeError) as error:
+        sys.exit(f"Unfamiliar wallpaper store, changing nothing: {error!r}")
+    for entry in found:
+        if not isinstance(entry, dict) or not isinstance(entry.get("Type"), str):
+            sys.exit(f"Unfamiliar wallpaper store entry, changing nothing: {entry!r}")
+    return found
+
+
+# An entry of Type "desktop" has no Idle slot. The Idle slot comes from the
+# other entries. Other types than "desktop" and "individual" become "individual".
+def entry_is_set(entry, color):
+    if not desktop_is_set(entry.get("Desktop", {}), color):
+        return False
+    if entry["Type"] == "desktop":
+        return True
+    return entry["Type"] == "individual" and idle_is_saver(entry.get("Idle", {}))
+
+
+def set_slot(entry, name, new_content, now):
+    slot = entry.setdefault(name, {})
+    slot["Content"] = new_content
+    slot["LastSet"] = now
+    slot.setdefault("LastUse", now)
+
+
+def set_entry(entry, now, color):
+    if not desktop_is_set(entry.get("Desktop", {}), color):
+        set_slot(entry, "Desktop", desktop_content(color), now)
+    if entry["Type"] != "desktop":
+        entry["Type"] = "individual"
+        entry.pop("Linked", None)
+        if not idle_is_saver(entry.get("Idle", {})):
+            set_slot(entry, "Idle", idle_content(), now)
+
+
+def read_store(path):
+    try:
+        with open(path, "rb") as file:
+            return plistlib.load(file)
+    except FileNotFoundError:
+        sys.exit(f"{path} doesn't exist. Log in to the desktop once, then run again.")
+
+
+def write_store(path, store):
+    """Replace the store atomically, so the agent never reads half of it."""
+    descriptor, temporary = tempfile.mkstemp(dir=os.path.dirname(path))
+    try:
+        with os.fdopen(descriptor, "wb") as file:
+            plistlib.dump(store, file, fmt=plistlib.FMT_BINARY, sort_keys=False)
+        shutil.copymode(path, temporary)
+        os.replace(temporary, path)
+    except BaseException:
+        os.unlink(temporary)
+        raise
+
+
+def read_screen_saver_preferences():
+    result = subprocess.run(
+        ["defaults", "-currentHost", "export", "com.apple.screensaver", "-"],
+        check=True,
+        capture_output=True,
+    )
+    return plistlib.loads(result.stdout)
+
+
+def screen_saver_preferences_are_set():
+    preferences = read_screen_saver_preferences()
+    module = preferences.get("moduleDict", {})
+    return (
+        preferences.get("idleTime") == 0
+        and module.get("moduleName") == SAVER_NAME
+        and module.get("path") == SAVER
+    )
+
+
+def set_screen_saver_preferences():
+    defaults = ["defaults", "-currentHost", "write", "com.apple.screensaver"]
+    subprocess.run(defaults + ["idleTime", "-int", "0"], check=True)
+    subprocess.run(
+        defaults
+        + ["moduleDict", "-dict"]
+        + ["moduleName", SAVER_NAME, "path", SAVER, "type", "-int", "0"],
+        check=True,
+    )
+
+
+def pgrep(*arguments):
+    """Return the IDs of the matching processes, which is empty if none match."""
+    result = subprocess.run(["pgrep", *arguments], capture_output=True, text=True)
+    if result.returncode > 1:
+        sys.exit(f"pgrep failed: {result.stderr.strip()}")
+    return result.stdout.strip()
+
+
+def restart_agent():
+    """Restart the agent, which reads the store only when it starts.
+
+    On macOS 26, System Integrity Protection refuses launchctl kickstart for this
+    service. launchd starts the agent again after killall.
+    """
+    old_agent = pgrep("-x", AGENT)
+    if old_agent:
+        subprocess.run(["killall", AGENT])
+    deadline = time.monotonic() + AGENT_START_TIMEOUT_SECONDS
+    while time.monotonic() < deadline:
+        agent = pgrep("-x", AGENT)
+        if agent and agent != old_agent:
+            time.sleep(AGENT_SETTLE_SECONDS)
+            return
+        time.sleep(0.5)
+    sys.exit(
+        f"The wallpaper is set in the store, but {AGENT} didn't start again in "
+        f"{AGENT_START_TIMEOUT_SECONDS} seconds. Log out and in to apply it."
+    )
+
+
+def running_animated_processes():
+    return [process for process in ANIMATED_PROCESSES if pgrep("-f", process)]
+
+
+def stop_animated_processes():
+    """Stop what the agent's restart left running, and exit if that fails."""
+    for process in running_animated_processes():
+        subprocess.run(["pkill", "-f", process])
+    deadline = time.monotonic() + PROCESS_EXIT_SECONDS
+    while running_animated_processes() and time.monotonic() < deadline:
+        time.sleep(0.5)
+    remaining = running_animated_processes()
+    if remaining:
+        sys.exit(f"The wallpaper is set, but these still run: {remaining}")
+
+
+def hexadecimal_color(value):
+    if not re.fullmatch("[0-9a-fA-F]{6}", value):
+        raise argparse.ArgumentTypeError(f"{value!r} isn't six hexadecimal digits")
+    return value.lower()
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
+    parser.add_argument("--color", type=hexadecimal_color, required=True)
+    parser.add_argument("--check", action="store_true")
+    arguments = parser.parse_args()
+    color = arguments.color
+
+    if not os.path.exists(SAVER):
+        sys.exit(f"{SAVER} doesn't exist on this macOS version.")
+
+    directory = wallpaper_directory()
+    store_path = os.path.join(directory, "Store", "Index.plist")
+    store = read_store(store_path)
+    stale = [entry for entry in entries(store) if not entry_is_set(entry, color)]
+    image_is_installed = os.path.exists(image_path(color))
+    preferences_are_set = screen_saver_preferences_are_set()
+    # An animated process that still runs means that the agent hasn't loaded the
+    # store, for example if a previous run failed before it restarted the agent.
+    running = running_animated_processes()
+
+    if not stale and preferences_are_set and not running and image_is_installed:
+        print(UNCHANGED)
+        return
+    if arguments.check:
+        print(
+            f"Not set: {len(stale)} store entries, "
+            f"screen saver preferences {'set' if preferences_are_set else 'not set'}, "
+            f"image {'installed' if image_is_installed else 'not installed'}, "
+            f"animated processes still running: {running}."
+        )
+        sys.exit(1)
+
+    backup = os.path.join(
+        directory, "Index.plist.before-simple-wallpaper-screensaver"
+    )
+    if not image_is_installed:
+        install_image(color)
+
+    if stale:
+        # Keep only the first backup: later ones would hold this wallpaper.
+        if not os.path.exists(backup):
+            shutil.copy2(store_path, backup)
+        now = datetime.datetime.now(datetime.timezone.utc).replace(tzinfo=None)
+        for entry in stale:
+            set_entry(entry, now, color)
+        write_store(store_path, store)
+
+    if not preferences_are_set:
+        set_screen_saver_preferences()
+
+    if stale or running or not image_is_installed:
+        restart_agent()
+        reverted =[e for e in entries(read_store(store_path)) if not entry_is_set(e, color)]
+        if reverted:
+            sys.exit(
+                f"WallpaperAgent didn't keep the wallpaper in {len(reverted)} store "
+                f"entries, so its format may have changed. The original is at {backup}."
+            )
+
+    stop_animated_processes()
+    remove_other_images(color)
+    print(CHANGED)
+
+
+if __name__ == "__main__":
+    main()

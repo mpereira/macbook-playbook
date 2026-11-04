@@ -1,0 +1,406 @@
+#!/usr/bin/python3
+"""Test set-simple-wallpaper-screensaver against a temporary home and stubs of defaults,
+killall, pgrep and pkill. It changes nothing on this Mac, and so works inside
+an agent's sandbox. It doesn't show that WallpaperAgent accepts the store: only
+a provision run on a real desktop shows that.
+
+Usage: test-set-simple-wallpaper-screensaver
+"""
+import datetime
+import os
+import pathlib
+import plistlib
+import shutil
+import stat
+import subprocess
+import tempfile
+import unittest
+import zlib
+
+SCRIPT = (
+    pathlib.Path(__file__).resolve().parent.parent
+    / "files/set-simple-wallpaper-screensaver"
+)
+COLOR = "2f4565"
+OTHER_COLOR = "3b5578"
+SHELL = "file:///System/Library/ExtensionKit/Extensions/Shell.appex"
+VENTURA = "file:///System/Library/ExtensionKit/Extensions/Ventura.appex"
+OLD_DATE = datetime.datetime(2023, 10, 7, 15, 53, 27)
+
+STUBS = {
+    # Keeps the screen saver preferences in a plist in the temporary home.
+    "defaults": """#!/bin/bash
+echo "defaults $*" >>"$STUB_LOG"
+if [ "$2" = export ]; then
+  cat "$STUB_PREFERENCES"
+else
+  echo write >"$STUB_PREFERENCES.written"
+  cp "$STUB_PREFERENCES.after" "$STUB_PREFERENCES"
+fi
+""",
+    "pgrep": """#!/bin/bash
+echo "pgrep $*" >>"$STUB_LOG"
+if [ "$1" = -x ]; then
+  if [ -e "$STUB_AGENT_PID" ]; then
+    cat "$STUB_AGENT_PID"
+    exit 0
+  fi
+  exit 1
+fi
+case "${STUB_PROCESSES:-gone}" in
+  stay) echo 300 ;;
+  until-restart)
+    if [ -e "$STUB_AGENT_PID.restarted" ]; then exit 1; fi
+    echo 300
+    ;;
+  *) exit 1 ;;
+esac
+""",
+    # Starts the agent again with a new process ID, as launchd does.
+    "killall": """#!/bin/bash
+echo "killall $*" >>"$STUB_LOG"
+touch "$STUB_AGENT_PID.restarted"
+if [ -n "${STUB_AGENT_STAYS_DOWN:-}" ]; then
+  rm "$STUB_AGENT_PID"
+else
+  echo $(($(cat "$STUB_AGENT_PID") + 1)) >"$STUB_AGENT_PID.next"
+  mv "$STUB_AGENT_PID.next" "$STUB_AGENT_PID"
+fi
+if [ -n "${STUB_AGENT_REVERTS:-}" ]; then
+  cp "$STUB_BACKUP" "$STUB_STORE"
+fi
+""",
+    "pkill": """#!/bin/bash
+echo "pkill $*" >>"$STUB_LOG"
+""",
+}
+
+
+def plist_data(value):
+    return plistlib.dumps(value, fmt=plistlib.FMT_BINARY)
+
+
+def slot(provider, configuration=b""):
+    return {
+        "LastSet": OLD_DATE,
+        "LastUse": OLD_DATE,
+        "Content": {
+            "Choices": [
+                {"Provider": provider, "Files": [], "Configuration": configuration}
+            ],
+            "Shuffle": "$null",
+            "EncodedOptionValues": "$null",
+        },
+    }
+
+
+def individual_entry():
+    return {
+        "Type": "individual",
+        "Desktop": slot("default"),
+        "Idle": slot(
+            "com.apple.wallpaper.choice.screen-saver",
+            plist_data({"module": {"relative": VENTURA}}),
+        ),
+    }
+
+
+def animated_store():
+    return {
+        "AllSpacesAndDisplays": {"Type": "desktop", "Desktop": slot("default")},
+        "SystemDefault": individual_entry(),
+        "Displays": {"DISPLAY-1": individual_entry()},
+        "Spaces": {
+            "": {
+                "Default": individual_entry(),
+                "Displays": {"DISPLAY-1": individual_entry()},
+            },
+            "SPACE-1": {"Default": individual_entry(), "Displays": {}},
+        },
+        "AnUnknownKey": "kept",
+    }
+
+
+def walk_entries(store):
+    yield store["AllSpacesAndDisplays"]
+    yield store["SystemDefault"]
+    yield from store["Displays"].values()
+    for space in store["Spaces"].values():
+        yield space["Default"]
+        yield from space["Displays"].values()
+
+
+class SetSimpleWallpaperScreensaverTest(unittest.TestCase):
+    def setUp(self):
+        self.work = pathlib.Path(tempfile.mkdtemp(prefix="test-simple-wallpaper."))
+        self.addCleanup(shutil.rmtree, self.work)
+        self.directory = (
+            self.work / "home/Library/Application Support/com.apple.wallpaper"
+        )
+        self.store = self.directory / "Store/Index.plist"
+        self.store.parent.mkdir(parents=True)
+        self.backup = self.directory / "Index.plist.before-simple-wallpaper-screensaver"
+        self.log = self.work / "log"
+        self.log.touch()
+        self.agent_pid = self.work / "agent-pid"
+        self.agent_pid.write_text("100\n")
+        self.preferences = self.work / "preferences.plist"
+        self.preferences.write_bytes(
+            plistlib.dumps(
+                {
+                    "idleTime": 1200,
+                    "moduleDict": {
+                        "moduleName": "Ventura",
+                        "path": "/System/Library/ExtensionKit/Extensions/Ventura.appex",
+                        "type": 0,
+                    },
+                }
+            )
+        )
+        (self.work / "preferences.plist.after").write_bytes(
+            plistlib.dumps(
+                {
+                    "idleTime": 0,
+                    "moduleDict": {
+                        "moduleName": "Shell",
+                        "path": "/System/Library/ExtensionKit/Extensions/Shell.appex",
+                        "type": 0,
+                    },
+                }
+            )
+        )
+        stubs = self.work / "stubs"
+        stubs.mkdir()
+        for name, text in STUBS.items():
+            stub = stubs / name
+            stub.write_text(text)
+            stub.chmod(stub.stat().st_mode | stat.S_IXUSR)
+        self.environment = {
+            "HOME": str(self.work / "home"),
+            "PATH": f"{stubs}:/usr/bin:/bin",
+            "STUB_LOG": str(self.log),
+            "STUB_AGENT_PID": str(self.agent_pid),
+            "STUB_PREFERENCES": str(self.preferences),
+            "STUB_STORE": str(self.store),
+            "STUB_BACKUP": str(self.backup),
+        }
+        self.write_store(animated_store())
+
+    def write_store(self, store):
+        with open(self.store, "wb") as file:
+            plistlib.dump(store, file, fmt=plistlib.FMT_BINARY)
+
+    def read_store(self):
+        with open(self.store, "rb") as file:
+            return plistlib.load(file)
+
+    def image(self, color):
+        return (
+            self.work
+            / "home/Library/Application Support/simple-wallpaper-screensaver"
+            / f"solid-{color}.png"
+        )
+
+    def run_script(self, *arguments, color=COLOR, **environment):
+        return subprocess.run(
+            [str(SCRIPT), "--color", color, *arguments],
+            env={**self.environment, **environment},
+            capture_output=True,
+            text=True,
+        )
+
+    def test_sets_every_entry_and_keeps_everything_else(self):
+        result = self.run_script()
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("simple-wallpaper-screensaver: changed", result.stdout)
+        store = self.read_store()
+        self.assertEqual(store["AnUnknownKey"], "kept")
+        self.assertEqual(store["AllSpacesAndDisplays"]["Type"], "desktop")
+        self.assertNotIn("Idle", store["AllSpacesAndDisplays"])
+        for entry in walk_entries(store):
+            desktop = entry["Desktop"]
+            self.assertEqual(desktop["LastUse"], OLD_DATE)
+            self.assertNotEqual(desktop["LastSet"], OLD_DATE)
+            choice = desktop["Content"]["Choices"][0]
+            self.assertEqual(choice["Provider"], "com.apple.wallpaper.choice.image")
+            self.assertEqual(choice["Files"], [{"relative": self.image(COLOR).as_uri()}])
+            configuration = plistlib.loads(choice["Configuration"])
+            self.assertEqual(configuration["placement"], 1)
+            self.assertEqual(
+                configuration["backgroundColor"]["components"],
+                [0x2f / 255, 0x45 / 255, 0x65 / 255, 1.0],
+            )
+            if entry["Type"] == "individual":
+                module = plistlib.loads(
+                    entry["Idle"]["Content"]["Choices"][0]["Configuration"]
+                )
+                self.assertEqual(module, {"module": {"relative": SHELL}})
+        log = self.log.read_text()
+        self.assertIn("killall WallpaperAgent", log)
+        self.assertIn("idleTime -int 0", log)
+
+    def test_keeps_the_original_store_as_a_backup(self):
+        original = self.store.read_bytes()
+        self.run_script()
+        self.assertEqual(self.backup.read_bytes(), original)
+        self.write_store(animated_store() | {"Later": True})
+        self.run_script()
+        self.assertEqual(self.backup.read_bytes(), original)
+
+    def test_second_run_changes_nothing(self):
+        self.run_script()
+        contents = self.store.read_bytes()
+        self.log.write_text("")
+        result = self.run_script()
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("simple-wallpaper-screensaver: unchanged", result.stdout)
+        self.assertEqual(self.store.read_bytes(), contents)
+        log = self.log.read_text()
+        self.assertNotIn("killall", log)
+        self.assertNotIn("write", log)
+
+    def test_second_run_ignores_what_the_agent_rewrites(self):
+        self.run_script()
+        store = self.read_store()
+        for entry in walk_entries(store):
+            entry["Desktop"]["LastUse"] = datetime.datetime(2026, 11, 4)
+            choice = entry["Desktop"]["Content"]["Choices"][0]
+            choice["Configuration"] = plist_data(
+                plistlib.loads(choice["Configuration"])
+            )
+        self.write_store(store)
+        self.assertIn("unchanged", self.run_script().stdout)
+
+    def test_new_entry_after_a_provision_run_is_set_by_the_next_one(self):
+        self.run_script()
+        store = self.read_store()
+        store["Spaces"]["SPACE-2"] = {"Default": individual_entry(), "Displays": {}}
+        self.write_store(store)
+        self.assertIn("simple-wallpaper-screensaver: changed", self.run_script().stdout)
+        self.assertIn("unchanged", self.run_script().stdout)
+
+    def test_linked_entry_becomes_individual(self):
+        store = animated_store()
+        store["AllSpacesAndDisplays"] = {
+            "Type": "linked",
+            "Linked": slot("com.apple.wallpaper.choice.aerials"),
+        }
+        self.write_store(store)
+        self.assertEqual(self.run_script().returncode, 0)
+        entry = self.read_store()["AllSpacesAndDisplays"]
+        self.assertEqual(entry["Type"], "individual")
+        self.assertNotIn("Linked", entry)
+        self.assertIn("Desktop", entry)
+        self.assertIn("Idle", entry)
+        self.assertIn("unchanged", self.run_script().stdout)
+
+    def test_refuses_an_unfamiliar_store(self):
+        self.write_store({"SomethingNew": {}})
+        contents = self.store.read_bytes()
+        result = self.run_script()
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("Unfamiliar", result.stderr)
+        self.assertEqual(self.store.read_bytes(), contents)
+        self.assertNotIn("killall", self.log.read_text())
+
+    def test_fails_when_there_is_no_store(self):
+        self.store.unlink()
+        result = self.run_script()
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("doesn't exist", result.stderr)
+
+    def test_check_changes_nothing(self):
+        contents = self.store.read_bytes()
+        result = self.run_script("--check")
+        self.assertEqual(result.returncode, 1)
+        self.assertEqual(self.store.read_bytes(), contents)
+        self.assertFalse(self.backup.exists())
+        log = self.log.read_text()
+        self.assertNotIn("write", log)
+        self.assertNotIn("killall", log)
+        self.run_script()
+        self.assertEqual(self.run_script("--check").returncode, 0)
+
+    def test_fails_when_the_agent_reverts_the_store(self):
+        result = self.run_script(STUB_AGENT_REVERTS="1")
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("didn't keep the wallpaper", result.stderr)
+        self.assertIn(str(self.backup), result.stderr)
+
+    def test_stops_and_reports_processes_that_stay(self):
+        result = self.run_script(STUB_PROCESSES="stay")
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("still run", result.stderr)
+        log = self.log.read_text()
+        self.assertIn("pkill -f /System/Library/ExtensionKit/Extensions/Ventura", log)
+        self.assertIn("WallpaperAerialsExtension", log)
+
+    def test_restarts_the_agent_when_a_previous_run_could_not(self):
+        self.run_script()
+        (self.work / "agent-pid.restarted").unlink()
+        self.log.write_text("")
+        check = self.run_script("--check", STUB_PROCESSES="until-restart")
+        self.assertEqual(check.returncode, 1)
+        self.assertIn("still running", check.stdout)
+        self.assertNotIn("killall", self.log.read_text())
+        contents = self.store.read_bytes()
+        result = self.run_script(STUB_PROCESSES="until-restart")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("simple-wallpaper-screensaver: changed", result.stdout)
+        self.assertIn("killall WallpaperAgent", self.log.read_text())
+        self.assertEqual(self.store.read_bytes(), contents)
+        again = self.run_script(STUB_PROCESSES="until-restart")
+        self.assertIn("unchanged", again.stdout)
+
+    def test_fails_when_the_agent_does_not_start_again(self):
+        result = self.run_script(STUB_AGENT_STAYS_DOWN="1")
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("didn't start again", result.stderr)
+
+    def test_image_is_the_solid_color(self):
+        self.run_script()
+        png = self.image(COLOR).read_bytes()
+        self.assertEqual(png[:8], b"\x89PNG\r\n\x1a\n")
+        data = png.index(b"IDAT")
+        length = int.from_bytes(png[data - 4 : data], "big")
+        pixels = zlib.decompress(png[data + 4 : data + 4 + length])
+        self.assertEqual(pixels, (b"\x00" + bytes.fromhex(COLOR) * 128) * 128)
+
+    def test_another_color_replaces_the_first(self):
+        self.run_script()
+        result = self.run_script(color=OTHER_COLOR)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("screensaver: changed", result.stdout)
+        self.assertTrue(self.image(OTHER_COLOR).exists())
+        self.assertFalse(self.image(COLOR).exists())
+        for entry in walk_entries(self.read_store()):
+            self.assertEqual(
+                entry["Desktop"]["Content"]["Choices"][0]["Files"],
+                [{"relative": self.image(OTHER_COLOR).as_uri()}],
+            )
+        self.assertIn("unchanged", self.run_script(color=OTHER_COLOR).stdout)
+
+    def test_installs_the_image_again_if_it_is_gone(self):
+        self.run_script()
+        self.image(COLOR).unlink()
+        self.log.write_text("")
+        self.assertIn("screensaver: changed", self.run_script().stdout)
+        self.assertTrue(self.image(COLOR).exists())
+        self.assertIn("killall WallpaperAgent", self.log.read_text())
+
+    def test_refuses_a_color_that_is_not_hexadecimal(self):
+        contents = self.store.read_bytes()
+        result = self.run_script(color="blue")
+        self.assertNotEqual(result.returncode, 0)
+        self.assertEqual(self.store.read_bytes(), contents)
+
+    def test_only_preferences_stale_does_not_restart_the_agent(self):
+        self.run_script()
+        self.preferences.write_bytes(plistlib.dumps({"idleTime": 1200}))
+        self.log.write_text("")
+        self.assertIn("simple-wallpaper-screensaver: changed", self.run_script().stdout)
+        self.assertNotIn("killall", self.log.read_text())
+
+
+if __name__ == "__main__":
+    unittest.main()

@@ -205,6 +205,13 @@
     - role: emacs-as-default-text-editor
       tags: [behaviors, emacs-as-default-text-editor]
 
+    - role: simple-wallpaper-screensaver
+      tags: [behaviors, simple-wallpaper-screensaver]
+
+    # Undoes simple-wallpaper-screensaver, so it runs only when its own tag is given.
+    - role: default-wallpaper-screensaver
+      tags: [never, default-wallpaper-screensaver]
+
     #############################################################################
     # Security ##################################################################
     #############################################################################

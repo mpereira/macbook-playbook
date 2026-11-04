@@ -1,0 +1,7 @@
+---
+- name: Set a static solid color wallpaper on every display and Space
+  script: "set-simple-wallpaper-screensaver --color {{ simple_wallpaper_screensaver_color }}"
+  args:
+    executable: /usr/bin/python3
+  register: simple_wallpaper_screensaver
+  changed_when: "'simple-wallpaper-screensaver: changed' in simple_wallpaper_screensaver.stdout"

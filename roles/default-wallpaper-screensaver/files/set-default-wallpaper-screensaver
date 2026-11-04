@@ -1,0 +1,268 @@
+#!/usr/bin/python3
+"""Set the system's default wallpaper on every display and Space, and the Ventura
+screen saver after 20 minutes. This undoes the
+simple-wallpaper-screensaver role.
+
+Since Sonoma, WallpaperAgent keeps the wallpaper in Store/Index.plist. Apple
+doesn't document the store's format, so this refuses a store whose shape it
+doesn't recognize, and checks the result after it restarts the agent.
+
+A store entry has a Desktop slot and an Idle slot. The Idle slot is the screen
+saver. A Desktop slot with the provider "default" follows the wallpaper that the
+system selects, which is in SystemWallpaperURL of the com.apple.wallpaper
+preferences.
+
+Usage: set-default-wallpaper-screensaver [--check]
+
+--check changes nothing, and exits 1 if the defaults aren't set yet.
+"""
+import argparse
+import datetime
+import os
+import pathlib
+import plistlib
+import shutil
+import subprocess
+import sys
+import tempfile
+import time
+import urllib.parse
+
+DESKTOP_PROVIDER = "default"
+
+SAVER_NAME = "Ventura"
+SAVER = "/System/Library/ExtensionKit/Extensions/Ventura.appex"
+SAVER_PROVIDER = "com.apple.wallpaper.choice.screen-saver"
+SAVER_IDLE_SECONDS = 1200
+
+AGENT = "WallpaperAgent"
+AGENT_START_TIMEOUT_SECONDS = 10
+AGENT_SETTLE_SECONDS = 3
+
+CHANGED = "default-wallpaper-screensaver: changed"
+UNCHANGED = "default-wallpaper-screensaver: unchanged"
+
+
+def content(choice):
+    return {"Choices": [choice], "Shuffle": "$null", "EncodedOptionValues": "$null"}
+
+
+def desktop_content():
+    return content({"Provider": DESKTOP_PROVIDER, "Files": [], "Configuration": b""})
+
+
+def idle_content():
+    return content(
+        {
+            "Provider": SAVER_PROVIDER,
+            "Files": [],
+            "Configuration": plistlib.dumps(
+                {"module": {"relative": pathlib.Path(SAVER).as_uri()}},
+                fmt=plistlib.FMT_BINARY,
+                sort_keys=False,
+            ),
+        }
+    )
+
+
+def only_choice(slot, provider):
+    """Return the slot's choice if it is the only one and from this provider."""
+    slot_content = slot["Content"]
+    choices = slot_content["Choices"]
+    if len(choices) != 1 or choices[0]["Provider"] != provider:
+        return None
+    if slot_content.get("Shuffle", "$null") != "$null":
+        return None
+    return choices[0]
+
+
+# The agent rewrites the store when it starts, so these compare what the values
+# mean, and not their bytes.
+def desktop_is_default(slot):
+    try:
+        return only_choice(slot, DESKTOP_PROVIDER) is not None
+    except (KeyError, IndexError, TypeError):
+        return False
+
+
+def idle_is_saver(slot):
+    try:
+        choice = only_choice(slot, SAVER_PROVIDER)
+        if choice is None:
+            return False
+        module = plistlib.loads(choice["Configuration"])["module"]
+        path = urllib.parse.urlparse(module["relative"]).path
+        return urllib.parse.unquote(path) == SAVER
+    except (KeyError, IndexError, TypeError, ValueError):
+        return False
+
+
+def entries(store):
+    """Return every entry of the store, or exit if its shape is unfamiliar."""
+    try:
+        found = [store["AllSpacesAndDisplays"], store["SystemDefault"]]
+        found += store["Displays"].values()
+        for space in store["Spaces"].values():
+            if "Default" in space:
+                found.append(space["Default"])
+            found += space.get("Displays", {}).values()
+    except (KeyError, TypeError, AttributeError) as error:
+        sys.exit(f"Unfamiliar wallpaper store, changing nothing: {error!r}")
+    for entry in found:
+        if not isinstance(entry, dict) or not isinstance(entry.get("Type"), str):
+            sys.exit(f"Unfamiliar wallpaper store entry, changing nothing: {entry!r}")
+    return found
+
+
+# An entry of Type "desktop" has no Idle slot. The Idle slot comes from the
+# other entries. Other types than "desktop" and "individual" become "individual".
+def entry_is_set(entry):
+    if not desktop_is_default(entry.get("Desktop", {})):
+        return False
+    if entry["Type"] == "desktop":
+        return True
+    return entry["Type"] == "individual" and idle_is_saver(entry.get("Idle", {}))
+
+
+def set_slot(entry, name, new_content, now):
+    slot = entry.setdefault(name, {})
+    slot["Content"] = new_content
+    slot["LastSet"] = now
+    slot.setdefault("LastUse", now)
+
+
+def set_entry(entry, now):
+    if not desktop_is_default(entry.get("Desktop", {})):
+        set_slot(entry, "Desktop", desktop_content(), now)
+    if entry["Type"] != "desktop":
+        entry["Type"] = "individual"
+        entry.pop("Linked", None)
+        if not idle_is_saver(entry.get("Idle", {})):
+            set_slot(entry, "Idle", idle_content(), now)
+
+
+def read_store(path):
+    try:
+        with open(path, "rb") as file:
+            return plistlib.load(file)
+    except FileNotFoundError:
+        sys.exit(f"{path} doesn't exist. Log in to the desktop once, then run again.")
+
+
+def write_store(path, store):
+    """Replace the store atomically, so the agent never reads half of it."""
+    descriptor, temporary = tempfile.mkstemp(dir=os.path.dirname(path))
+    try:
+        with os.fdopen(descriptor, "wb") as file:
+            plistlib.dump(store, file, fmt=plistlib.FMT_BINARY, sort_keys=False)
+        shutil.copymode(path, temporary)
+        os.replace(temporary, path)
+    except BaseException:
+        os.unlink(temporary)
+        raise
+
+
+def screen_saver_preferences_are_set():
+    result = subprocess.run(
+        ["defaults", "-currentHost", "export", "com.apple.screensaver", "-"],
+        check=True,
+        capture_output=True,
+    )
+    preferences = plistlib.loads(result.stdout)
+    module = preferences.get("moduleDict", {})
+    return (
+        preferences.get("idleTime") == SAVER_IDLE_SECONDS
+        and module.get("moduleName") == SAVER_NAME
+        and module.get("path") == SAVER
+    )
+
+
+def set_screen_saver_preferences():
+    defaults = ["defaults", "-currentHost", "write", "com.apple.screensaver"]
+    subprocess.run(defaults + ["idleTime", "-int", str(SAVER_IDLE_SECONDS)], check=True)
+    subprocess.run(
+        defaults
+        + ["moduleDict", "-dict"]
+        + ["moduleName", SAVER_NAME, "path", SAVER, "type", "-int", "0"],
+        check=True,
+    )
+
+
+def pgrep(*arguments):
+    """Return the IDs of the matching processes, which is empty if none match."""
+    result = subprocess.run(["pgrep", *arguments], capture_output=True, text=True)
+    if result.returncode > 1:
+        sys.exit(f"pgrep failed: {result.stderr.strip()}")
+    return result.stdout.strip()
+
+
+def restart_agent():
+    """Restart the agent, which reads the store only when it starts.
+
+    On macOS 26, System Integrity Protection refuses launchctl kickstart for this
+    service. launchd starts the agent again after killall.
+    """
+    old_agent = pgrep("-x", AGENT)
+    if old_agent:
+        subprocess.run(["killall", AGENT])
+    deadline = time.monotonic() + AGENT_START_TIMEOUT_SECONDS
+    while time.monotonic() < deadline:
+        agent = pgrep("-x", AGENT)
+        if agent and agent != old_agent:
+            time.sleep(AGENT_SETTLE_SECONDS)
+            return
+        time.sleep(0.5)
+    sys.exit(
+        f"The defaults are set in the store, but {AGENT} didn't start again in "
+        f"{AGENT_START_TIMEOUT_SECONDS} seconds. Log out and in to apply them."
+    )
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
+    parser.add_argument("--check", action="store_true")
+    arguments = parser.parse_args()
+
+    if not os.path.exists(SAVER):
+        sys.exit(f"{SAVER} doesn't exist on this macOS version.")
+
+    store_path = os.path.expanduser(
+        "~/Library/Application Support/com.apple.wallpaper/Store/Index.plist"
+    )
+    store = read_store(store_path)
+    stale = [entry for entry in entries(store) if not entry_is_set(entry)]
+    preferences_are_set = screen_saver_preferences_are_set()
+
+    if not stale and preferences_are_set:
+        print(UNCHANGED)
+        return
+    if arguments.check:
+        print(
+            f"Not set: {len(stale)} store entries, "
+            f"screen saver preferences {'set' if preferences_are_set else 'not set'}."
+        )
+        sys.exit(1)
+
+    if stale:
+        now = datetime.datetime.now(datetime.timezone.utc).replace(tzinfo=None)
+        for entry in stale:
+            set_entry(entry, now)
+        write_store(store_path, store)
+
+    if not preferences_are_set:
+        set_screen_saver_preferences()
+
+    if stale:
+        restart_agent()
+        reverted =[e for e in entries(read_store(store_path)) if not entry_is_set(e)]
+        if reverted:
+            sys.exit(
+                f"WallpaperAgent didn't keep the defaults in {len(reverted)} store "
+                "entries, so its format may have changed."
+            )
+
+    print(CHANGED)
+
+
+if __name__ == "__main__":
+    main()

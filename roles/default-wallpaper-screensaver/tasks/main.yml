@@ -1,0 +1,7 @@
+---
+- name: Set the default wallpaper and screen saver on every display and Space
+  script: set-default-wallpaper-screensaver
+  args:
+    executable: /usr/bin/python3
+  register: default_wallpaper_screensaver
+  changed_when: "'default-wallpaper-screensaver: changed' in default_wallpaper_screensaver.stdout"
