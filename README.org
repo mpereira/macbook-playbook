@@ -762,6 +762,86 @@ TODO:
       to the new one. Converge the role on the new Mac and run =put= again from
       the recovery copy. Don't copy =~/.local/share/touch-id-secret= across.
 
+***** Using it from several repositories
+      The command is installed for the whole machine, so repositories share it
+      without a submodule or a shared library. Each repository only needs a small
+      script that names its secret. For Ansible Vault, that secret is the vault
+      password. The vaulted values stay encrypted in the repository, so adding one
+      doesn't add anything under =~/.local/share/touch-id-secret=.
+
+      Give each repository its own vault password and its own name:
+
+      #+begin_example
+      ~/.local/share/touch-id-secret/
+      ├── repo-a-ansible-vault/
+      └── repo-b-ansible-vault/
+      #+end_example
+
+      An agent working in one repository then can't decrypt another's vault without
+      your Touch ID, unless that repository's keychain is already unlocked. You can
+      also rotate one password without touching the others. The cost is one Touch ID
+      prompt per repository.
+
+      Put the script in the repository, as =bin/ansible-vault-password= with mode
+      =0755=. The full path means it also works where =/usr/local/bin= isn't on
+      =PATH=:
+
+      #+begin_src bash
+      #!/bin/sh
+      exec /usr/local/bin/touch-id-secret get repo-a-ansible-vault
+      #+end_src
+
+      Then set =vault_password_file = bin/ansible-vault-password= in the
+      repository's =ansible.cfg=. Ansible only finds that file in the current
+      directory, so to run from anywhere else, export
+      =ANSIBLE_VAULT_PASSWORD_FILE= with the script's full path instead. Ansible
+      removes a trailing newline from what a password script prints. Other scripts
+      can call =touch-id-secret get <name>= directly, and should pipe the value
+      into the tool that needs it where they can.
+
+      To create a new vault password, generate it directly into the command, so it
+      never reaches a file or your shell history. Then copy it to your recovery
+      location and overwrite the clipboard. A clipboard manager may keep its own
+      copy.
+
+      #+begin_src bash
+      head -c 32 /dev/urandom | xxd -p | tr -d '\n' | touch-id-secret put repo-a-ansible-vault
+      touch-id-secret get repo-a-ansible-vault | pbcopy
+      #+end_src
+
+      To move an encrypted file to that password, run this in a terminal, because
+      the Touch ID prompt can't appear from an agent's sandbox:
+
+      #+begin_src bash
+      ansible-vault rekey --vault-password-file old-password-file --new-vault-password-file bin/ansible-vault-password secrets.yml
+      #+end_src
+
+      Keep these limits in mind. The Ansible behavior here was tested with dummy
+      values on ansible-core 2.14.3:
+
+      - =ansible-vault rekey= refuses a file whose values are inline
+        =encrypt_string= blocks, and leaves it unchanged. Those values need a script
+        that decrypts each one and encrypts it again.
+      - Rekeying changes the current files only. Anyone with the old password can
+        still decrypt the old commits, so if it may have leaked, rotate the secrets
+        themselves too.
+      - A branch that still has values encrypted with the old password can conflict
+        with the rekey, or stop decrypting.
+      - A machine without Touch ID, such as a server or a CI runner, can't use this
+        command. Give it the password another way, by pointing
+        =ANSIBLE_VAULT_PASSWORD_FILE= at something else there.
+      - The rekey and the script should land in one change, so a repository never
+        has one without the other. Remove old plaintext copies last, including those
+        in existing worktrees.
+
+      A playbook that installs this command can't depend on it on a new Mac. Ansible
+      decrypts a fully encrypted =group_vars= file when it loads it, so =--tags=
+      doesn't help, and the run stops with "no vault secrets found" even if the
+      tagged task uses no vaulted value. An inline =encrypt_string= value is only
+      decrypted when something uses it, so that run works. Keep such a playbook's
+      values inline, install this role, store the password from its recovery copy,
+      and then run the full converge.
+
 ***** How it works
       Two locks form a chain. Touch ID and the Secure Enclave protect a random
       password, and that password opens a keychain holding the secret. The
