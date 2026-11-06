@@ -24,7 +24,7 @@
     repo: "{{ item.repo }}"
     dest: "{{ downloads_directory }}/skills/{{ item.name }}"
     version: "{{ item.version | default(omit) }}"
-  loop: "{{ agent_skills_monorepos }}"
+  loop: "{{ agent_skills_all_monorepos }}"
   loop_control:
     label: "{{ item.name }}"
 
@@ -33,7 +33,7 @@
     paths: "{{ downloads_directory }}/skills/{{ item.name }}/{{ item.subpath }}"
     file_type: directory
     recurse: no
-  loop: "{{ agent_skills_monorepos | selectattr('all', 'defined') | selectattr('all') | list }}"
+  loop: "{{ agent_skills_all_monorepos | selectattr('all', 'defined') | selectattr('all') | list }}"
   loop_control:
     label: "{{ item.name }}"
   register: monorepo_all_skills
@@ -44,9 +44,57 @@
     dest: "{{ home_directory }}/.agents/skills/{{ item.path | basename }}"
     state: link
     force: yes
-  loop: "{{ monorepo_all_skills.results | map(attribute='files') | flatten | list }}"
+  loop: "{{ monorepo_all_skills.results | rejectattr('item.projects', 'defined') | map(attribute='files') | flatten | list }}"
   loop_control:
     label: "{{ item.path | basename }}"
+
+# --- Project-scoped skills: linked into listed projects, not globally --------
+- name: Collect links for project-scoped skills
+  set_fact:
+    project_skill_links: "{{ project_skill_links | default([]) + (item.item.projects | product(item.files) | list) }}"
+  loop: "{{ monorepo_all_skills.results | selectattr('item.projects', 'defined') | list }}"
+  loop_control:
+    label: "{{ item.item.name }}"
+
+# Only symlinks are matched, so a real skill directory is never removed. The
+# guard matters: "find" with empty patterns would match every symlink.
+- name: Find global links to project-scoped skills
+  find:
+    paths:
+      - "{{ home_directory }}/.agents/skills"
+      - "{{ home_directory }}/.claude/skills"
+    file_type: link
+    patterns: "{{ project_skill_links | map('last') | map(attribute='path') | map('basename') | unique | list }}"
+  register: stale_global_skill_links
+  when: project_skill_links | default([]) | length > 0
+
+- name: Remove global links to project-scoped skills
+  file:
+    path: "{{ item.path }}"
+    state: absent
+  loop: "{{ stale_global_skill_links.files | default([]) }}"
+  loop_control:
+    label: "{{ item.path }}"
+
+# A project that is not cloned yet is skipped: creating its directory here would
+# make a later "git clone" into that path fail.
+- name: Ensure project skills directories exist
+  file:
+    path: "{{ item }}/.claude/skills"
+    state: directory
+  loop: "{{ project_skill_links | default([]) | map('first') | unique | list }}"
+  when: (item + '/.git') is exists
+
+- name: Link project-scoped skills into their projects
+  file:
+    src: "{{ item.1.path }}"
+    dest: "{{ item.0 }}/.claude/skills/{{ item.1.path | basename }}"
+    state: link
+    force: yes
+  loop: "{{ project_skill_links | default([]) }}"
+  loop_control:
+    label: "{{ item.0 | basename }}/{{ item.1.path | basename }}"
+  when: (item.0 + '/.git') is exists
 
 - name: Link explicitly-selected monorepo skills into the canonical location
   file:
@@ -54,7 +102,7 @@
     dest: "{{ home_directory }}/.agents/skills/{{ item.1 }}"
     state: link
     force: yes
-  loop: "{{ agent_skills_monorepos | subelements('skills', skip_missing=True) }}"
+  loop: "{{ agent_skills_all_monorepos | subelements('skills', skip_missing=True) }}"
   loop_control:
     label: "{{ item.1 }}"
   when: not (item.0.auto_invoke | default(false))
@@ -64,7 +112,7 @@
   file:
     path: "{{ downloads_directory }}/skills-configured/{{ item.0.name }}/{{ item.0.subpath }}/{{ item.1 }}/agents"
     state: directory
-  loop: "{{ agent_skills_monorepos | subelements('skills', skip_missing=True) }}"
+  loop: "{{ agent_skills_all_monorepos | subelements('skills', skip_missing=True) }}"
   when: item.0.auto_invoke | default(false)
 
 - name: Copy upstream files with automatic selection enabled
@@ -72,7 +120,7 @@
     dest: "{{ downloads_directory }}/skills-configured/{{ item.0.name }}/{{ item.0.subpath }}/{{ item.1 }}/{{ item.2 }}"
     content: "{{ lookup('file', downloads_directory + '/skills/' + item.0.name + '/' + item.0.subpath + '/' + item.1 + '/' + item.2, rstrip=False) | regex_replace('(?m)^disable-model-invocation: true$', 'disable-model-invocation: false') | regex_replace('(?m)^(\\s*)allow_implicit_invocation: false$', '\\1allow_implicit_invocation: true') }}"
     mode: '0644'
-  loop: "{{ agent_skills_monorepos | subelements('skills', skip_missing=True) | product(['SKILL.md', 'agents/openai.yaml']) | map('flatten') | list }}"
+  loop: "{{ agent_skills_all_monorepos | subelements('skills', skip_missing=True) | product(['SKILL.md', 'agents/openai.yaml']) | map('flatten') | list }}"
   when: item.0.auto_invoke | default(false)
 
 - name: Link automatically-selected skill copies into the canonical location
@@ -81,7 +129,7 @@
     dest: "{{ home_directory }}/.agents/skills/{{ item.1 }}"
     state: link
     force: yes
-  loop: "{{ agent_skills_monorepos | subelements('skills', skip_missing=True) }}"
+  loop: "{{ agent_skills_all_monorepos | subelements('skills', skip_missing=True) }}"
   when: item.0.auto_invoke | default(false)
 
 # --- Locally maintained skills: copy from this role ------------------------
