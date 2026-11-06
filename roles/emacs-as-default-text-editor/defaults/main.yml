@@ -1,0 +1,98 @@
+---
+# The Emacs that Finder opens text files with. The build-emacs role installs it.
+emacs_as_default_text_editor_app: /opt/homebrew/opt/emacs-head@30/Emacs.app
+emacs_as_default_text_editor_bundle_id: org.gnu.Emacs
+
+# File types that Finder opens with Emacs. An entry that starts with a dot is a
+# filename extension; any other entry is a uniform type identifier (UTI).
+# Setting a UTI covers every extension macOS maps to it, but an app that claims
+# a more specific UTI, such as Xcode for public.swift-source, still wins for
+# that type, so the common specific ones are listed too. Extensions macOS
+# doesn't know (.org, .clj, .toml) only work as extensions.
+#
+# Left out on purpose, so they keep opening in their usual apps: HTML (browser),
+# CSV and TSV (spreadsheet), RTF (TextEdit), and the broad public.text, which
+# would take in all of those.
+#
+# .ts is both TypeScript and MPEG-2 transport stream video. Listing it makes
+# Emacs open .ts video files too.
+emacs_as_default_text_editor_file_types:
+  # UTIs.
+  - public.plain-text
+  - public.utf8-plain-text
+  - public.utf16-plain-text
+  - public.source-code
+  - public.script
+  - public.shell-script
+  - public.python-script
+  - public.ruby-script
+  - public.perl-script
+  - public.php-script
+  - public.c-source
+  - public.c-header
+  - public.c-plus-plus-source
+  - public.c-plus-plus-header
+  - public.objective-c-source
+  - public.swift-source
+  - com.netscape.javascript-source
+  - net.daringfireball.markdown
+  - public.json
+  - public.xml
+  - public.yaml
+  - public.log
+  # Extensions.
+  - .txt
+  - .text
+  - .md
+  - .markdown
+  - .org
+  - .el
+  - .clj
+  - .cljs
+  - .cljc
+  - .edn
+  - .bb
+  - .json
+  - .jsonl
+  - .yaml
+  - .yml
+  - .toml
+  - .ini
+  - .cfg
+  - .conf
+  - .env
+  - .sh
+  - .bash
+  - .zsh
+  - .fish
+  - .py
+  - .rb
+  - .js
+  - .mjs
+  - .cjs
+  - .jsx
+  - .ts
+  - .tsx
+  - .go
+  - .rs
+  - .c
+  - .h
+  - .cc
+  - .cpp
+  - .hpp
+  - .java
+  - .kt
+  - .scala
+  - .hs
+  - .lua
+  - .sql
+  - .css
+  - .scss
+  - .xml
+  - .log
+  - .diff
+  - .patch
+  - .tex
+  - .bib
+  - .rst
+  - .adoc

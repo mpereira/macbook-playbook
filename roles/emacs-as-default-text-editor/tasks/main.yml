@@ -1,0 +1,38 @@
+---
+# Several Emacs.app copies share the bundle ID org.gnu.Emacs, including old
+# ones on backup volumes. Registering this one again makes LaunchServices
+# prefer it when it resolves the bundle ID.
+- name: Register Emacs with LaunchServices
+  command: >
+    /System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister
+    -f {{ emacs_as_default_text_editor_app | quote }}
+  changed_when: false
+
+# duti -d prints the bundle ID that opens a UTI, and the last line of duti -x
+# is the bundle ID that opens an extension. LaunchServices sometimes returns
+# bundle IDs in lowercase, so the comparison ignores case.
+- name: Make Emacs open text files from Finder
+  shell: |
+    set -u
+    want=$(printf '%s' "$BUNDLE_ID" | tr '[:upper:]' '[:lower:]')
+    failed=0
+    for type in {{ emacs_as_default_text_editor_file_types | map('quote') | join(' ') }}; do
+      case "$type" in
+        .*) current=$(duti -x "${type#.}" 2>/dev/null | tail -n 1) ;;
+        *)  current=$(duti -d "$type" 2>/dev/null) ;;
+      esac
+      current=$(printf '%s' "$current" | tr '[:upper:]' '[:lower:]')
+      if [ "$current" != "$want" ]; then
+        if duti -s "$BUNDLE_ID" "$type" all; then
+          echo "changed: $type"
+        else
+          echo "failed: $type" >&2
+          failed=1
+        fi
+      fi
+    done
+    exit "$failed"
+  environment:
+    BUNDLE_ID: "{{ emacs_as_default_text_editor_bundle_id }}"
+  register: emacs_as_default_text_editor_result
+  changed_when: "'changed:' in emacs_as_default_text_editor_result.stdout"

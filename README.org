@@ -417,6 +417,13 @@ TODO:
      change it, set the switches in System Settings, then copy the new list
      from =defaults read com.apple.Spotlight EnabledPreferenceRules=.
 
+     The emacs-as-default-text-editor role makes Finder open text files,
+     Markdown, Org and source code with Emacs. It sets the default app with
+     =duti= for each type in =emacs_as_default_text_editor_file_types= in
+     =roles/emacs-as-default-text-editor/defaults/main.yml=. Files without an
+     extension, such as =Makefile=, aren't covered. To check a type, run
+     =duti -x md=.
+
      Claude local settings are ignored through =.gitignore=.
 
 **** Programming Languages
@@ -541,6 +548,7 @@ TODO:
      - [[https://github.com/kerma/defaultbrowser][defaultbrowser]]
      - [[https://github.com/dandavison/delta][delta]]
      - [[https://github.com/dandavison/delta][delta]]
+     - [[https://github.com/moretension/duti][duti]]
      - [[https://exiftool.org/][ExifTool]]
      - [[https://git-scm.com/download/mac][git]]
      - [[https://cli.github.com/][gh]]

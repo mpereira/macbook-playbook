@@ -1,0 +1,5 @@
+---
+- name: Install duti
+  homebrew:
+    name: duti
+    state: latest

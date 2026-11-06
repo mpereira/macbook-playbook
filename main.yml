@@ -207,6 +207,10 @@
     - role: spotlight
       tags: [behaviors, spotlight]
 
+    # Depends on build-emacs.
+    - role: emacs-as-default-text-editor
+      tags: [behaviors, emacs-as-default-text-editor]
+
     #############################################################################
     # Security ##################################################################
     #############################################################################
@@ -742,6 +746,9 @@
       tags: [command-line-tools, git-pkg, defaultbrowser]
       vars:
         defaultbrowser_version: "1.1"
+
+    - role: duti
+      tags: [command-line-tools, brew-pkg, duti]
 
     - role: jq
       tags: [command-line-tools, bespoke-pkg, jq, backup-tools]
