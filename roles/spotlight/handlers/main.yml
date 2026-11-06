@@ -1,0 +1,6 @@
+---
+# Spotlight reads its settings at launch, and launchd starts it again after it
+# quits. It may not be running, so a failed killall is fine.
+- name: Restart Spotlight
+  command: killall Spotlight
+  failed_when: false

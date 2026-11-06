@@ -1,0 +1,29 @@
+---
+# Spotlight results to hide, as macOS 26 writes them to EnabledPreferenceRules
+# in com.apple.Spotlight. Each turned-off switch in System Settings › Spotlight
+# adds one entry: System.* for the Results from System categories, an app's
+# bundle ID for Results from Apps, and Custom.relatedContents for Show Related
+# Content. Apps and System Settings stay visible because they aren't listed.
+# Keep the order the settings pane writes, or every run reports a change.
+# After changing a switch in the pane, check that System.documents is still in
+# the list, and run the role again if it isn't.
+spotlight_hidden_results:
+  - Custom.relatedContents
+  - com.apple.iBooksX
+  - com.apple.AddressBook
+  - com.apple.Dictionary
+  - com.apple.mail
+  - com.apple.MobileSMS
+  - com.apple.Notes
+  - com.apple.mobilephone
+  - com.apple.Photos
+  - com.apple.podcasts
+  - com.apple.tips
+  - com.apple.VoiceMemos
+  - net.whatsapp.WhatsApp
+  - System.files
+  - System.folders
+  - System.iphoneApps
+  # Documents has no switch in the macOS 26 settings pane, but Spotlight still
+  # shows documents until this rule is set, even with Files turned off.
+  - System.documents

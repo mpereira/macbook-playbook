@@ -1,0 +1,10 @@
+---
+# Limit Spotlight to apps and System Settings. This only changes what Spotlight
+# shows; the disk stays indexed, so Finder and in-app search keep working.
+- name: Hide Spotlight results other than apps and System Settings
+  community.general.osx_defaults:
+    domain: com.apple.Spotlight
+    key: EnabledPreferenceRules
+    type: array
+    value: "{{ spotlight_hidden_results }}"
+  notify: Restart Spotlight

@@ -410,6 +410,13 @@ TODO:
      instructions for all projects, from =roles/claude/files/CLAUDE.md=. Edit
      that file, not the installed copy, which =make provision= overwrites.
 
+     The spotlight role limits Spotlight results to apps and System Settings.
+     It writes the switches that System Settings › Spotlight turns off to
+     =EnabledPreferenceRules= in =com.apple.Spotlight=. The list is
+     =spotlight_hidden_results= in =roles/spotlight/defaults/main.yml=. To
+     change it, set the switches in System Settings, then copy the new list
+     from =defaults read com.apple.Spotlight EnabledPreferenceRules=.
+
      Claude local settings are ignored through =.gitignore=.
 
 **** Programming Languages
