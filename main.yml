@@ -713,6 +713,9 @@
     - role: grok
       tags: [command-line-tools, brew-cask-pkg, grok]
 
+    - role: kimi
+      tags: [command-line-tools, brew-pkg, kimi]
+
     - role: clickup-cli
       tags: [command-line-tools, brew-pkg, clickup-cli, contextualize]
 

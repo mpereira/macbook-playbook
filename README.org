@@ -553,6 +553,8 @@ TODO:
      - [[https://www.npmjs.com/package/local-ssl-proxy][local-ssl-proxy]]
      - [[https://x.ai/build][Grok Build]]
        xAI's coding agent for the terminal, installed as =grok=.
+     - [[https://moonshotai.github.io/kimi-code/][Kimi Code]]
+       Moonshot AI's coding agent for the terminal, installed as =kimi=. Sign in once with =kimi login=.
      - [[https://github.com/tw93/Mole][Mole]]
      - [[http://www.7-zip.org/][p7zip]]
      - [[https://www.gnu.org/software/parallel/][parallel]]

@@ -1,0 +1,7 @@
+---
+# Kimi Code is Moonshot AI's coding agent for the terminal, installed as kimi.
+# It replaces the archived kimi-cli formula. Sign in once with `kimi login`.
+- name: Install Kimi Code
+  homebrew:
+    name: kimi-code
+    state: latest
