@@ -1,0 +1,7 @@
+---
+# Grok Build is xAI's coding agent for the terminal. The cask installs the grok
+# command, with an agent alias and shell completions.
+- name: Install Grok Build
+  homebrew_cask:
+    name: grok-build
+    state: latest

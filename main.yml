@@ -710,6 +710,9 @@
     - role: gh
       tags: [command-line-tools, brew-pkg, gh, contextualize]
 
+    - role: grok
+      tags: [command-line-tools, brew-cask-pkg, grok]
+
     - role: clickup-cli
       tags: [command-line-tools, brew-pkg, clickup-cli, contextualize]
 

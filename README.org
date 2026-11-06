@@ -551,6 +551,8 @@ TODO:
        Gmail filters as code for murilo@murilopereira.com. The OAuth client lives in the =mpereira-gmailctl= Google Cloud project, which contextualize.ai provisions, and the client and token come from the secrets file.
      - [[https://stedolan.github.io/jq/][jq]]
      - [[https://www.npmjs.com/package/local-ssl-proxy][local-ssl-proxy]]
+     - [[https://x.ai/build][Grok Build]]
+       xAI's coding agent for the terminal, installed as =grok=.
      - [[https://github.com/tw93/Mole][Mole]]
      - [[http://www.7-zip.org/][p7zip]]
      - [[https://www.gnu.org/software/parallel/][parallel]]
