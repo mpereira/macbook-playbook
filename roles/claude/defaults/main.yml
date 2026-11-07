@@ -64,6 +64,12 @@ claude_sandbox_excluded_commands:
   # The sandbox blocks process listing.
   - ps
   - ps *
+  # The sandbox refuses writes inside any .idea or .vscode directory under the
+  # working directory, and no setting changes that. Some npm packages ship a
+  # .idea directory (iconv-lite does), so pnpm can't unpack them into
+  # node_modules. --frozen-lockfile installs only what the lockfile pins, and
+  # pnpm 10 runs no dependency's install scripts unless the project allows it.
+  - pnpm install --frozen-lockfile
   # The sandbox blocks OrbStack's Docker socket. A container can mount any
   # host path, so these can write anywhere.
   - docker
