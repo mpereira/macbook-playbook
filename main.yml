@@ -453,9 +453,6 @@
         # http://download.videolan.org/pub/videolan/vlc/
         vlc_version: "3.0.18"
 
-    - role: elgato-control-center
-      tags: [desktop-applications, brew-pkg, elgato-control-center]
-
     - role: claude
       tags: [desktop-applications, configuration, brew-cask-pkg, claude]
 
