@@ -31,6 +31,16 @@ claude_sandbox_writable_paths:
   - ~/Library/Caches/uv
   - ~/.terraform.d/plugin-cache
 
+# Directories where sandboxed commands may create and connect to Unix sockets.
+# Terraform starts each provider as a plugin process that listens on a Unix
+# socket in $TMPDIR, so terraform validate, plan and console need this. These
+# are the sandbox's own $TMPDIR in the desktop app and in the CLI. Not all of
+# ~/.claude/tmp: its cc-socks directory holds the sockets Claude sessions use
+# to message each other.
+claude_sandbox_unix_socket_directories:
+  - "~/.claude/tmp/claude-{{ ansible_facts.user_uid }}"
+  - "/private/tmp/claude-{{ ansible_facts.user_uid }}"
+
 # Commands that run outside the Bash sandbox, with full access. Git hooks run
 # with them, and Claude can edit hook configuration such as lefthook.yml in
 # the working directory, so these make the sandbox a guard against accidents
@@ -107,6 +117,8 @@ claude_managed_settings:
     # through macOS's trustd service, which the sandbox otherwise blocks.
     enableWeakerNetworkIsolation: true
     excludedCommands: "{{ claude_sandbox_excluded_commands }}"
+    network:
+      allowUnixSockets: "{{ claude_sandbox_unix_socket_directories }}"
     filesystem:
       allowWrite: "{{ claude_sandbox_writable_paths }}"
       denyWrite: "{{ claude_write_protected_paths }}"
