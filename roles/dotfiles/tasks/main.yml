@@ -1,12 +1,15 @@
 ---
-- name: Check out the mpereira/dotfiles repository
-  git:
-    repo: git@github.com:mpereira/dotfiles.git
-    dest: "{{ home_directory }}/.dotfiles"
-    update: no
+- when: dotfiles_repository | length > 0
+  block:
+    - name: Check out the dotfiles repository
+      git:
+        repo: "{{ dotfiles_repository }}"
+        dest: "{{ home_directory }}/.dotfiles"
+        update: no
 
-- name: Install dotfiles
-  environment: "{{ dotfiles_environment_yml_file | from_yaml }}"
-  shell: rake sync
-  args:
-    chdir: "{{ home_directory }}/.dotfiles"
+    - name: Install dotfiles
+      environment: "{{ dotfiles_environment }}"
+      shell: "{{ dotfiles_install_command }}"
+      args:
+        chdir: "{{ home_directory }}/.dotfiles"
+      when: dotfiles_install_command | length > 0

@@ -4,7 +4,7 @@ Bash commands run in a sandbox. The commands below run outside it, but only
 when the Bash call is the command alone. `*` matches any text, and arguments
 must come in the order the pattern shows them.
 
-{% for command in claude_sandbox_excluded_commands %}
+{% for command in claude_sandbox_all_excluded_commands %}
 - `{{ command }}`
 {% endfor %}
 

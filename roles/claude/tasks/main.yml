@@ -21,13 +21,14 @@
     state: directory
 
 # Claude Code loads ~/.claude/CLAUDE.md into every session as the user's
-# instructions for all projects. Edit roles/claude/files/CLAUDE.md, not the
+# instructions for all projects. Edit claude_user_instructions, not the
 # installed copy, which the next run overwrites.
 - name: Install Claude Code user instructions
   copy:
-    src: CLAUDE.md
+    content: "{{ claude_user_instructions }}"
     dest: "{{ home_directory }}/.claude/CLAUDE.md"
     mode: "0644"
+  when: claude_user_instructions | length > 0
 
 - name: Ensure the Claude Code managed settings directory exists
   file:
@@ -49,7 +50,7 @@
   become: yes
 
 # Claude Code loads this file into every session. It tells Claude how to run
-# the commands in claude_sandbox_excluded_commands.
+# the commands in claude_sandbox_all_excluded_commands.
 - name: Install Claude Code managed instructions
   template:
     src: CLAUDE.md.j2

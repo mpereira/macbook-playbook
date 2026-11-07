@@ -1,0 +1,5 @@
+---
+# A git repository of Emacs configuration, cloned to ~/.emacs.d. Set it in the
+# private vars file (see "Secrets" in README.org). When it's empty, the role
+# does nothing.
+dotemacs_repository: ""

@@ -6,29 +6,31 @@
     owner: "{{ user }}"
     state: directory
 
-- name: Install private SSH key
+- name: Install private SSH keys
   copy:
-    content: "{{ mpereira_at_pluto_ssh_private_key }}"
-    dest: "{{ ssh_directory }}/mpereira@pluto"
+    content: "{{ item.private_key }}"
+    dest: "{{ ssh_directory }}/{{ item.name }}"
     mode: 0600
     owner: "{{ user }}"
+  loop: "{{ ssh_keys | selectattr('private_key', 'defined') | list }}"
+  loop_control:
+    label: "{{ item.name }}"
   no_log: true
 
+# These loops go over key names, not the entries in ssh_keys. With -v, which
+# make provision passes, Ansible prints each loop item in full, label or not,
+# so looping over an entry would print its private key.
 - name: Install public SSH keys
   copy:
-    src: "{{ item }}"
-    dest: "{{ ssh_directory }}/{{ item }}"
+    content: "{{ (ssh_keys | selectattr('name', 'equalto', item) | first).public_key | trim }}\n"
+    dest: "{{ ssh_directory }}/{{ item }}.pub"
     mode: 0644
     owner: "{{ user }}"
-  loop:
-    - "mpereira@argonaut.pub"
-    - "mpereira@pluto.pub"
+  loop: "{{ ssh_keys | selectattr('public_key', 'defined') | map(attribute='name') | list }}"
 
 - name: Add authorized keys
   ansible.posix.authorized_key:
     user: "{{ user }}"
     state: present
-    key: "{{ lookup('file', item) }}"
-  loop:
-    - "mpereira@argonaut.pub"
-    - "mpereira@pluto.pub"
+    key: "{{ (ssh_keys | selectattr('name', 'equalto', item) | first).public_key }}"
+  loop: "{{ ssh_keys | selectattr('public_key', 'defined') | selectattr('authorized', 'defined') | selectattr('authorized') | map(attribute='name') | list }}"

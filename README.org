@@ -146,13 +146,31 @@ TODO:
     breaks the role that reads it.
 
     These are the roles that use secrets:
-    | Description                       | Secret name                         | Role           |
-    | AWS CLI credentials               | =aws_credentials_file=              | awscli         |
-    | Enviroment variables for [[https://github.com/mpereira/dotfiles][dotfiles]] | =dotfiles_environment_yml_file=     | dotfiles       |
-    | gmailctl OAuth client             | =gmailctl_credentials_json_file=    | gmailctl       |
-    | gmailctl OAuth token              | =gmailctl_token_json_file=          | gmailctl       |
-    | Private SSH key                   | =mpereira_at_pluto_ssh_private_key= | ssh-keys       |
-    | s3cmd configuration               | =s3cmd_cfg_file=                    | s3cmd          |
+    | Description                        | Secret name                      | Role           |
+    | AWS CLI credentials                | =aws_credentials_file=           | awscli         |
+    | Environment variables for dotfiles | =dotfiles_environment_yml_file=  | dotfiles       |
+    | gmailctl OAuth client              | =gmailctl_credentials_json_file= | gmailctl       |
+    | gmailctl OAuth token               | =gmailctl_token_json_file=       | gmailctl       |
+    | s3cmd configuration                | =s3cmd_cfg_file=                 | s3cmd          |
+
+    The ssh-keys role reads its private keys from =ssh_keys=, whose entries take
+    them from vault variables of any name.
+
+    The private vars file also holds settings that aren't secret but belong to
+    one person, such as repository URLs and SSH public keys. The roles' defaults
+    leave these empty, and a role skips what has nothing set. A value there can
+    refer to a vault variable, as in =private_key: "{{ my_ssh_private_key }}"=.
+    These are the settings:
+    | Setting                                  | Role     |
+    | =agent_skills_extra_monorepos=           | skills   |
+    | =claude_sandbox_extra_excluded_commands= | claude   |
+    | =claude_user_instructions=               | claude   |
+    | =dotemacs_repository=                    | dotemacs |
+    | =dotfiles_repository=                    | dotfiles |
+    | =dotfiles_install_command=               | dotfiles |
+    | =ssh_keys=                               | ssh-keys |
+
+    Each role's =defaults/main.yml= describes its settings' format.
 
     Without =secrets.mk=, =make provision= prints a warning and runs with no vault
     password script, and the first role that needs a secret fails. You have two
@@ -403,15 +421,20 @@ TODO:
 
 **** Configuration
      - macOS defaults in =configure.sh=
-     - [[https://github.com/mpereira/.emacs.d][dotemacs]]
-     - [[https://github.com/mpereira/dotfiles][dotfiles]]
+     - Emacs configuration, cloned from =dotemacs_repository= to =~/.emacs.d=
+     - dotfiles, cloned from =dotfiles_repository= to =~/.dotfiles= and
+       installed with =dotfiles_install_command=
 
      Biome's user-level config is provisioned directly by this playbook at
      =~/Library/Application Support/biome/biome.json=.
 
      The =claude= role installs =~/.claude/CLAUDE.md=, Claude Code's
-     instructions for all projects, from =roles/claude/files/CLAUDE.md=. Edit
-     that file, not the installed copy, which =make provision= overwrites.
+     instructions for all projects, from =claude_user_instructions=. Edit that
+     variable, not the installed copy, which =make provision= overwrites. When
+     it's empty, the role leaves =~/.claude/CLAUDE.md= alone.
+
+     The dotemacs and dotfiles roles do nothing until the private vars file
+     described under "Secrets" sets their repository.
 
      The spotlight role limits Spotlight results to apps and System Settings.
      It writes the switches that System Settings › Spotlight turns off to
@@ -656,13 +679,14 @@ TODO:
      Sandboxed commands can reach any host over HTTP and HTTPS. The commands
      in =claude_sandbox_excluded_commands= run outside the sandbox with full
      access: =git= network commands, because SSH remotes can't connect from
-     inside it, =git commit=, because lefthook needs a pseudo-terminal, the
-     contextualize.ai database targets for development, because Postgres
-     can't connect from inside it, =docker= and openshell's end-to-end
-     tasks, because the sandbox blocks the Docker socket, =codex exec=,
+     inside it, =git commit=, because lefthook needs a pseudo-terminal,
+     =docker=, because the sandbox blocks the Docker socket, =codex exec=,
      because macOS won't start Codex's own sandbox inside it (the =chatgpt=
      role links ChatGPT's bundled Codex CLI to =~/.local/bin/codex=), and a few others
-     the sandbox breaks. Git hooks run with them, and Claude can
+     the sandbox breaks. =claude_sandbox_extra_excluded_commands= adds commands
+     for your own projects, such as database tasks that can't reach a database
+     from inside the sandbox. Set it in the private vars file described under
+     "Secrets". Git hooks run with them, and Claude can
      edit hook configuration in the working directory, so the sandbox guards
      against accidents rather than acting as a security boundary. A command
      only runs outside the sandbox when the Bash call is the command alone,
@@ -1184,6 +1208,9 @@ TODO:
       doesn't show that the real tools behave like the stubs.
 
 **** Puts SSH keys in place
+     The ssh-keys role installs the keys in =ssh_keys= into =~/.ssh= and adds
+     the public keys of entries with =authorized: true= to
+     =~/.ssh/authorized_keys=. See =roles/ssh-keys/defaults/main.yml=.
 **** Remaps Caps-Lock to Control
      Uses an AppleScript helper for the current System Settings flow.
 

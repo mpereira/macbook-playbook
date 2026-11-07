@@ -1,0 +1,8 @@
+---
+# SSH keys to install into ~/.ssh. Set it in the private vars file (see
+# "Secrets" in README.org). Each entry has:
+#   name: the key's file name in ~/.ssh, such as "me@laptop".
+#   private_key: the private key, taken from a vault variable. Optional.
+#   public_key: the public key, written to <name>.pub. Optional.
+#   authorized: true adds the public key to ~/.ssh/authorized_keys.
+ssh_keys: []

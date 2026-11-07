@@ -64,29 +64,29 @@ claude_sandbox_excluded_commands:
   # The sandbox blocks process listing.
   - ps
   - ps *
-  # contextualize.ai database targets. The sandbox's proxy only carries web
-  # traffic, so Atlas and the type sync can't reach Postgres from inside it.
-  # The Atlas patterns end in ENV=development: make uses the last assignment
-  # of a variable on its command line, so a match always targets development.
-  # The type sync targets always read the development configuration.
-  - make apply_atlas_database_migrations PROJECT=* ENV=development
-  - make plan_atlas_database_schema PROJECT=* ENV=development
-  - make apply_atlas_database_schema PROJECT=* PLAN_SHA256=* ENV=development
-  - make python_app_write_database_types APP=*
-  - make frontend_app_write_database_types APP=*
   # The sandbox blocks OrbStack's Docker socket. A container can mount any
   # host path, so these can write anywhere.
   - docker
   - docker *
-  # openshell's end-to-end tasks, which start gateways in Docker. Claude Code
-  # reads a pattern ending in ":*" as the command before the colon followed by
-  # a space, so "e2e:*" wouldn't match "e2e:chaos".
-  - mise run e2e*
   # Codex writes its sessions to ~/.codex, and macOS won't start Codex's own
   # sandbox inside this one. Outside it, Codex sandboxes the commands it runs.
   # The converge skill's codex-review runs codex exec.
   - codex exec *
   - ~/.claude/skills/converge/bin/codex-review *
+
+# More commands in the claude_sandbox_excluded_commands format, for projects
+# that only one person works on. Set it in the private vars file (see "Secrets"
+# in README.org) rather than here. Claude Code reads a pattern ending in ":*" as
+# the command before the colon followed by a space, so end a pattern in "*"
+# instead when the command has no space there.
+claude_sandbox_extra_excluded_commands: []
+
+claude_sandbox_all_excluded_commands: "{{ claude_sandbox_excluded_commands + claude_sandbox_extra_excluded_commands }}"
+
+# Claude Code's user instructions for all projects, written to
+# ~/.claude/CLAUDE.md. Set it in the private vars file. When it's empty, the
+# role leaves ~/.claude/CLAUDE.md alone.
+claude_user_instructions: ""
 
 # Unsandboxed commands that run without a permission prompt.
 claude_allowed_unsandboxed_commands:
@@ -116,7 +116,7 @@ claude_managed_settings:
     # Go programs such as gh, terraform and gmailctl verify TLS certificates
     # through macOS's trustd service, which the sandbox otherwise blocks.
     enableWeakerNetworkIsolation: true
-    excludedCommands: "{{ claude_sandbox_excluded_commands }}"
+    excludedCommands: "{{ claude_sandbox_all_excluded_commands }}"
     network:
       allowUnixSockets: "{{ claude_sandbox_unix_socket_directories }}"
     filesystem:

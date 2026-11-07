@@ -1,6 +1,7 @@
 ---
-- name: Check out the mpereira/.emacs.d repository
+- name: Check out the Emacs configuration repository
   git:
-    repo: git@github.com:mpereira/.emacs.d.git
+    repo: "{{ dotemacs_repository }}"
     dest: "{{ home_directory }}/.emacs.d"
     update: no
+  when: dotemacs_repository | length > 0

@@ -1,0 +1,12 @@
+---
+# A git repository of dotfiles, cloned to ~/.dotfiles, and the command that
+# installs them, run inside the clone. Set them in the private vars file (see
+# "Secrets" in README.org). When dotfiles_repository is empty, the role does
+# nothing.
+dotfiles_repository: ""
+dotfiles_install_command: ""
+
+# Environment variables for the install command. By default they come from the
+# dotfiles_environment_yml_file vault variable, a YAML mapping, when the vault
+# defines it.
+dotfiles_environment: "{{ dotfiles_environment_yml_file | default('{}') | from_yaml }}"
