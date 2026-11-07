@@ -1,6 +1,11 @@
 ---
-- name: Add cask-fonts tap
-  command: brew tap homebrew/cask-fonts
+# font-hack moved into Homebrew's main cask repository, and GitHub deleted
+# the tap's repository. Fetching it now asks for GitHub credentials, which
+# shows a Keychain prompt every time brew updates.
+- name: Remove the old homebrew/cask-fonts tap
+  homebrew_tap:
+    name: homebrew/cask-fonts
+    state: absent
 
 - name: Install Hack font
   homebrew_cask:
