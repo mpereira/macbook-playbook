@@ -1,0 +1,61 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["verdict", "summary", "findings"],
+  "properties": {
+    "verdict": {
+      "type": "string",
+      "enum": ["approve", "revise"],
+      "description": "approve only when there are zero findings with severity blocker or major."
+    },
+    "summary": {
+      "type": "string",
+      "description": "Two sentences maximum. What changed since the previous round, and what still stands."
+    },
+    "findings": {
+      "type": "array",
+      "description": "All findings that still stand this round, plus any newly withdrawn ones.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "status", "severity", "file", "line", "title", "detail", "suggested_fix"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Stable kebab-case slug identifying this finding, e.g. 'unbounded-retry-loop'. REUSE the exact id from a previous round when re-reporting the same issue. Never renumber or rename an id across rounds."
+          },
+          "status": {
+            "type": "string",
+            "enum": ["new", "upheld", "withdrawn"],
+            "description": "new = first raised this round. upheld = raised before, author's response did not resolve it. withdrawn = raised before, now retracted (either fixed or the author's counter-argument was correct)."
+          },
+          "severity": {
+            "type": "string",
+            "enum": ["blocker", "major", "minor", "nit"],
+            "description": "blocker = incorrect, unsafe, or will not work. major = significant design or correctness risk. minor = worth fixing, not worth blocking. nit = taste."
+          },
+          "file": {
+            "type": "string",
+            "description": "Repo-relative path, or empty string if the finding is not anchored to a file."
+          },
+          "line": {
+            "type": "integer",
+            "description": "1-indexed line number, or 0 if not anchored to a line."
+          },
+          "title": {
+            "type": "string",
+            "description": "One line, under 80 characters."
+          },
+          "detail": {
+            "type": "string",
+            "description": "Why this is wrong and what breaks as a result. Concrete inputs or conditions, not generalities."
+          },
+          "suggested_fix": {
+            "type": "string",
+            "description": "The specific change that would resolve it. Empty string if you genuinely have no suggestion."
+          }
+        }
+      }
+    }
+  }
+}

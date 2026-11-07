@@ -1,0 +1,115 @@
+#!/usr/bin/env python3
+"""Post a Codex review round to a GitHub PR as a single review.
+
+    publish-review --pr 123 --round-file DIR/round-2.json [--disputes DIR/disputes.md] [--dry-run]
+
+Findings anchored to a file and line become inline comments; everything else
+goes in the review body. If GitHub rejects the inline anchors (the usual cause
+is a line that is not part of the diff), the whole review is re-posted as a
+body-only comment rather than lost.
+
+Posts as whoever `gh` is authenticated as, so every review is labelled with its
+real author in the body. Nothing here should read as a human review.
+"""
+
+import argparse
+import json
+import subprocess
+import sys
+
+SEVERITY_MARK = {"blocker": "🛑", "major": "🔶", "minor": "🔹", "nit": "💬"}
+HEADER = "🤖 **Codex review** — posted by an automated convergence loop, not a human reviewer."
+
+
+def gh(args, payload=None):
+    proc = subprocess.run(
+        ["gh", *args],
+        input=json.dumps(payload) if payload is not None else None,
+        capture_output=True,
+        text=True,
+    )
+    return proc.returncode, proc.stdout, proc.stderr
+
+
+def finding_body(f):
+    mark = SEVERITY_MARK.get(f["severity"], "•")
+    parts = [f"{mark} **{f['title']}** _({f['severity']}, `{f['id']}`)_", "", f["detail"]]
+    if f.get("suggested_fix"):
+        parts += ["", f"**Suggested fix:** {f['suggested_fix']}"]
+    return "\n".join(parts)
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--pr", required=True)
+    ap.add_argument("--round-file", required=True)
+    ap.add_argument("--disputes", help="markdown file of findings the author contests")
+    ap.add_argument("--repo", help="owner/name; defaults to the current repo")
+    ap.add_argument("--dry-run", action="store_true")
+    args = ap.parse_args()
+
+    with open(args.round_file) as fh:
+        review = json.load(fh)
+
+    standing = [f for f in review["findings"] if f["status"] != "withdrawn"]
+    withdrawn = [f for f in review["findings"] if f["status"] == "withdrawn"]
+
+    body = [HEADER, "", f"**Verdict:** `{review['verdict']}`", "", review["summary"]]
+
+    unanchored = [f for f in standing if not f["file"] or not f["line"]]
+    if unanchored:
+        body += ["", "### Findings not tied to a specific line", ""]
+        body += [finding_body(f) + "\n" for f in unanchored]
+
+    if withdrawn:
+        body += ["", "### Withdrawn this round", ""]
+        body += [f"- ~~{f['title']}~~ (`{f['id']}`)" for f in withdrawn]
+
+    if args.disputes:
+        with open(args.disputes) as fh:
+            disputed = fh.read().strip()
+        if disputed:
+            body += ["", "### Contested by the author — needs a human call", "", disputed]
+
+    comments = [
+        {"path": f["file"], "line": f["line"], "body": finding_body(f)}
+        for f in standing
+        if f["file"] and f["line"]
+    ]
+
+    payload = {"body": "\n".join(body), "event": "COMMENT"}
+    if comments:
+        payload["comments"] = comments
+
+    repo = args.repo
+    if not repo:
+        code, out, err = gh(["repo", "view", "--json", "nameWithOwner", "-q", ".nameWithOwner"])
+        if code != 0:
+            sys.exit(f"could not determine repo: {err.strip()}")
+        repo = out.strip()
+
+    endpoint = f"repos/{repo}/pulls/{args.pr}/reviews"
+
+    if args.dry_run:
+        print(f"POST {endpoint}")
+        print(json.dumps(payload, indent=2))
+        return
+
+    code, out, err = gh(["api", "--method", "POST", endpoint, "--input", "-"], payload)
+    if code != 0 and comments:
+        print(f"inline anchors rejected, retrying without them: {err.strip()}", file=sys.stderr)
+        payload.pop("comments")
+        payload["body"] += "\n\n> Inline anchors were rejected by GitHub; findings are listed above."
+        for f in standing:
+            if f["file"] and f["line"]:
+                payload["body"] += f"\n\n**`{f['file']}:{f['line']}`** — {finding_body(f)}"
+        code, out, err = gh(["api", "--method", "POST", endpoint, "--input", "-"], payload)
+
+    if code != 0:
+        sys.exit(f"failed to post review: {err.strip()}")
+
+    print(json.loads(out).get("html_url", "posted"))
+
+
+if __name__ == "__main__":
+    main()

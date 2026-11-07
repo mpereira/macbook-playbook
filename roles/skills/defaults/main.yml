@@ -12,8 +12,16 @@
 # skill to pin it; omit it to track the default branch.
 
 # Skills maintained in this playbook under roles/skills/files/<name>.
+#
+# brief, build, converge and review are one workflow: brief and build hand off
+# to each other, and brief, build and review run their Codex loop through
+# converge's bin/codex-review. Keep the four together.
 agent_skills_local:
   - asd-ste100
+  - brief
+  - build
+  - converge
+  - review
 
 # Skills whose entire git repository *is* the skill. Cloned directly into the
 # canonical location (~/.agents/skills/<name>).

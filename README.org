@@ -360,6 +360,10 @@ TODO:
      - [[https://github.com/blader/humanizer][Humanizer]] (standalone repo)
      - =asd-ste100= (maintained here in =roles/skills/files/asd-ste100/SKILL.md=,
        with links to ASD's official standard)
+     - =brief=, =build=, =converge= and =review= (maintained here in
+       =roles/skills/files=). A Claude-and-Codex review loop: =/brief= plans,
+       =/build= implements, =/review= reviews existing work, and all three run
+       their Codex rounds through =converge='s =bin/codex-review=
      - [[https://github.com/humanlayer/skills][HumanLayer skills]] (=show-me=)
      - [[https://github.com/anthropics/skills][anthropics/skills]] (=frontend-design=)
      - [[https://github.com/vercel-labs/skills][vercel-labs/skills]] (=find-skills=)

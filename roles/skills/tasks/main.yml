@@ -146,6 +146,24 @@
     mode: preserve
   loop: "{{ agent_skills_local }}"
 
+# A locally-maintained skill may have started as a real directory in
+# ~/.claude/skills. The symlink below can't replace a non-empty directory, and
+# this role now owns the skill, so remove the stray copy.
+- name: Check Claude Code's copies of locally-maintained skills
+  stat:
+    path: "{{ home_directory }}/.claude/skills/{{ item }}"
+  loop: "{{ agent_skills_local }}"
+  register: claude_local_skill_copies
+
+- name: Remove real-directory copies of locally-maintained skills from Claude Code
+  file:
+    path: "{{ item.stat.path }}"
+    state: absent
+  loop: "{{ claude_local_skill_copies.results }}"
+  loop_control:
+    label: "{{ item.item }}"
+  when: item.stat.isdir | default(false) and not item.stat.islnk
+
 # --- Mirror the canonical tree into Claude Code ----------------------------
 - name: Discover every canonical skill
   find:

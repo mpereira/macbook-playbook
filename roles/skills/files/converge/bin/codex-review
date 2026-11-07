@@ -1,0 +1,137 @@
+#!/usr/bin/env bash
+# Run one round of Codex review, non-interactively, with a structured verdict.
+#
+#   codex-review --mode plan --input PLAN.md --round 1 --out DIR
+#   codex-review --mode code --base dev      --round 2 --out DIR --reply REBUTTAL.md
+#
+# Round 1 starts a fresh Codex session. Rounds 2+ resume it, so the reviewer
+# keeps its own context instead of re-deriving the problem every time.
+# Writes DIR/round-N.json (schema: ../schema/review.json) and prints its path.
+
+set -euo pipefail
+
+SKILL_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+SCHEMA="$SKILL_DIR/schema/review.json"
+
+die() { printf '%s\n' "$*" >&2; exit 1; }
+
+find_codex() {
+  if command -v codex >/dev/null 2>&1; then command -v codex; return; fi
+  # The ChatGPT app has shipped the CLI at more than one path; newest first.
+  local resources="/Applications/ChatGPT.app/Contents/Resources" bundled
+  for bundled in "$resources/codex-cli/bin/codex" "$resources/codex"; do
+    [[ -x $bundled ]] && { printf '%s\n' "$bundled"; return; }
+  done
+  die "codex not found on PATH or under $resources"
+}
+
+MODE="" INPUT="" BASE="" ROUND="" OUT="" REPLY_FILE="" WORKDIR="$PWD"
+while [[ $# -gt 0 ]]; do
+  case $1 in
+    --mode)    MODE=$2;    shift 2 ;;
+    --input)   INPUT=$2;   shift 2 ;;
+    --base)    BASE=$2;    shift 2 ;;
+    --round)   ROUND=$2;   shift 2 ;;
+    --out)     OUT=$2;     shift 2 ;;
+    --reply)   REPLY_FILE=$2;   shift 2 ;;
+    --workdir) WORKDIR=$2; shift 2 ;;
+    *) die "unknown argument: $1" ;;
+  esac
+done
+
+[[ -n $MODE  ]] || die "--mode is required (plan|code)"
+[[ -n $ROUND ]] || die "--round is required"
+[[ -n $OUT   ]] || die "--out is required"
+[[ $ROUND =~ ^[0-9]+$ ]] || die "--round must be a number, got: $ROUND"
+
+# Validate here, not inside prompt(). prompt() runs in a pipeline subshell, so a
+# die() in there kills only the subshell -- codex would then start a real review
+# against a half-written prompt and sit there burning tokens.
+case $MODE in
+  plan)
+    [[ -n $INPUT ]] || die "--mode plan requires --input"
+    [[ -f $INPUT ]] || die "plan file not found: $INPUT"
+    ;;
+  code)
+    [[ -n $BASE ]] || die "--mode code requires --base"
+    git rev-parse --verify --quiet "$BASE" >/dev/null \
+      || die "base ref not found in this repo: $BASE"
+    ;;
+  *) die "--mode must be plan or code, got: $MODE" ;;
+esac
+[[ -z $REPLY_FILE || -f $REPLY_FILE ]] || die "reply file not found: $REPLY_FILE"
+
+mkdir -p "$OUT"
+RESULT="$OUT/round-$ROUND.json"
+CODEX=$(find_codex)
+
+# Build the round's prompt on stdin so quoting never bites us.
+prompt() {
+  cat <<'PREAMBLE'
+You are the reviewing agent in a two-agent convergence loop. Another agent (Claude)
+authored the work below and will respond to your findings. A human is watching but
+is not in the inner loop.
+
+Ground rules:
+- Report only defects you can justify concretely. State what breaks and under what
+  conditions. "Consider using X" with no failure mode attached is not a finding.
+- Severity is a claim about consequence, not confidence. Reserve blocker/major for
+  things that are wrong, unsafe, or will not work.
+- You are NOT being asked to rewrite the work. Do not edit any files.
+- If the author's counter-argument to a previous finding is correct, withdraw it.
+  Withdrawing when you were wrong is the expected outcome, not a concession.
+- Never re-raise a finding you withdrew in an earlier round.
+PREAMBLE
+
+  case $MODE in
+    plan)
+      printf '\nReview this implementation plan. Judge it on whether it will actually work\n'
+      printf 'in this repository: wrong assumptions about existing code, missed cases,\n'
+      printf 'steps that cannot be done in the stated order, and scope that does not match\n'
+      printf 'the stated goal. Read whatever repo files you need in order to check its claims.\n\n'
+      printf 'Plan under review (%s):\n\n' "$INPUT"
+      printf -- '----- BEGIN PLAN -----\n'
+      cat "$INPUT"
+      printf -- '\n----- END PLAN -----\n'
+      ;;
+    code)
+      printf '\nReview the code changes on this branch. Get the diff yourself:\n\n'
+      printf '    git diff %s...HEAD\n    git status --short\n    git diff\n\n' "$BASE"
+      printf 'That last pair covers uncommitted work, which is usually where the current\n'
+      printf 'round lives. Read surrounding files for context; the diff alone is not enough\n'
+      printf 'to judge correctness. Anchor every finding to a file and line where you can.\n'
+      ;;
+  esac
+
+  if [[ -n $REPLY_FILE ]]; then
+    printf '\nThe author has responded to your previous round. Where they fixed something,\n'
+    printf 'verify the fix rather than trusting the description. Where they pushed back,\n'
+    printf 'either withdraw the finding or uphold it with a direct answer to their argument.\n\n'
+    printf -- '----- BEGIN AUTHOR RESPONSE -----\n'
+    cat "$REPLY_FILE"
+    printf -- '\n----- END AUTHOR RESPONSE -----\n'
+  fi
+}
+
+# `exec resume` inherits sandbox and working directory from the session it
+# resumes, and rejects --sandbox/--cd outright. So the flag sets differ.
+common=(
+  --output-schema "$SCHEMA"
+  --output-last-message "$RESULT"
+  --skip-git-repo-check
+)
+
+# Word-split on purpose: CODEX_REVIEW_ARGS carries extra flags, typically
+# -c model_reasoning_effort="low" to trade depth for turnaround.
+read -r -a extra <<<"${CODEX_REVIEW_ARGS:-}"
+common+=("${extra[@]}")
+
+if [[ $ROUND -eq 1 ]]; then
+  prompt | "$CODEX" exec "${common[@]}" \
+    --sandbox read-only --cd "$WORKDIR" - >"$OUT/round-$ROUND.log" 2>&1
+else
+  prompt | "$CODEX" exec resume --last "${common[@]}" - >"$OUT/round-$ROUND.log" 2>&1
+fi
+
+[[ -s $RESULT ]] || die "codex produced no result; see $OUT/round-$ROUND.log"
+printf '%s\n' "$RESULT"
