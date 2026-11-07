@@ -22,6 +22,15 @@ claude_write_protected_paths:
   - ~/.gnupg
   - ~/.config/gh
 
+# Paths outside the working directory that sandboxed commands may write to.
+# Unsandboxed runs share these caches. Terraform checks cached providers
+# against .terraform.lock.hcl, but uv trusts its cache.
+claude_sandbox_writable_paths:
+  # Project setup commands install Python packages with uv and Terraform
+  # providers through the plugin cache.
+  - ~/Library/Caches/uv
+  - ~/.terraform.d/plugin-cache
+
 # Commands that run outside the Bash sandbox, with full access. Git hooks run
 # with them, and Claude can edit hook configuration such as lefthook.yml in
 # the working directory, so these make the sandbox a guard against accidents
@@ -99,6 +108,7 @@ claude_managed_settings:
     enableWeakerNetworkIsolation: true
     excludedCommands: "{{ claude_sandbox_excluded_commands }}"
     filesystem:
+      allowWrite: "{{ claude_sandbox_writable_paths }}"
       denyWrite: "{{ claude_write_protected_paths }}"
   # Keep the restrictions the desktop app passes to Claude Code. Without this,
   # Claude Code drops them whenever a managed settings file exists.
