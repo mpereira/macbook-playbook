@@ -173,12 +173,6 @@
         # emacs_pre_built_version: "26.1-rc1"
         # emacs_pre_built_pretest: "yes"
 
-    # DISABLED: Vim isn't compiling with Python 3.10.
-    - role: vim
-      tags: [disabled, text-editors, bespoke-pkg, vim]
-      vars:
-        vim_version: "8.2"
-
     - role: neovim
       tags: [disabled, text-editors, bespoke-pkg, neovim]
       vars:
@@ -215,13 +209,6 @@
     # Security ##################################################################
     #############################################################################
 
-    # DISABLED: Apple security stuff is good enough.
-    - role: prey
-      tags: [disabled, security, bespoke-pkg, prey, uses-secrets]
-      vars:
-        # https://github.com/prey/prey-node-client/releases
-        prey_version: "1.9.13"
-
     - role: vault
       tags: [security, npm-pkg, vault]
       vars:
@@ -248,9 +235,6 @@
     ############################################################################
     # Observability ############################################################
     ############################################################################
-
-    - role: glances
-      tags: [observability, pip-pkg, glances]
 
     - role: ngrep
       tags: [observability, brew-pkg, ngrep]
@@ -381,16 +365,6 @@
 
     - role: rescuetime
       tags: [desktop-applications, bespoke-pkg, rescuetime]
-
-    # TODO: upgrade to xbar: https://github.com/matryer/xbar/issues/607.
-    - role: xbar
-      tags: [desktop-applications, bespoke-pkg, xbar]
-      vars:
-        # https://github.com/matryer/xbar/releases
-        xbar_version: "v2.1.7-beta"
-
-    - role: xbar-plugins
-      tags: [desktop-applications, xbar, xbar-plugins]
 
     - role: divvy
       tags: [disabled, desktop-applications, bespoke-pkg, divvy]

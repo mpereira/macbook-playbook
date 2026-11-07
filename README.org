@@ -13,7 +13,6 @@ TODO:
 - unencrypt and add SSH key to ssh session
 - figure out Emacs symbolic link internal directory
 - make caps lock -> ESC remapping work
-- fix glances webserver "msg: Destination directory /Users/mpereira/Library/LaunchAgents does not exist"
 - install insta360 link ap
 - wait 1s after install spotify and steam
 - GraalVM on apple silicon?
@@ -152,7 +151,6 @@ TODO:
     | Enviroment variables for [[https://github.com/mpereira/dotfiles][dotfiles]] | =dotfiles_environment_yml_file=     | dotfiles       |
     | gmailctl OAuth client             | =gmailctl_credentials_json_file=    | gmailctl       |
     | gmailctl OAuth token              | =gmailctl_token_json_file=          | gmailctl       |
-    | Prey API key                      | =prey_api_key_yaml_file=            | prey           |
     | Private SSH key                   | =mpereira_at_pluto_ssh_private_key= | ssh-keys       |
     | s3cmd configuration               | =s3cmd_cfg_file=                    | s3cmd          |
 
@@ -300,7 +298,6 @@ TODO:
 *** Installs
 **** Desktop Applications
      - [[https://www.android.com/filetransfer/][Android File Transfer]]
-     - [[https://getbitbar.com/][BitBar]]
      - [[https://chatgpt.com/][ChatGPT]]
      - [[https://claude.com/][Claude]]
      - [[https://getcleanshot.com/][CleanShot X]]
@@ -402,8 +399,6 @@ TODO:
      - [[http://macvim-dev.github.io/macvim/][MacVim]]
      - [[https://github.com/neovim/neovim/wiki/Installing-Neovim][Neovim]]
      - [[https://www.jetbrains.com/rider/][Rider]]
-     - [[http://www.vim.org/][Vim]] (disabled by default until I figure out why it isn't compiling on
-       macOS Big Sur with LLVM 12)
      - [[https://code.visualstudio.com/][VSCode]]
 
 **** Configuration
@@ -531,7 +526,6 @@ TODO:
 
 **** Configuration, Monitoring and Debugging
      - [[http://jmeter.apache.org/][Apache JMeter]]
-     - [[https://nicolargo.github.io/glances/][Glances]]
      - [[http://hisham.hm/htop/][htop]]
      - [[https://github.com/jpr5/ngrep][ngrep]]
      - [[https://github.com/MrRio/vtop][vtop]]
@@ -592,7 +586,6 @@ TODO:
      - [[https://tukaani.org/xz/][xz]]
 
 **** Security
-     - [[https://www.preyproject.com/download][Prey]]
      - [[https://www.gnupg.org/download/index.html][GnuPG]]
      - [[https://github.com/GPGTools/pinentry][pinentry-mac]]
      - gpg-agent-config (configures gpg-agent.conf with pinentry-mac)
