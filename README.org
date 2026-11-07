@@ -675,8 +675,9 @@ TODO:
      is blocked twice:
      - An =Edit= deny rule stops Claude's file tools.
      - The [[https://code.claude.com/docs/en/sandboxing][Bash sandbox]] stops shell commands and every process they start.
-       It also limits writes to the working directory and a temporary
-       directory. Claude can't retry a blocked command outside the sandbox,
+       It also limits writes to the working directory, a temporary directory,
+       and the package caches in =claude_sandbox_writable_paths= (uv, Terraform
+       and Cargo). Claude can't retry a blocked command outside the sandbox,
        and Claude Code refuses to start if the sandbox is unavailable.
 
      Sandboxed commands can reach any host over HTTP and HTTPS. The commands

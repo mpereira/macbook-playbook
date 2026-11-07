@@ -24,12 +24,23 @@ claude_write_protected_paths:
 
 # Paths outside the working directory that sandboxed commands may write to.
 # Unsandboxed runs share these caches. Terraform checks cached providers
-# against .terraform.lock.hcl, but uv trusts its cache.
+# against .terraform.lock.hcl, but uv trusts its cache, and Cargo trusts the
+# crate sources it has already unpacked.
 claude_sandbox_writable_paths:
   # Project setup commands install Python packages with uv and Terraform
   # providers through the plugin cache.
   - ~/Library/Caches/uv
   - ~/.terraform.d/plugin-cache
+  # Cargo downloads crates and git dependencies into these directories, and
+  # locks and records them in the files next to them. The journal exists only
+  # while Cargo writes its database. Not all of ~/.cargo: bin is on PATH, the
+  # shell sources env, and config.toml can make Cargo run any program.
+  - ~/.cargo/registry
+  - ~/.cargo/git
+  - ~/.cargo/.package-cache
+  - ~/.cargo/.package-cache-mutate
+  - ~/.cargo/.global-cache
+  - ~/.cargo/.global-cache-journal
 
 # Directories where sandboxed commands may create and connect to Unix sockets.
 # Terraform starts each provider as a plugin process that listens on a Unix
