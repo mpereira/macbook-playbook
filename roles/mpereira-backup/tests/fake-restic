@@ -1,0 +1,123 @@
+#!/usr/bin/python3 -I
+"""A stand-in for restic in the tests. It records each call in $FAKE_RESTIC_DIR/calls.jsonl and keeps its snapshots in
+$FAKE_RESTIC_DIR/snapshots.json. A snapshot holds what its paths hold on disk when "ls" reads it, less the paths listed
+in $FAKE_RESTIC_DIR/ls-missing; the paths in $FAKE_RESTIC_DIR/ls-stale have an mtime one second older. "dump" prints a
+file as it is on disk, or "corrupt" for the paths in $FAKE_RESTIC_DIR/dump-corrupt. $FAKE_RESTIC_DIR/backup-rc, if
+there, is the exit code of each backup, and each line of $FAKE_RESTIC_DIR/backup-errors is printed on stderr.
+$FAKE_RESTIC_DIR/backup-added, if there, is printed by each backup, as restic prints what it added."""
+import datetime
+import json
+import os
+import sys
+
+d = os.environ['FAKE_RESTIC_DIR']
+args = sys.argv[1:]
+with open(os.path.join(d, 'calls.jsonl'), 'a') as f:
+    f.write(json.dumps({'args': args, 'repository': os.environ.get('RESTIC_REPOSITORY'),
+                        'password_file': os.environ.get('RESTIC_PASSWORD_FILE'),
+                        'extra': os.environ.get('FAKE_EXTRA', '')}) + '\n')
+snap_path = os.path.join(d, 'snapshots.json')
+
+
+def restic_time() -> str:
+    """The time as restic writes it: nanoseconds and the zone, such as 2026-11-08T00:14:37.530248123+01:00."""
+    t = datetime.datetime.now().astimezone().isoformat(timespec='microseconds')
+    return t[:26] + '123' + t[26:]
+
+
+def ns_time(ns: int) -> str:
+    """A file time as restic writes it in "ls --json": to the nanosecond, with the zone."""
+    t = datetime.datetime.fromtimestamp(ns // 10**9).astimezone().isoformat()
+    return f'{t[:19]}.{ns % 10**9:09d}{t[19:]}'
+
+
+def node(p: str, stale: set) -> dict:
+    st = os.lstat(p)
+    mtime = st.st_mtime_ns - (10**9 if p in stale else 0)
+    return {'type': 'file', 'path': p, 'size': st.st_size, 'mtime': ns_time(mtime), 'ctime': ns_time(st.st_ctime_ns),
+            'inode': st.st_ino, 'struct_type': 'node'}
+
+
+def read(name, default):
+    try:
+        with open(os.path.join(d, name)) as f:
+            return f.read()
+    except FileNotFoundError:
+        return default
+
+
+snaps = json.loads(read('snapshots.json', '[]'))
+commands = ('backup', 'snapshots', 'ls', 'forget', 'prune', 'check', 'key', 'restore', 'find', 'dump')
+i = next((k for k, a in enumerate(args) if a in commands), None)
+if i is None:
+    sys.exit(0)
+cmd, rest = args[i], args[i + 1:]
+
+if cmd == 'snapshots':
+    print(json.dumps(snaps))
+elif cmd == 'backup':
+    rc = int(read('backup-rc', '0').strip() or 0)
+    paths = rest[rest.index('--') + 1:] if '--' in rest else []
+    tags = [rest[k + 1] for k, a in enumerate(rest) if a == '--tag']
+    if rc not in (0, 3):
+        print('Fatal: fake failure', file=sys.stderr)
+        sys.exit(rc)
+    if '--dry-run' not in rest:
+        snaps.append({'id': f'{len(snaps) + 1:064x}', 'time': restic_time(),
+                      'paths': sorted(paths), 'tags': tags or None})
+        with open(snap_path, 'w') as f:
+            json.dump(snaps, f)
+    for line in read('backup-errors', '').splitlines():
+        print(line, file=sys.stderr)
+    print(read('backup-added', ''), end='')
+    print(f'snapshot {len(snaps):08x} saved')
+    sys.exit(rc)
+elif cmd == 'ls':
+    plain = [a for a in rest if not a.startswith('--')]
+    snap, folders = plain[0], plain[1:]
+    missing = set(read('ls-missing', '').splitlines())
+    stale = set(read('ls-stale', '').splitlines())
+    print(json.dumps({'struct_type': 'snapshot', 'id': snap}))
+    for folder in folders:
+        for root, dirs, files in os.walk(folder):
+            for n in dirs:
+                p = os.path.join(root, n)
+                print(json.dumps({'type': 'symlink' if os.path.islink(p) else 'dir', 'path': p}))
+            for n in files:
+                p = os.path.join(root, n)
+                if p in missing:
+                    continue
+                if os.path.islink(p):
+                    print(json.dumps({'type': 'symlink', 'path': p}))
+                else:
+                    print(json.dumps(node(p, stale)))
+elif cmd == 'restore':
+    import shutil
+    target = rest[rest.index('--target') + 1]
+    include = rest[rest.index('--include') + 1]
+    missing = set(read('ls-missing', '').splitlines())
+    corrupt = set(read('dump-corrupt', '').splitlines())
+    for root, dirs, files in os.walk(include):
+        os.makedirs(target + root, exist_ok=True)
+        for n in files:
+            p = os.path.join(root, n)
+            if p in missing:
+                continue
+            dst = target + p
+            if os.path.islink(p):
+                os.symlink(os.readlink(p), dst)
+                continue
+            shutil.copy2(p, dst)
+            if p in corrupt:
+                st = os.lstat(p)
+                with open(dst, 'r+b') as f:
+                    f.write(b'X')
+                os.utime(dst, ns=(st.st_atime_ns, st.st_mtime_ns))
+elif cmd == 'dump':
+    path = rest[-1]
+    if path in set(read('dump-corrupt', '').splitlines()):
+        sys.stdout.write('corrupt')
+    else:
+        with open(path, 'rb') as f:
+            sys.stdout.buffer.write(f.read())
+sys.exit(0)

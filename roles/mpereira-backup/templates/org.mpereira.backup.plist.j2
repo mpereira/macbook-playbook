@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!-- {{ ansible_managed }}: change it in the mpereira-backup role. -->
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>{{ mpereira_backup_label }}</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>{{ mpereira_backup_launcher }}</string>
+    <string>--config</string>
+    <string>{{ mpereira_backup_config_file }}</string>
+    <string>run</string>
+  </array>
+  <!-- Every hour, and each time a drive mounts. The run does only the jobs that are due. -->
+  <key>StartInterval</key>
+  <integer>{{ mpereira_backup_interval_seconds }}</integer>
+  <key>StartOnMount</key>
+  <true/>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>StandardOutPath</key>
+  <string>{{ mpereira_backup_state_dir }}/logs/launchd.log</string>
+  <key>StandardErrorPath</key>
+  <string>{{ mpereira_backup_state_dir }}/logs/launchd.log</string>
+</dict>
+</plist>

@@ -1,0 +1,165 @@
+# rebuildable.exclude: data that can be downloaded or rebuilt, so no backup keeps it.
+# Backups read it with --iexclude-file ("iexclude_files" in mpereira-backup's settings), so the patterns ignore case.
+# A pattern without a leading / matches a file or folder name at any depth.
+# Finder's window settings, which it writes again in each folder it opens
+.DS_Store
+# What macOS keeps at the top of a volume: the Spotlight index, temporary files, the change log, and the Trash of
+# files deleted on the volume. restic cannot read most of them.
+.Spotlight-V100
+.TemporaryItems
+.fseventsd
+.Trashes
+# Installers and disk images
+*.dmg
+*.pkg
+*.iso
+*.msi
+*.exe
+*.ipa
+*.apk
+*.xip
+# The installers that the macbook-playbook downloads (its downloads_directory)
+.ansible/downloads
+# Apps
+*.app
+# VM and container images
+*.vmdk
+*.vdi
+*.qcow2
+*.vhd
+*.vhdx
+*.ova
+*.box
+VirtualBox VMs
+.vagrant.d
+.docker
+.minikube
+# OrbStack's Linux disk image and swap, not the folders named orbstack (such as a playbook role)
+Library/Group Containers/*.dev.orbstack/data
+# Caches and package stores
+Library/Caches
+.cache
+.npm
+.m2
+.gradle
+.cargo
+.rustup
+.ivy2
+.sbt
+.coursier
+.pyenv
+.rbenv
+.nvm
+.ollama
+# Tool caches. --exclude-caches skips the newer ones, which hold a CACHEDIR.TAG file; these leave out the older ones.
+.mypy_cache
+.pytest_cache
+.ruff_cache
+.shadow-cljs
+# The Lisp files that Emacs compiles to native code, which Emacs compiles again
+eln-cache
+# The packages that Emacs creates when it loads init.el, and their old copies. Only inside an Emacs
+# folder, because a repository can be named quelpa or a folder of yours straight.
+.emacs.d*/elpa
+.emacs.d*/elpa-*
+.emacs.d*/quelpa
+.emacs.d*/quelpa-*
+.emacs.d*/straight
+.emacs.d*/.local/straight
+.emacs.d*/package-repository-backups/elpa-*
+.emacs.d*/package-repository-backups/quelpa-*
+# The same folders in copies of Emacs folders kept as emacs.d*/<version>, such as Projects/emacs.d/2019
+emacs.d*/*/elpa
+emacs.d*/*/elpa-*
+emacs.d*/*/quelpa
+emacs.d*/*/quelpa-*
+emacs.d*/*/straight
+emacs.d*/*/.local/straight
+emacs.d*/*/package-repository-backups/elpa-*
+emacs.d*/*/package-repository-backups/quelpa-*
+# The extensions that VS Code downloads, not every folder named extensions: VS Code's own source
+# has one
+.vscode/extensions
+# What a Synology keeps beside the files: copies of their macOS attributes, and thumbnails
+@eaDir
+# The Firefox profile cache on Linux (cache2 in newer versions)
+.mozilla/firefox/*/Cache
+.mozilla/firefox/*/cache2
+go/pkg
+Library/Developer
+Library/Containers/com.docker.docker
+# The caches and logs of apps, and the packages that pip, uv, Bun, pnpm, and Terraform download again.
+# Electron and Chromium apps keep a Cache folder in Application Support, not in Library/Caches.
+Library/Logs
+Library/Application Support/Caches
+Library/Application Support/*/Cache
+Library/Application Support/*/Partitions/*/Cache
+Library/Application Support/*/component_crx_cache
+Library/Application Support/Google/GoogleUpdater/crx_cache
+Library/Application Support/Google/Chrome/*/Shared Dictionary/cache
+Library/Application Support/Slack/logs
+Library/Group Containers/*.ru.keepcoder.Telegram/stable/*/postbox/media/cache
+Library/Group Containers/*.ru.keepcoder.Telegram/stable/logs
+Library/Containers/*/Data/tmp
+Library/Python/*/lib/python/site-packages
+Library/Application Support/uv/python
+.bun/install/cache
+.pnpm-store
+.terraform.d/plugin-cache
+.codex/cache
+.codex/plugins/cache
+.local/share/NuGet/http-cache
+# What apps and tools download again on demand: Chrome's on-device AI model, its extensions and the
+# caches of its service workers (in each profile), the tool versions that mise installs, the npm packages installed
+# with -g, the Node.js that Zed downloads, the Cursor extensions, and the Python environment of the gcloud CLI
+Library/Application Support/Google/Chrome/OptGuideOnDeviceModel
+Library/Application Support/Google/Chrome/*/Extensions
+Library/Application Support/Google/Chrome/*/Service Worker/CacheStorage
+.local/share/mise/installs
+.npm-global
+Library/Application Support/Zed/node
+.cursor/extensions
+.config/gcloud/virtenv
+# What macOS keeps about this Mac, which it builds again and which a new Mac must not get back:
+# the File Provider databases (the files of iCloud Drive are in Library/Mobile Documents, the other cloud drives in
+# Library/CloudStorage), Control Center's settings, the Spotlight index of app data, the data of system daemons, and
+# the data that Siri Suggestions learns. The backups may not read most of them.
+Library/Application Support/FileProvider
+Library/Group Containers/group.com.apple.secure-control-center-preferences
+Library/Metadata/CoreSpotlight
+Library/Daemon Containers
+Library/DuetExpertCenter
+# Build outputs. "build_outputs" finds the target, Unity Library, and vendor folders, which need more than a name.
+node_modules
+.venv
+venv
+__pycache__
+.next
+.turbo
+# Terraform providers and modules, which terraform init downloads again
+.terraform
+# Derived media inside Photos, iMovie, and Final Cut libraries (the app rebuilds it)
+*.photoslibrary/**/Render Files
+*.photoslibrary/**/Transcoded Media
+*.photoslibrary/**/Proxy Media
+*.photoslibrary/**/Optimized Media
+*.photoslibrary/**/resources/derivatives
+*.photoslibrary/**/resources/proxies
+*.photoslibrary/**/Thumbnails
+*.photoslibrary/**/Previews
+*.imovielibrary/**/Render Files
+*.imovielibrary/**/Transcoded Media
+*.imovielibrary/**/Proxy Media
+*.imovielibrary/**/Optimized Media
+*.imovielibrary/**/resources/derivatives
+*.imovielibrary/**/resources/proxies
+*.imovielibrary/**/Thumbnails
+*.imovielibrary/**/Previews
+*.fcpbundle/**/Render Files
+*.fcpbundle/**/Transcoded Media
+*.fcpbundle/**/Proxy Media
+*.fcpbundle/**/Optimized Media
+*.fcpbundle/**/resources/derivatives
+*.fcpbundle/**/resources/proxies
+*.fcpbundle/**/Thumbnails
+*.fcpbundle/**/Previews

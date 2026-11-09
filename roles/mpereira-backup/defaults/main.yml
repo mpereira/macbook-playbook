@@ -1,0 +1,24 @@
+---
+# Where the tool is installed. Full Disk Access is given to the launcher, so moving it needs a new grant.
+mpereira_backup_lib_dir: /usr/local/lib/mpereira-backup
+mpereira_backup_bin: /usr/local/bin/mpereira-backup
+mpereira_backup_launcher: /usr/local/bin/mpereira-backup-launch
+
+mpereira_backup_config_file: "{{ home_directory }}/.config/mpereira-backup/config.json"
+mpereira_backup_state_dir: "{{ home_directory }}/.local/state/mpereira-backup"
+
+# The settings of config.json, as YAML (see config.example.json and the README for each one). They belong to one
+# person, so they are set in the private vars file, not here. While this is empty, the role installs the tool and
+# nothing else: no settings file and no LaunchAgent.
+mpereira_backup_config: {}
+
+# Files with secrets that the settings name, such as the restic password files and the B2 key file. Each entry:
+# {path: ..., content: ...}, written readable only by you. Set it in the private vars file, with the values from vault
+# variables: content: "{{ restic_mac_password }}".
+mpereira_backup_secret_files: []
+
+# The LaunchAgent that starts "mpereira-backup run". It is loaded only when mpereira_backup_config is set and this
+# is true.
+mpereira_backup_launch_agent: true
+mpereira_backup_label: org.mpereira.backup
+mpereira_backup_interval_seconds: 3600

@@ -1,0 +1,117 @@
+{
+  "//": "An example: a Mac, a ZFS pool at /Volumes/pool that is plugged in most of the time, a portable disk at /Volumes/portable, and a B2 bucket. Copy it to ~/.config/mpereira-backup/config.json, or set mpereira_backup_config to the same settings in YAML. The README describes each setting. A \"//\" key is a comment, in any object.",
+
+  "state_dir": "~/.local/state/mpereira-backup",
+  "notify": ["/opt/homebrew/bin/terminal-notifier", "-title", "{title}", "-message", "{message}"],
+  "pause_files": [],
+  "trash_requires": ["mac"],
+
+  "drives": {
+    "pool": {"mount": "/Volumes/pool", "kind": "zfs", "pool": "pool"},
+    "portable": {"mount": "/Volumes/portable", "kind": "disk"}
+  },
+
+  "repositories": {
+    "mac": {
+      "//": "The Mac's files, in a repository on the pool, every hour that the pool is there.",
+      "repository": "/Volumes/pool/restic/mac",
+      "password_file": "~/.config/mpereira-backup/mac.password",
+      "drive": "pool",
+      "cache_dir": "~/Library/Caches/restic",
+      "sources": [
+        {"name": "home", "kind": "home", "path": "~", "skip": ["Library", "Downloads"],
+         "add": [".ssh", ".gnupg", ".config"], "remind_after_days": 7}
+      ],
+      "iexclude_files": ["rebuildable.exclude"],
+      "exclude": ["~/Library/Caches", "~/Pictures/Photos Library.photoslibrary"],
+      "build_outputs": true,
+      "max_added_bytes": 5368709120,
+      "retention": {"keep-hourly": 24, "keep-daily": 14, "keep-weekly": 8, "keep-monthly": 24, "keep-yearly": 10},
+      "forget_after_backup": false,
+      "prune_every_days": 0
+    },
+
+    "offsite": {
+      "//": "The pool and the most important part of the Mac, in a B2 bucket, every night.",
+      "repository": "s3:https://s3.us-west-000.backblazeb2.com/example-bucket/offsite",
+      "password_file": "~/.config/mpereira-backup/offsite.password",
+      "env_file": "~/.config/mpereira-backup/b2.env",
+      "cache_dir": "~/Library/Caches/restic",
+      "sources": [
+        {"name": "pool", "kind": "folder", "path": "/Volumes/pool/files", "split": ["Photos", "Projects"],
+         "remind_after_days": 30},
+        {"name": "home", "kind": "paths", "paths": ["~/Documents", "~/.ssh", "~/.gnupg"], "tag": "home",
+         "remind_after_days": 3}
+      ],
+      "iexclude_files": ["rebuildable.exclude"],
+      "exclude": ["/Volumes/pool/files/Downloads"],
+      "build_outputs": true,
+      "retention": {"keep-daily": 14, "keep-weekly": 8, "keep-monthly": 24, "keep-yearly": 10},
+      "forget_after_backup": false,
+      "prune_every_days": 30,
+      "prune_args": ["--max-unused", "10%"]
+    },
+
+    "portable": {
+      "//": "The pool on the portable disk, when it is plugged in and the last backup is a week old.",
+      "repository": "/Volumes/portable/restic",
+      "password_file": "~/.config/mpereira-backup/portable.password",
+      "drive": "portable",
+      "sources": [
+        {"name": "pool", "kind": "folder", "path": "/Volumes/pool/files", "split": ["Photos"], "remind_after_days": 30}
+      ],
+      "iexclude_files": ["rebuildable.exclude"],
+      "iexclude": [".Trash", "*.theater"],
+      "build_outputs": true,
+      "retention": {"keep-daily": 14, "keep-weekly": 8, "keep-monthly": 24, "keep-yearly": 10},
+      "forget_after_backup": false,
+      "prune_every_days": 30,
+      "prune_args": ["--max-unused", "10%", "--max-repack-size", "10G"]
+    }
+  },
+
+  "jobs": {
+    "mac": {"kind": "backup", "repository": "mac", "due": {"every_hours": 1}},
+    "offsite": {"kind": "backup", "repository": "offsite", "due": {"daily_at": "02:00"}, "nice": 10},
+    "portable": {"kind": "backup", "repository": "portable", "due": {"every_days": 7},
+                 "notify_success": "The portable disk is backed up: you can eject it (mpereira-backup eject portable)."},
+    "check": {"kind": "check", "due": {"every_days": 7}},
+    "check-data": {"kind": "check", "due": {"monthly_on": 1}, "read_data_subset": true},
+    "health": {"kind": "health", "due": {"daily_at": "10:00"}},
+    "copy-media": {"kind": "copy-media", "due": {"monthly_on": 1}}
+  },
+
+  "copy_media": {
+    "//": "Photos and videos made or added on the Mac since the last run, copied to a new folder on the pool.",
+    "home": "~",
+    "dest": "/Volumes/pool/files/inbox/{date}-mac-media",
+    "drive": "pool",
+    "folders": ["Pictures", "Movies", "Desktop"],
+    "skip": ["Pictures/Photos Library.photoslibrary", "Movies/TV/TV Library.tvlibrary"],
+    "bundles": [".fcpbundle", ".imovielibrary"],
+    "derived_names": ["Render Files", "Transcoded Media", "Proxy Media", "Analysis Files", "Thumbnail Media"],
+    "derived_paths": []
+  },
+
+  "quarantine": {
+    "//": "A reorganization's journals and the folder of the files it put aside. See \"quarantine\" in the README.",
+    "journals": "/Volumes/pool/.journal",
+    "root": "/Volumes/pool/.quarantine",
+    "locations": {"pool": ["offsite", "portable"], "mac": ["mac", "offsite"]},
+    "min_age_days": 60,
+    "check_max_age_days": 7,
+    "read_back": {"mac": 1.0, "portable": 1.0, "offsite": 0.01},
+    "max_reads": 2000
+  },
+
+  "dedupe": {
+    "//": "Which copy of a duplicate stays, and what never moves. See \"dedupe plan and apply\" in the README.",
+    "root": "/Volumes/pool",
+    "location": "pool",
+    "prefer": ["library", "archive", "inbox", "replaceable/TV Shows", "replaceable/Movies", "replaceable/Music", "replaceable"],
+    "replaceable": ["replaceable"],
+    "stay": ["^(?!library/)(?:.*/)?(?i:exports?)/"],
+    "skip": [".quarantine", ".journal", "restic"],
+    "min_size": 1048576
+  }
+}

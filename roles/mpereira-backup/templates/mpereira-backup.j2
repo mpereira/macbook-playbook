@@ -1,0 +1,8 @@
+#!/usr/bin/python3 -I
+# {{ ansible_managed }}: change it in the mpereira-backup role.
+import sys
+
+sys.path.insert(0, {{ mpereira_backup_lib_dir | to_json }})
+from mpereira_backup.cli import main  # noqa: E402
+
+sys.exit(main())

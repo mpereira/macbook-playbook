@@ -1,0 +1,160 @@
+---
+# mpereira-backup: see this role's README.md. The code is in files/; change it there, not in place.
+
+- name: Create the mpereira-backup folders
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0755"
+  loop:
+    - "{{ mpereira_backup_lib_dir }}/mpereira_backup"
+    - "{{ mpereira_backup_lib_dir }}/share"
+    - "{{ mpereira_backup_lib_dir }}/launcher"
+
+- name: Install the mpereira-backup package
+  copy:
+    src: "{{ item }}"
+    dest: "{{ mpereira_backup_lib_dir }}/mpereira_backup/"
+    mode: "0644"
+  with_fileglob:
+    - ../files/mpereira_backup/*.py
+
+- name: Install the files that come with mpereira-backup
+  copy:
+    src: "{{ item }}"
+    dest: "{{ mpereira_backup_lib_dir }}/share/"
+    mode: "0644"
+  with_fileglob:
+    - ../files/share/*
+
+- name: Install the mpereira-backup command
+  template:
+    src: mpereira-backup.j2
+    dest: "{{ mpereira_backup_bin }}"
+    mode: "0755"
+
+# The launcher is what Full Disk Access is given to. A new build has a new code hash, and macOS then asks for the access
+# again, so it is built only when its source or the program it starts changes.
+- name: Install the launcher's source
+  copy:
+    src: launcher/mpereira-backup-launch.c
+    dest: "{{ mpereira_backup_lib_dir }}/launcher/mpereira-backup-launch.c"
+    mode: "0644"
+  register: mpereira_backup_launcher_source
+
+- name: Record the program that the launcher starts
+  copy:
+    content: "{{ mpereira_backup_bin }}\n"
+    dest: "{{ mpereira_backup_lib_dir }}/launcher/program"
+    mode: "0644"
+  register: mpereira_backup_launcher_program
+
+- name: Check for the launcher
+  stat:
+    path: "{{ mpereira_backup_launcher }}"
+  register: mpereira_backup_launcher_stat
+
+- name: Build the launcher
+  command:
+    argv:
+      - /usr/bin/cc
+      - -O2
+      - -Wall
+      - "-DPROGRAM={{ mpereira_backup_bin | to_json }}"
+      - -o
+      - "{{ mpereira_backup_launcher }}"
+      - "{{ mpereira_backup_lib_dir }}/launcher/mpereira-backup-launch.c"
+  when: >-
+    mpereira_backup_launcher_source.changed or mpereira_backup_launcher_program.changed or
+    not mpereira_backup_launcher_stat.stat.exists
+  register: mpereira_backup_launcher_built
+
+- name: Sign the launcher
+  command:
+    argv: [/usr/bin/codesign, --force, --sign, "-", --identifier, "{{ mpereira_backup_label }}", "{{ mpereira_backup_launcher }}"]
+  when: mpereira_backup_launcher_built.changed
+
+- name: Say that the launcher needs Full Disk Access
+  debug:
+    msg: >-
+      {{ mpereira_backup_launcher }} is new. In System Settings › Privacy & Security › Full Disk Access, remove it if it
+      is listed, then click + and add it (in the file dialog, Command-Shift-G and type its path). Without the access,
+      the scheduled backups cannot read some folders, such as Mail and Messages.
+  when: mpereira_backup_launcher_built.changed
+
+- name: Create the settings and state folders
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0700"
+  loop:
+    - "{{ mpereira_backup_config_file | dirname }}"
+    - "{{ mpereira_backup_state_dir }}"
+    - "{{ mpereira_backup_state_dir }}/logs"
+  when: mpereira_backup_config | length > 0
+
+- name: Install the settings
+  copy:
+    content: "{{ mpereira_backup_config | to_nice_json(indent=2) }}\n"
+    dest: "{{ mpereira_backup_config_file }}"
+    mode: "0600"
+  when: mpereira_backup_config | length > 0
+
+- name: Create the folders of the secret files
+  file:
+    path: "{{ item.path | dirname }}"
+    state: directory
+    mode: "0700"
+  loop: "{{ mpereira_backup_secret_files }}"
+  loop_control:
+    label: "{{ item.path }}"
+
+- name: Install the secret files
+  copy:
+    content: "{{ item.content }}"
+    dest: "{{ item.path }}"
+    mode: "0600"
+  loop: "{{ mpereira_backup_secret_files }}"
+  loop_control:
+    label: "{{ item.path }}"
+  no_log: true
+
+- name: Check that the settings load
+  command:
+    argv: ["{{ mpereira_backup_bin }}", --config, "{{ mpereira_backup_config_file }}", status]
+  changed_when: false
+  when: mpereira_backup_config | length > 0
+
+- name: Install the LaunchAgent
+  template:
+    src: org.mpereira.backup.plist.j2
+    dest: "{{ home_directory }}/Library/LaunchAgents/{{ mpereira_backup_label }}.plist"
+    mode: "0644"
+  register: mpereira_backup_plist
+  when: mpereira_backup_config | length > 0 and mpereira_backup_launch_agent
+
+- name: Find the user ID for launchctl
+  command: id -u
+  register: mpereira_backup_uid
+  changed_when: false
+  when: mpereira_backup_plist.changed or mpereira_backup_launcher_built.changed
+
+# A loaded agent keeps its old settings until it is loaded again.
+- name: Unload the LaunchAgent
+  command:
+    argv: [/bin/launchctl, bootout, "gui/{{ mpereira_backup_uid.stdout }}/{{ mpereira_backup_label }}"]
+  register: mpereira_backup_bootout
+  failed_when: false
+  changed_when: mpereira_backup_bootout.rc == 0
+  when: mpereira_backup_plist.changed or mpereira_backup_launcher_built.changed
+
+- name: Load the LaunchAgent
+  command:
+    argv:
+      - /bin/launchctl
+      - bootstrap
+      - "gui/{{ mpereira_backup_uid.stdout }}"
+      - "{{ home_directory }}/Library/LaunchAgents/{{ mpereira_backup_label }}.plist"
+  when: >-
+    (mpereira_backup_plist.changed or mpereira_backup_launcher_built.changed) and
+    mpereira_backup_config | length > 0 and mpereira_backup_launch_agent

@@ -78,6 +78,7 @@ TODO:
     - [[#remaps-caps-lock-to-control][Remaps Caps-Lock to Control]]
     - [[#sets-a-simple-wallpaper-and-turns-off-the-screen-saver][Sets a simple wallpaper and turns off the screen saver]]
     - [[#can-restore-the-default-wallpaper-and-screen-saver][Can restore the default wallpaper and screen saver]]
+    - [[#restic-repository-passwords][Restic repository passwords]]
 - [[#author][Author]]
 - [[#license][License]]
    :END:
@@ -149,12 +150,17 @@ TODO:
     breaks the role that reads it.
 
     These are the roles that use secrets:
-    | Description                        | Secret name                      | Role           |
-    | AWS CLI credentials                | =aws_credentials_file=           | awscli         |
-    | Environment variables for dotfiles | =dotfiles_environment_yml_file=  | dotfiles       |
-    | gmailctl OAuth client              | =gmailctl_credentials_json_file= | gmailctl       |
-    | gmailctl OAuth token               | =gmailctl_token_json_file=       | gmailctl       |
-    | s3cmd configuration                | =s3cmd_cfg_file=                 | s3cmd          |
+    | Description                        | Secret name                      | Role            |
+    | AWS CLI credentials                | =aws_credentials_file=           | awscli          |
+    | B2 application key                 | =b2_application_key=             | mpereira-backup |
+    | B2 application keyID               | =b2_application_key_id=          | mpereira-backup |
+    | Environment variables for dotfiles | =dotfiles_environment_yml_file=  | dotfiles        |
+    | gmailctl OAuth client              | =gmailctl_credentials_json_file= | gmailctl        |
+    | gmailctl OAuth token               | =gmailctl_token_json_file=       | gmailctl        |
+    | restic mac password                | =restic_mac_password=            | mpereira-backup |
+    | restic offsite password            | =restic_offsite_password=        | mpereira-backup |
+    | restic tankette password           | =restic_tankette_password=       | mpereira-backup |
+    | s3cmd configuration                | =s3cmd_cfg_file=                 | s3cmd           |
 
     The ssh-keys role reads its private keys from =ssh_keys=, whose entries take
     them from vault variables of any name.
@@ -164,14 +170,16 @@ TODO:
     leave these empty, and a role skips what has nothing set. A value there can
     refer to a vault variable, as in =private_key: "{{ my_ssh_private_key }}"=.
     These are the settings:
-    | Setting                                  | Role     |
-    | =agent_skills_extra_monorepos=           | skills   |
-    | =claude_sandbox_extra_excluded_commands= | claude   |
-    | =claude_user_instructions=               | claude   |
-    | =dotemacs_repository=                    | dotemacs |
-    | =dotfiles_repository=                    | dotfiles |
-    | =dotfiles_install_command=               | dotfiles |
-    | =ssh_keys=                               | ssh-keys |
+    | Setting                                  | Role            |
+    | =agent_skills_extra_monorepos=           | skills          |
+    | =claude_sandbox_extra_excluded_commands= | claude          |
+    | =claude_user_instructions=               | claude          |
+    | =dotemacs_repository=                    | dotemacs        |
+    | =dotfiles_repository=                    | dotfiles        |
+    | =dotfiles_install_command=               | dotfiles        |
+    | =ssh_keys=                               | ssh-keys        |
+    | =mpereira_backup_config=                 | mpereira-backup |
+    | =mpereira_backup_secret_files=           | mpereira-backup |
 
     Each role's =defaults/main.yml= describes its settings' format.
 
@@ -438,6 +446,19 @@ TODO:
 
      The dotemacs and dotfiles roles do nothing until the private vars file
      described under "Secrets" sets their repository.
+
+     The restic role installs only restic. The mpereira-backup role installs
+     =mpereira-backup=, which backs up the Mac and its drives with restic on a
+     schedule (hourly, from one launchd agent), reminds you when a backup is too
+     old, and copies files from cards and folders without losing any (=ingest=,
+     =copy-media=). Its settings are =mpereira_backup_config= in the private
+     vars file; without them the role installs only the command. It writes the
+     restic repository passwords and the B2 application key from =vars.yml= into
+     =~/.config/restic=, readable only by you (=mpereira_backup_secret_files=).
+     Full Disk Access goes to its small launcher,
+     =/usr/local/bin/mpereira-backup-launch=. [[file:roles/mpereira-backup/README.md][Its README]] describes the
+     backup strategy, every setting and command, restores, and what the file
+     reorganization of 2026 taught.
 
      The spotlight role limits Spotlight results to apps and System Settings.
      It writes the switches that System Settings › Spotlight turns off to
@@ -1340,6 +1361,69 @@ TODO:
 
      =roles/default-wallpaper-screensaver/tests/test-set-default-wallpaper-screensaver=
      tests the script against a temporary home and stubs.
+
+**** Restic repository passwords
+     The =mac=, =offsite= and =tankette= repositories each have their own
+     password. It comes from =vars.yml= (see [[#secrets][Secrets]]), and the mpereira-backup
+     role writes it to =~/.config/restic/<repository>.password=. Changing a
+     password takes seconds, because it only replaces the small key file that
+     unlocks the repository. No backup data is rewritten.
+
+     To change a password:
+
+     1. Wait until no backup of that repository is running. restic needs the
+        repository to itself for this, and stops with an "already locked" error
+        otherwise. Don't use =restic unlock= to get past that error while a
+        backup is running.
+     2. Save the new password in your password manager. Without its password,
+        nobody can recover a repository's backups.
+     3. Change the password in the repository. Each command asks for the current
+        password, then the new one twice.
+
+        #+begin_src bash
+        mpereira-backup restic mac key passwd
+        #+end_src
+
+        #+begin_src bash
+        mpereira-backup restic offsite key passwd
+        #+end_src
+
+        #+begin_src bash
+        mpereira-backup restic tankette key passwd
+        #+end_src
+     4. Put the new password in your secrets project, and write
+        =group_vars/localhost/vars.yml= from it.
+     5. Install the new password file.
+
+        #+begin_src bash
+        make provision ARGS='--tags mpereira-backup'
+        #+end_src
+     6. Check that the new password opens the repository.
+
+        #+begin_src bash
+        mpereira-backup restic mac snapshots --latest 1
+        #+end_src
+
+        #+begin_src bash
+        mpereira-backup restic offsite snapshots --latest 1
+        #+end_src
+
+        #+begin_src bash
+        mpereira-backup restic tankette snapshots --latest 1
+        #+end_src
+
+     Between steps 3 and 5, backups of that repository fail with a wrong-password
+     error, because the password file still holds the old password. The same
+     happens if you run =make provision= before updating =vars.yml=. No data is
+     harmed, but do the steps together.
+
+     This doesn't replace the repository's encryption key:
+
+     - Anyone with an older copy of the repository and the old password can still
+       open that copy. That includes a ZFS snapshot of the dataset that holds the
+       repository, until you destroy the snapshot.
+     - If a password may have leaked, create a new repository and back up to it
+       again. For =offsite=, that means uploading everything again.
 
 ** Author
    [[http://murilopereira.com][Murilo Pereira]]
