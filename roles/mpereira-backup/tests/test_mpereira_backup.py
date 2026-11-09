@@ -822,7 +822,51 @@ class QuarantineTests(Base):
     def test_a_missing_keeper_fails(self):
         os.remove(os.path.join(self.files, 'a.txt'))
         r = self.check()
-        self.assertTrue(any('No such file' in why for _, why in r.failures), r.failures)
+        self.assertEqual([why for _, why in r.failures],
+                         [f'keeper {self.files}/a.txt: not there, and no file in {self.files} has its content'])
+
+    def test_a_keeper_moved_by_hand_is_found_by_its_content(self):
+        os.makedirs(os.path.join(self.files, 'sorted/deeper'))
+        os.rename(os.path.join(self.files, 'a.txt'), os.path.join(self.files, 'sorted/deeper/renamed.txt'))
+        self.write('files/sorted/other.txt', 'ONE')   # the same size, other content
+        r = self.check()
+        self.assertTrue(r.ok, (r.failures, r.blocked))
+        self.assertEqual((r.moved, r.passed), (1, 2))
+        self.assertIn(f'{self.files}/sorted/deeper/renamed.txt', [c['args'][-1] for c in self.calls()
+                                                                   if 'dump' in c['args']])
+
+    def test_a_keeper_moved_out_of_its_top_folder_fails(self):
+        os.rename(os.path.join(self.files, 'sub/b.txt'), os.path.join(self.files, 'b.txt'))
+        r = self.check()
+        self.assertEqual([why for _, why in r.failures],
+                         [f'keeper {self.files}/sub/b.txt: not there, and no file in {self.files}/sub has its content'])
+
+    def test_a_moved_keeper_must_be_in_a_snapshot(self):
+        os.makedirs(os.path.join(self.files, 'sorted'))
+        new = os.path.join(self.files, 'sorted/a.txt')
+        os.rename(os.path.join(self.files, 'a.txt'), new)
+        self.fake_list('ls-missing', [new])
+        r = self.check()
+        self.assertEqual([why for _, why in r.failures], ['mac: snapshot 11111111 does not have it'])
+
+    def test_a_released_file_passes_and_is_purged(self):
+        a = os.path.join(self.files, 'a.txt')
+        cfg = self.qcfg(min_age_days=0)
+        self.assertEqual(quarantine.release(cfg, 'b1', [a], self.log()), 1)   # its keeper is still there
+        os.remove(a)
+        self.assertFalse(self.check().ok)
+        self.assertEqual(quarantine.release(cfg, 'b1', [a, os.path.join(self.files, 'nope')], self.log()), 1)
+        self.assertFalse(self.check().ok)                                        # all or nothing
+        self.assertEqual(quarantine.release(cfg, 'b1', [a], self.log()), 0)
+        r = self.check()
+        self.assertTrue(r.ok, r.failures)
+        self.assertEqual((r.released, r.passed), (1, 2))
+        self.assertEqual(quarantine.release(cfg, 'b1', [a], self.log(), undo=True), 0)
+        self.assertFalse(self.check().ok)
+        q = os.path.join(self.root, 'b1/files/a.txt')
+        self.assertEqual(quarantine.release(cfg, 'b1', [q], self.log()), 0)    # by its path in the quarantine
+        self.assertEqual(quarantine.purge(cfg, 'b1', self.log()), 0)
+        self.assertFalse(os.path.exists(q))
 
     def test_an_old_check_blocks(self):
         self.checked((datetime.datetime.now().astimezone() - datetime.timedelta(days=8)).isoformat())

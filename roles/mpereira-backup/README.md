@@ -365,6 +365,7 @@ a `restore` or a `mount` keeps scheduled jobs and `eject` waiting while it runs.
 | `mpereira-backup copy-media` | the `copy-media` job, now |
 | `mpereira-backup quarantine list` | each batch: the files in the quarantine, their size and age, and the day a purge may start. Reads no repository |
 | `mpereira-backup quarantine check BATCH` | checks that each keeper of the batch is whole and in the backups that must hold it: [quarantine](#quarantine-check-and-purge). Read-only, so it takes no lock |
+| `mpereira-backup quarantine release BATCH PATH... [--undo]` | marks the files whose keepers you removed by choice: the check passes them, and a purge removes them |
 | `mpereira-backup quarantine purge BATCH [--dry-run]` | when the batch is old enough and the check passes, removes its files from the quarantine, for good |
 | `mpereira-backup excludes report REPO [--source NAME]… [--continue] [--top N]` | walks the repository's sources and lists each place its backups leave out, with the size and the reason: [what the backups leave out](#what-the-backups-leave-out). Read-only, no lock |
 | `mpereira-backup excludes review REPO [--all] [--top N]` | from the last report: the kept folders and files named like a cache or a build output, that it did not show before |
@@ -509,7 +510,11 @@ run where some files could not be copied does not move the stamp, so the next ru
 `quarantine check BATCH` passes only if, for every file of the batch that is still under `quarantine.root`:
 
 1. Its keeper, followed through the renames of all the journals (a later batch may have moved or renamed it), is
-   there, is a regular file, is not in the quarantine, and hashes now to the hash in the journal.
+   there, is a regular file, is not in the quarantine, and hashes now to the hash in the journal. A keeper you moved
+   by hand is found by its content: the check looks in the top folder of its path under the source that holds it
+   (`~/Documents` for `~/Documents/Finance/a.pdf`), hashes only the files of its size, and takes the first file, by
+   path, with its hash. The rest of the check is then about that file, so a backup must have run since the move. A
+   keeper moved out of its top folder, or removed, fails.
 2. Each repository of the keeper's location holds it, unless that repository leaves it out by your choice: no source
    holds it, its excludes match it or a folder above it, a folder above it has a valid `CACHEDIR.TAG`, or a folder
    above it is a build output (with `build_outputs`). A class `A` keeper that no repository holds fails. The log
@@ -527,6 +532,12 @@ did not change again.
 
 Hashes are saved as they finish, in `STATE_DIR/quarantine/`, keyed by each file's size, mtime, ctime, and inode, so a
 stopped check continues where it stopped, and a second check of a batch whose keepers did not change hashes nothing.
+
+A file whose keeper you removed by choice fails the check, because its copy in the quarantine is the last one
+outside the snapshots. `quarantine release BATCH PATH...` marks it: each `PATH` is the file in the quarantine or its
+keeper as the journal names it, and a `released` line goes to the journal. The check then passes it with no test, and
+a purge removes it. It changes nothing when a path matches no file of the batch, or when a keeper is still there
+(the check can test that one). `--undo` puts released files back under the check.
 
 `quarantine purge BATCH` first looks at the age: the newest file in the batch's quarantine must have been put there
 (its ctime) at least `min_age_days` ago, or it stops with exit 75 and names the day. Then it runs the check, and only

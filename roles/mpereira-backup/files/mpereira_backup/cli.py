@@ -85,6 +85,12 @@ def parser() -> argparse.ArgumentParser:
     qs.add_parser('list', help='each batch: the files in the quarantine, their age, and when a purge may start')
     q = qs.add_parser('check', help='check that every keeper of a batch is whole and in the backups that must hold it')
     q.add_argument('batch')
+    q = qs.add_parser('release', help='mark files whose keepers you removed by choice: the check passes them and a '
+                                      'purge removes them')
+    q.add_argument('batch')
+    q.add_argument('paths', nargs='+', metavar='PATH', help='a file in the quarantine, or its keeper as the journal '
+                                                            'names it')
+    q.add_argument('--undo', action='store_true', help='put released files back under the check')
     q = qs.add_parser('purge', help='run the check, and if it passes and the batch is old enough, remove its quarantine')
     q.add_argument('batch')
     q.add_argument('--dry-run', action='store_true', help='show what it would remove, and remove nothing')
@@ -293,6 +299,8 @@ def command(cfg: config.Config, a: argparse.Namespace) -> int:
         if c == 'copy-media':
             print(transfer.copy_media(cfg, log))
             return 0
+        if c == 'quarantine' and a.action == 'release':
+            return quarantine.release(cfg, a.batch, a.paths, log, a.undo)
         if c == 'quarantine':
             return quarantine.purge(cfg, a.batch, log, a.dry_run)
         if c == 'dedupe':

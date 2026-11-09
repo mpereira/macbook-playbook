@@ -9,7 +9,9 @@ the keepers of later batches are followed through it.
 
 "quarantine check BATCH" passes only if, for every file of the batch that is still in the quarantine folder:
   - its keeper, followed through the renames of all journals, is there, outside the quarantine, and hashes now to the
-    hash in the journal;
+    hash in the journal. A keeper that is not there and was moved by hand is found by its content: the first file,
+    by path, with its size and hash in the top folder of its path under the source that holds it (~/Documents for
+    ~/Documents/a/b.pdf). That file is then the keeper, and the rest of the check is about it;
   - each repository of the keeper's location ("quarantine.locations") holds the keeper, unless that repository leaves
     it out by the owner's choice: no source holds it, its excludes match it or a folder above it, a folder above it has
     a valid CACHEDIR.TAG, or a folder above it is a build output. A class "A" keeper that no repository holds fails.
@@ -18,6 +20,8 @@ the keepers of later batches are followed through it.
     Where the metadata differs, the file is read back from the snapshot and hashed. A share of the others
     ("quarantine.read_back", per repository) is read back too;
   - each of those repositories passed "mpereira-backup check" (or the check job) within "check_max_age_days".
+A file whose keeper the owner removed by choice is "released" ("quarantine release BATCH PATH..."): its last state
+is then "released", the check passes it with no test of a keeper, and a purge removes it.
 "quarantine purge BATCH" runs the same check, and when it passes and the newest file in the batch's quarantine folder
 was put there more than "min_age_days" ago, removes each file whose size and mtime are still those in the journal, adds
 a "purged" line for it to the journal, and removes the folders left empty. Only files under "quarantine.root" are
@@ -78,6 +82,8 @@ class Result:
     gone: list = field(default_factory=list)       # entries whose quarantine file is not there any more
     left_out: dict = field(default_factory=dict)   # (repository, why) -> count
     one_backup: int = 0                            # class A keepers that only one repository holds
+    moved: int = 0                                 # keepers moved by hand, found by their content
+    released: int = 0                              # files whose keeper the owner removed by choice
     entries: list = field(default_factory=list)    # the entries that passed: what a purge may remove
 
     @property
@@ -414,6 +420,53 @@ def settled(cfg: Config, saved: Saved, path: str, before: os.stat_result, h: str
     return True
 
 
+def top_folder(cfg: Config, location: str, path: str) -> str:
+    """Where to look for a keeper that was moved by hand: the first folder of PATH under the source that holds it
+    (~/Documents for ~/Documents/a/b.pdf), or the source's own folder for a file right in it; '' if no source does."""
+    q = _settings(cfg)
+    for rn in q.locations.get(location, []):
+        for s in cfg.repositories[rn].sources:
+            roots = list(s.paths) if s.kind == 'paths' else [s.path]
+            root = next((r for r in roots if under(path, r) and path != r), '')
+            if root:
+                rel = os.path.relpath(path, root)
+                return os.path.join(root, rel.split('/')[0]) if '/' in rel else root
+    return ''
+
+
+def find_moved(cfg: Config, saved: Saved, missing: dict, log: Log, label: str) -> dict:
+    """missing: keeper path -> (size, hash, top folder). Returns keeper path -> the first path, sorted, in its top
+    folder with that size and hash. Only the files of a wanted size are hashed, and their hashes are saved."""
+    q = _settings(cfg)
+    by_top: dict = {}
+    for size, _, top in missing.values():
+        by_top.setdefault(top, set()).add(size)
+    found: dict = {}   # (top, size) -> {path: stat}
+    for top, sizes in sorted(by_top.items()):
+        n = 0
+        for folder, dirs, files in os.walk(top):
+            dirs[:] = [d for d in dirs if not under(os.path.join(folder, d), q.root)
+                       and not under(os.path.join(folder, d), q.journals)]
+            for f in files:
+                p = os.path.join(folder, f)
+                try:
+                    st = os.lstat(p)
+                except OSError:
+                    continue
+                n += 1
+                if stat.S_ISREG(st.st_mode) and st.st_size in sizes:
+                    found.setdefault((top, st.st_size), {})[p] = st
+        log(f'{label}: looked at {n:,} files in {show(top)} for keepers moved by hand')
+    candidates = {p: st for group in found.values() for p, st in group.items()}
+    hashes = hash_keepers(cfg, saved, candidates, log, f'{label}: moved keepers') if candidates else {}
+    out = {}
+    for k, (size, h, top) in missing.items():
+        match = sorted(p for p in found.get((top, size), {}) if hashes.get(p) == h)
+        if match:
+            out[k] = match[0]
+    return out
+
+
 def check(cfg: Config, batch: str, log: Log, rng: random.Random | None = None) -> Result:
     q = _settings(cfg)
     path = journal_path(cfg, batch)
@@ -435,6 +488,9 @@ def check(cfg: Config, batch: str, log: Log, rng: random.Random | None = None) -
     keeper = {}     # entry source -> the keeper's path now
     fail = {}       # entry source -> why
     for e in todo:
+        if e.state == 'released':
+            res.released += 1
+            continue
         if e.keeper in ('', '-'):
             fail[e.source] = f'no keeper (state {e.state})'
             continue
@@ -450,14 +506,47 @@ def check(cfg: Config, batch: str, log: Log, rng: random.Random | None = None) -
             continue
         keeper[e.source] = k
 
-    stats = {}
+    by_source = {e.source: e for e in todo}
+    saved = Saved(cfg, batch)
+    stats: dict = {}
+    absent = set()
     for k in set(keeper.values()):
         try:
             st = os.lstat(k)
+        except FileNotFoundError:
+            absent.add(k)
+            continue
         except OSError as err:
             stats[k] = err.strerror or 'cannot be read'
             continue
         stats[k] = st if stat.S_ISREG(st.st_mode) else 'not a regular file'
+
+    # Keepers moved by hand: found by their content in their top folder.
+    missing, tops = {}, {}
+    for src, k in keeper.items():
+        if k in absent:
+            e = by_source[src]
+            tops[k] = top_folder(cfg, e.location, k)
+            if tops[k] and os.path.isdir(tops[k]):
+                missing[k] = (e.size, e.blake3, tops[k])
+    moved = find_moved(cfg, saved, missing, log, label) if missing else {}
+    for src, k in list(keeper.items()):
+        if k in moved:
+            keeper[src] = moved[k]
+            res.moved += 1
+        elif k in absent:
+            where = f'no file in {show(tops[k])} has its content' if k in missing else 'its top folder is not there'
+            stats[k] = f'not there, and {where}'
+    for k in set(keeper.values()):
+        if k not in stats:
+            try:
+                st = os.lstat(k)
+            except OSError as err:
+                stats[k] = err.strerror or 'cannot be read'
+                continue
+            stats[k] = st if stat.S_ISREG(st.st_mode) else 'not a regular file'
+    if moved:
+        log(f'{label}: {res.moved:,} files have a keeper moved by hand since the batch, found by its content')
     for src, k in keeper.items():
         if isinstance(stats[k], str):
             fail[src] = f'keeper {show(k)}: {stats[k]}'
@@ -465,7 +554,6 @@ def check(cfg: Config, batch: str, log: Log, rng: random.Random | None = None) -
     # Which repositories must hold each keeper.
     coverage = {}
     need: dict = {}   # repository -> set of keeper paths
-    by_source = {e.source: e for e in todo}
     for src, k in keeper.items():
         if src in fail:
             continue
@@ -503,8 +591,7 @@ def check(cfg: Config, batch: str, log: Log, rng: random.Random | None = None) -
                                f'{iso(last) if last else "never"}); run: mpereira-backup check {rn}')
 
     # The keepers' content now.
-    saved = Saved(cfg, batch)
-    live = {k: stats[k] for k in set(keeper.values()) if not isinstance(stats[k], str)}
+    live ={k: stats[k] for k in set(keeper.values()) if not isinstance(stats[k], str)}
     log(f'{label}: hashing {len(live):,} keepers, {human_bytes(sum(s.st_size for s in live.values()))}')
     hashes = hash_keepers(cfg, saved, live, log, label)
     for src, k in keeper.items():
@@ -591,6 +678,9 @@ def report(res: Result, batch: str, log: Log) -> None:
         log(f'{label}: {rn} leaves out {n:,} keepers by choice ({why})')
     if res.one_backup:
         log(f'{label}: {res.one_backup:,} class A keepers are in one repository only')
+    if res.released:
+        log(f'{label}: {res.released:,} files are released: their keepers are gone by your choice, so they pass with '
+            f'no test, and a purge removes them')
     for e in res.gone[:SHOWN]:
         log(f'{label}: not in the quarantine any more: {show(e.quarantine)}')
     reasons: dict = {}
@@ -605,6 +695,62 @@ def report(res: Result, batch: str, log: Log) -> None:
         log(f'{label}: BLOCKED: {b}')
     log(f'{label}: {res.passed:,} of {res.checked:,} pass; {len(res.failures):,} fail; {len(res.blocked)} blocking '
         f'problems' + ('' if res.ok else '; NOT A PASS'))
+
+
+# --- release ---
+
+def release(cfg: Config, batch: str, paths: list, log: Log, undo: bool = False) -> int:
+    """Mark the files of a batch whose keepers the owner removed by choice: a "released" line for each, so the check
+    passes them and a purge removes them. Each PATH is a file in the quarantine or its keeper as the journal names it.
+    All or nothing: a path that matches no file, or whose keeper is still there, releases nothing. With UNDO, a
+    "moved" line puts a released file back under the check."""
+    q = _settings(cfg)
+    label = f'quarantine {batch}'
+    path = journal_path(cfg, batch)
+    entries = [e for e in read_journal(path) if under(e.quarantine, q.root) and e.state != 'purged']
+    moves = renames(q.journals)
+    chosen, problems = [], []
+    for p in paths:
+        p = os.path.abspath(os.path.expanduser(p))
+        hits = [e for e in entries if p in (e.quarantine, e.keeper)]
+        if not hits:
+            problems.append(f'no file of the batch in {show(q.root)} has this path or this keeper: {show(p)}')
+        for e in hits:
+            if undo:
+                if e.state != 'released':
+                    problems.append(f'not released: {show(e.quarantine)}')
+                else:
+                    chosen.append(e)
+                continue
+            if e.state == 'released':
+                continue
+            if not os.path.lexists(e.quarantine):
+                problems.append(f'not in the quarantine any more: {show(e.quarantine)}')
+                continue
+            k = follow(e.keeper, moves) if e.keeper not in ('', '-') else ''
+            if k and os.path.lexists(k):
+                problems.append(f'its keeper is there, so the check can test it: {show(k)}')
+                continue
+            chosen.append(e)
+    for why in problems:
+        log(f'{label}: {why}')
+    if problems:
+        log(f'{label}: nothing changed')
+        return 1
+    state = 'moved' if undo else 'released'
+    seen = set()
+    with open(path, 'a', encoding='utf-8', errors='surrogateescape') as journal:
+        for e in chosen:
+            if e.source in seen:
+                continue
+            seen.add(e.source)
+            journal.write(e.line(state))
+            log(f'{label}: {"back under the check" if undo else "released"}: {show(e.quarantine)} (keeper '
+                f'{show(e.keeper)})')
+        journal.flush()
+        os.fsync(journal.fileno())
+    log(f'{label}: {len(seen):,} files {"back under the check" if undo else "released"}')
+    return 0
 
 
 # --- purge ---
