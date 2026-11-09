@@ -6,6 +6,13 @@ secretive_agent_socket: "{{ home_directory }}/Library/Containers/com.maxgoedjen.
 # the key doesn't exist yet. hosts are SSH aliases. A host with an entry in
 # secretive_host_entries also gets its HostName and User here; the others are
 # expected to have them elsewhere in ~/.ssh/config.
+#
+# A key with ssh_config_file gets its hosts written to that file instead of
+# ~/.ssh/config, for use with ssh -F. Each of its hosts needs an entry in
+# secretive_host_entries. Use this for a key that commands outside Claude
+# Code's sandbox may use: ~/.ssh/config can be a symlink into a directory that
+# sandboxed commands write to, and the first value ssh reads for an option
+# wins, so anything there could add a ProxyCommand to these hosts.
 secretive_keys:
   - name: MacBook Touch ID
     protection: with Require Authentication selected

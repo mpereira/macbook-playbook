@@ -1,0 +1,24 @@
+# {{ ansible_managed }}
+#
+# Read only with ssh -F, as in:
+#   ssh -F {{ item }} <host>
+# -F skips ~/.ssh/config and /etc/ssh/ssh_config, so nothing else can add
+# options to these hosts, such as a ProxyCommand or LocalCommand that would
+# run on this Mac.
+{% for key in secretive_found_keys if key.ssh_config_file | default('') == item %}
+{% for host in key.hosts %}
+
+Host {{ host }}
+    HostName {{ secretive_host_entries[host].hostname }}
+    User {{ secretive_host_entries[host].user }}
+    IdentityAgent "{{ secretive_agent_socket }}"
+    IdentityFile "{{ key.identity_file }}"
+    IdentitiesOnly yes
+    ForwardAgent no
+    ClearAllForwardings yes
+    ProxyCommand none
+    PermitLocalCommand no
+    StrictHostKeyChecking yes
+    UserKnownHostsFile "{{ secretive_ssh_directory }}/known_hosts"
+{% endfor %}
+{% endfor %}

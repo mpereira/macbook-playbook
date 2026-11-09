@@ -22,6 +22,15 @@ claude_write_protected_paths:
   - ~/.gnupg
   - ~/.config/gh
 
+# Paths Claude must not read. Each one becomes a Read deny rule (for Claude's
+# file tools) and a sandbox denyRead entry (for Bash and every process it
+# starts). Sandboxed commands can reach any host over HTTP and HTTPS, so a
+# private key they could read could leave this Mac. Commands excluded from the
+# sandbox, such as git fetch and git push, still read these paths. Not ~/.aws
+# or ~/.config/gh: the AWS CLI and gh read them inside the sandbox.
+claude_read_protected_paths:
+  - ~/.ssh
+
 # Paths outside the working directory that sandboxed commands may write to.
 # Unsandboxed runs share these caches. Terraform checks cached providers
 # against .terraform.lock.hcl, but uv trusts its cache, and Cargo trusts the
@@ -118,9 +127,12 @@ claude_ansible_temporary_directory: /tmp/claude/ansible
 claude_managed_settings:
   permissions:
     # WebFetch(domain:*) lets sandboxed commands reach any host. The sandbox
-    # only restricts file writes here.
+    # only restricts file writes and the reads in claude_read_protected_paths
+    # here.
     allow: "{{ ['WebFetch(domain:*)'] + claude_allowed_unsandboxed_commands | map('regex_replace', '^(.*)$', 'Bash(\\1)') | list }}"
-    deny: "{{ claude_write_protected_paths | map('regex_replace', '^(.*)$', 'Edit(\\1/**)') | list }}"
+    deny: >-
+      {{ claude_write_protected_paths | map('regex_replace', '^(.*)$', 'Edit(\1/**)') | list
+         + claude_read_protected_paths | map('regex_replace', '^(.*)$', 'Read(\1/**)') | list }}
   env:
     ANSIBLE_LOCAL_TEMP: "{{ claude_ansible_temporary_directory }}/local"
     ANSIBLE_REMOTE_TEMP: "{{ claude_ansible_temporary_directory }}/remote"
@@ -139,6 +151,7 @@ claude_managed_settings:
     filesystem:
       allowWrite: "{{ claude_sandbox_writable_paths }}"
       denyWrite: "{{ claude_write_protected_paths }}"
+      denyRead: "{{ claude_read_protected_paths }}"
   # Keep the restrictions the desktop app passes to Claude Code. Without this,
   # Claude Code drops them whenever a managed settings file exists.
   parentSettingsBehavior: merge

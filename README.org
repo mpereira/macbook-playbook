@@ -680,6 +680,12 @@ TODO:
        and Cargo). Claude can't retry a blocked command outside the sandbox,
        and Claude Code refuses to start if the sandbox is unavailable.
 
+     Claude can't read the paths in =claude_read_protected_paths= (=~/.ssh=
+     by default), through a =Read= deny rule and the sandbox's =denyRead=.
+     Sandboxed commands can reach any host, so a private key they could read
+     could leave this Mac. Commands excluded from the sandbox still read
+     them, so =git fetch= and =git push= keep working.
+
      Sandboxed commands can reach any host over HTTP and HTTPS. The commands
      in =claude_sandbox_excluded_commands= run outside the sandbox with full
      access: =git= network commands, because SSH remotes can't connect from
@@ -810,12 +816,19 @@ TODO:
      Private vars can add more keys with =secretive_extra_keys=, in the same
      format as =secretive_keys=, and give their aliases a =HostName= and
      =User= with =secretive_host_entries=. The role tells you how to create
-     each missing key and configures the keys it finds. For example, a key
-     created with =Require Authentication= cleared lets coding agents log in
-     unattended as a confined, non-root user, through aliases such as
-     =terra-agent= and =luna-agent=. The private key still stays in the Secure
-     Enclave, so it can sign only while this Mac is unlocked and can't be
-     copied off it. Keep root aliases on the Touch ID key.
+     each missing key and configures the keys it finds. A key created with
+     =Require Authentication= cleared lets coding agents log in unattended as
+     a confined, non-root user. Its private key still stays in the Secure
+     Enclave, so it can't be copied off this Mac. Keep root aliases on the
+     Touch ID key.
+
+     Give such a key an =ssh_config_file=, such as =~/.ssh/agents.conf=, and
+     let Claude run only =ssh -F ~/.ssh/agents.conf <alias> -- *= outside its
+     sandbox, through =claude_sandbox_extra_excluded_commands=. =-F= makes ssh
+     read that file alone, which sandboxed commands can't write, and =--=
+     stops ssh from reading options after the alias. Without both, a
+     =ProxyCommand= added to =~/.ssh/config= or to the command line would run
+     on this Mac outside the sandbox.
 
 **** Touch ID secrets
      The =touch-id-secret= role installs a command that replaces a plaintext

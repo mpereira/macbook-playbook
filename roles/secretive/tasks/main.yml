@@ -41,6 +41,16 @@
   loop_control:
     label: "{{ item.name }}"
 
+# ssh -F reads nothing but the key's own file, so it must say where each host is.
+- name: Require HostName and User for hosts in a key's own config file
+  ansible.builtin.assert:
+    that:
+      - item.hosts | reject('in', secretive_host_entries) | list | length == 0
+    fail_msg: Add every host of '{{ item.name }}' to secretive_host_entries.
+  loop: "{{ secretive_all_keys | selectattr('ssh_config_file', 'defined') | list }}"
+  loop_control:
+    label: "{{ item.name }}"
+
 - name: Require each alias under one key
   ansible.builtin.assert:
     that: >-
@@ -109,7 +119,7 @@
         mode: "0600"
         backup: true
         block: |
-          {% for key in secretive_found_keys %}
+          {% for key in secretive_found_keys | rejectattr('ssh_config_file', 'defined') %}
           {% for host in key.hosts %}
           Host {{ host }}
           {% if host in secretive_host_entries %}
@@ -124,3 +134,16 @@
           {% endfor %}
           {% endfor %}
           Host *
+
+    # follow is off, so a symlink at the destination is replaced with a file
+    # rather than written through.
+    - name: Write the hosts of keys with their own config file
+      ansible.builtin.template:
+        src: ssh_config.j2
+        dest: "{{ item }}"
+        mode: "0600"
+        follow: false
+        backup: true
+      loop: >-
+        {{ secretive_found_keys | selectattr('ssh_config_file', 'defined')
+           | map(attribute='ssh_config_file') | unique | list }}
