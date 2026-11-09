@@ -807,6 +807,16 @@ TODO:
      Watch approval. The role discovers the named public identity through the
      agent, so it can rerun without a key's device-specific identifier.
 
+     Private vars can add more keys with =secretive_extra_keys=, in the same
+     format as =secretive_keys=, and give their aliases a =HostName= and
+     =User= with =secretive_host_entries=. The role tells you how to create
+     each missing key and configures the keys it finds. For example, a key
+     created with =Require Authentication= cleared lets coding agents log in
+     unattended as a confined, non-root user, through aliases such as
+     =terra-agent= and =luna-agent=. The private key still stays in the Secure
+     Enclave, so it can sign only while this Mac is unlocked and can't be
+     copied off it. Keep root aliases on the Touch ID key.
+
 **** Touch ID secrets
      The =touch-id-secret= role installs a command that replaces a plaintext
      password file with a command printing the secret. Each secret lives in its

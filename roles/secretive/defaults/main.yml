@@ -1,6 +1,22 @@
----
-secretive_hosts: [terra, luna]
-secretive_key_name: MacBook Touch ID
 secretive_ssh_directory: "{{ home_directory }}/.ssh"
 secretive_agent_socket: "{{ home_directory }}/Library/Containers/com.maxgoedjen.Secretive.SecretAgent/Data/socket.ssh"
-secretive_identity_file: "{{ secretive_ssh_directory }}/secretive-macbook.pub"
+
+# The Secretive keys whose SSH hosts this role routes through Secretive. name is
+# the key's name in Secretive. protection is how to create it there, shown when
+# the key doesn't exist yet. hosts are SSH aliases. A host with an entry in
+# secretive_host_entries also gets its HostName and User here; the others are
+# expected to have them elsewhere in ~/.ssh/config.
+secretive_keys:
+  - name: MacBook Touch ID
+    protection: with Require Authentication selected
+    identity_file: "{{ secretive_ssh_directory }}/secretive-macbook.pub"
+    hosts: [terra, luna]
+
+# More keys in the secretive_keys format, from the private vars.
+secretive_extra_keys: []
+
+# HostName and User for aliases in the keys' hosts, keyed by alias, from the
+# private vars.
+secretive_host_entries: {}
+
+secretive_all_keys: "{{ secretive_keys + secretive_extra_keys }}"

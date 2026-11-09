@@ -1,4 +1,3 @@
----
 - name: Install Secretive
   community.general.homebrew_cask:
     name: secretive
@@ -32,33 +31,59 @@
   check_mode: false
   when: secretive_socket.stat.exists or not ansible_check_mode
 
-- name: Select the named Secure Enclave identity
-  ansible.builtin.set_fact:
-    secretive_selected_keys: >-
-      {{ secretive_identities.stdout_lines | default([]) |
-         select('search', ' ' ~ (secretive_key_name | replace(' ', '-') | regex_escape) ~ '@secretive\.') | list }}
-
-- name: Require a unique key name
-  ansible.builtin.assert:
-    that: secretive_selected_keys | length <= 1
-    fail_msg: Give the intended Secretive key a unique name before running this role.
-
 - name: Require explicit SSH host aliases
   ansible.builtin.assert:
     that:
-      - secretive_hosts | length > 0
-      - secretive_hosts | select('match', '^[A-Za-z0-9][A-Za-z0-9._-]*$') | list | length == secretive_hosts | length
-    fail_msg: Specify individual SSH aliases in secretive_hosts.
+      - item.hosts | length > 0
+      - item.hosts | select('match', '^[A-Za-z0-9][A-Za-z0-9._-]*$') | list | length == item.hosts | length
+    fail_msg: Specify individual SSH aliases in the hosts of '{{ item.name }}'.
+  loop: "{{ secretive_all_keys }}"
+  loop_control:
+    label: "{{ item.name }}"
+
+- name: Require each alias under one key
+  ansible.builtin.assert:
+    that: >-
+      (secretive_all_keys | map(attribute='hosts') | flatten | length)
+      == (secretive_all_keys | map(attribute='hosts') | flatten | unique | length)
+    fail_msg: An SSH alias is listed under more than one Secretive key.
+
+# Secretive comments each public key "<name with dashes>@secretive.<host>".
+- name: Select each named Secure Enclave identity
+  ansible.builtin.set_fact:
+    secretive_selected_keys: >-
+      {{ secretive_selected_keys | default({}) | combine({
+           item.name: secretive_identities.stdout_lines | default([]) |
+             select('search', ' ' ~ (item.name | replace(' ', '-') | regex_escape) ~ '@secretive\.') | list
+         }) }}
+  loop: "{{ secretive_all_keys }}"
+  loop_control:
+    label: "{{ item.name }}"
+
+- name: Require unique key names
+  ansible.builtin.assert:
+    that: secretive_selected_keys[item.name] | length <= 1
+    fail_msg: Give the Secretive key '{{ item.name }}' a unique name before running this role.
+  loop: "{{ secretive_all_keys }}"
+  loop_control:
+    label: "{{ item.name }}"
 
 - name: Explain first-time key creation
   ansible.builtin.debug:
     msg: >-
-      Create '{{ secretive_key_name }}' in Secretive with Require Authentication,
-      then rerun --tags touch-id-ssh. Enroll its public key on your servers before connecting.
-  when: secretive_selected_keys | length == 0
+      Create '{{ item.name }}' in Secretive {{ item.protection }}, then rerun
+      --tags touch-id-ssh. Enroll its public key on your servers before connecting.
+  when: secretive_selected_keys[item.name] | length == 0
+  loop: "{{ secretive_all_keys }}"
+  loop_control:
+    label: "{{ item.name }}"
 
-- name: Configure the selected identity
-  when: secretive_selected_keys | length == 1
+- name: Configure the selected identities
+  vars:
+    secretive_found_keys: >-
+      {{ secretive_all_keys | selectattr('name', 'in',
+           secretive_selected_keys | dict2items | rejectattr('value', 'equalto', []) | map(attribute='key') | list) | list }}
+  when: secretive_found_keys | length > 0
   block:
     - name: Ensure the SSH directory exists
       ansible.builtin.file:
@@ -66,11 +91,14 @@
         state: directory
         mode: "0700"
 
-    - name: Export the public key for host identity selection
+    - name: Export the public keys for host identity selection
       ansible.builtin.copy:
-        content: "{{ secretive_selected_keys[0] }}\n"
-        dest: "{{ secretive_identity_file }}"
+        content: "{{ secretive_selected_keys[item.name][0] }}\n"
+        dest: "{{ item.identity_file }}"
         mode: "0644"
+      loop: "{{ secretive_found_keys }}"
+      loop_control:
+        label: "{{ item.name }}"
 
     - name: Route selected SSH hosts through Secretive
       ansible.builtin.blockinfile:
@@ -81,10 +109,18 @@
         mode: "0600"
         backup: true
         block: |
-          Host {{ secretive_hosts | join(' ') }}
+          {% for key in secretive_found_keys %}
+          {% for host in key.hosts %}
+          Host {{ host }}
+          {% if host in secretive_host_entries %}
+              HostName {{ secretive_host_entries[host].hostname }}
+              User {{ secretive_host_entries[host].user }}
+          {% endif %}
               IdentityAgent "{{ secretive_agent_socket }}"
-              IdentityFile "{{ secretive_identity_file }}"
+              IdentityFile "{{ key.identity_file }}"
               IdentitiesOnly yes
               ForwardAgent no
 
+          {% endfor %}
+          {% endfor %}
           Host *
