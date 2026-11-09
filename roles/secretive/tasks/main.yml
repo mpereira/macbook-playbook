@@ -1,3 +1,4 @@
+---
 - name: Install Secretive
   community.general.homebrew_cask:
     name: secretive

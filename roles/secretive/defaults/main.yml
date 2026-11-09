@@ -1,3 +1,4 @@
+---
 secretive_ssh_directory: "{{ home_directory }}/.ssh"
 secretive_agent_socket: "{{ home_directory }}/Library/Containers/com.maxgoedjen.Secretive.SecretAgent/Data/socket.ssh"
 
