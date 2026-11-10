@@ -50,6 +50,12 @@ claude_sandbox_writable_paths:
   - ~/.cargo/.package-cache-mutate
   - ~/.cargo/.global-cache
   - ~/.cargo/.global-cache-journal
+  # Agents create git worktrees here (git worktree add runs outside the
+  # sandbox) and then edit, build and test in them. Not all of ~/.agents: it
+  # also holds skills, which agents follow, and credentials. Any sandboxed
+  # command can write every worktree here, including the hook configs that
+  # git commit runs outside the sandbox.
+  - ~/.agents/worktrees
 
 # Directories where sandboxed commands may create and connect to Unix sockets.
 # Terraform starts each provider as a plugin process that listens on a Unix
