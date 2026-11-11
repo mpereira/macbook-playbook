@@ -690,7 +690,7 @@ mpereira-backup restic mac find 'report*.pdf'
 mpereira-backup restic mac restore latest --path ~/Documents --include ~/Documents/report.pdf --target ~/Restored
 ```
 
-Browse the snapshots as folders (needs macFUSE or FUSE-T):
+Browse the snapshots as folders (needs macFUSE: the playbook's `macfuse` role, tagged `backup-tools`, installs it):
 
 ```bash
 mpereira-backup restic mac mount ~/Restic

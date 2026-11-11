@@ -1,0 +1,7 @@
+---
+# present, not latest: macFUSE updates itself (the cask is auto_updates), and
+# an upgrade replaces the file system extension under any mount in use.
+- name: Install macFUSE
+  homebrew_cask:
+    name: macfuse
+    state: present

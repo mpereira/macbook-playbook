@@ -782,6 +782,11 @@
     - role: smartmontools
       tags: [command-line-tools, brew-pkg, smartmontools, backup-tools]
 
+    # For `mpereira-backup restic REPO mount`: restic mounts with FUSE. The
+    # first install asks to allow its extension in System Settings.
+    - role: macfuse
+      tags: [system-tools, brew-cask-pkg, macfuse, backup-tools]
+
     # The restic backups on a schedule, their checks and reminders, ingest,
     # copy-media, and the repository passwords. See
     # roles/mpereira-backup/README.md. Its settings come from the private vars
