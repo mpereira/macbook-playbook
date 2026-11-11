@@ -122,10 +122,12 @@ Library/Application Support/Zed/node
 .config/gcloud/virtenv
 # What macOS keeps about this Mac, which it builds again and which a new Mac must not get back:
 # the File Provider databases (the files of iCloud Drive are in Library/Mobile Documents, the other cloud drives in
-# Library/CloudStorage), Control Center's settings, the Spotlight index of app data, the data of system daemons, and
-# the data that Siri Suggestions learns. The backups may not read most of them.
+# Library/CloudStorage), Control Center's settings, the speech recognition models that macOS compiles for this Mac,
+# the Spotlight index of app data, the data of system daemons, and the data that Siri Suggestions learns. The backups
+# may not read most of them.
 Library/Application Support/FileProvider
 Library/Group Containers/group.com.apple.secure-control-center-preferences
+Library/Group Containers/group.com.apple.CoreSpeech
 Library/Metadata/CoreSpotlight
 Library/Daemon Containers
 Library/DuetExpertCenter
