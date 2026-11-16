@@ -131,6 +131,9 @@ Library/Group Containers/group.com.apple.CoreSpeech
 Library/Metadata/CoreSpotlight
 Library/Daemon Containers
 Library/DuetExpertCenter
+# WhatsApp's iCloud container: WhatsApp keeps it in iCloud and restores from there. Since 2026-11-12 macOS keeps it
+# only in iCloud and refuses to list it ("resource deadlock avoided"), so every backup that reads it ends with exit 3.
+Library/Mobile Documents/iCloud~net~whatsapp~WhatsApp~CloudKit~production
 # Build outputs. "build_outputs" finds the target, Unity Library, and vendor folders, which need more than a name.
 node_modules
 .venv
