@@ -108,6 +108,9 @@
   loop: "{{ mpereira_backup_secret_files }}"
   loop_control:
     label: "{{ item.path }}"
+  # The label shortens only the heading: with -v, which the Makefile passes, each result still prints the whole item,
+  # contents and all.
+  no_log: true
 
 - name: Install the secret files
   copy:
