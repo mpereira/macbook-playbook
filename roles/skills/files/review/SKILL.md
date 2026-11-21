@@ -24,8 +24,10 @@ From the arguments:
   `git status --short`); an empty diff means asking the user what they meant,
   not opening a round on nothing.
 
-Reviewing a PR that is not checked out is out of scope — ask the user to
-check out the branch, or point them at repo tooling built for PRs.
+When the branch has an open pull request (`gh pr view --json number,isDraft`),
+the review is that pull request's review: note its number for step 4.
+Reviewing a PR that is not checked out is out of scope. Ask the user to
+check out the branch.
 
 ## 2. Orient before the first round
 
@@ -42,8 +44,11 @@ finding about work you do not understand. Before round 1:
 
 ## 3. Stance: fix or report
 
-Two ways to run the loop; pick from the user's phrasing, ask with
-`AskUserQuestion` only if genuinely unclear:
+Two ways to run the loop. Pick from the user's phrasing and the repo's docs,
+and ask with `AskUserQuestion` only if both leave it open. When the repo's
+`AGENTS.md` or its pull request doc says every pull request is reviewed
+before it is marked ready, the stance for a branch with a pull request is
+Fix, with no question.
 
 - **Fix** ("review and fix", "get this ready") — you adopt authorship: fix
   accepted findings between rounds, dispute wrong ones, exactly like
@@ -92,5 +97,10 @@ contested finding or a stalemate.
 - What you deliberately left unaddressed (`minor`/`nit`).
 - Where the round files live, for the user's own inspection.
 
-Do not commit, push, or publish the review to a PR unless asked;
-`converge`'s `publish-review` exists for that, dry-run first.
+Whether to commit, push and publish follows the repo's docs first and the
+user's request second. When the repo's pull request doc says the review
+runs on the pull request, do all three without asking: publish each round
+with `converge`'s `publish-review`, commit and push the fixes as new
+commits, and reply to each finding on the pull request (see `converge`,
+"Publishing to a GitHub PR"). With no such doc and no request, do none of
+them.

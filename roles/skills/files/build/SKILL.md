@@ -68,7 +68,7 @@ Follow the `converge` skill in code mode:
 ```bash
 OUT="$(git rev-parse --show-toplevel)/.claude/converge" && mkdir -p "$OUT"
 ~/.claude/skills/converge/bin/codex-review \
-  --mode code --base dev --round 1 \
+  --mode code --base origin/main --round 1 \
   --out "$OUT" --workdir "$PWD"
 ```
 

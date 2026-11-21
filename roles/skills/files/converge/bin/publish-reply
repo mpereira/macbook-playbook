@@ -1,0 +1,151 @@
+#!/usr/bin/env python3
+"""Post the author's reply to a Codex review round on a GitHub PR.
+
+    publish-reply --pr 123 --round-file DIR/round-1.json --reply DIR/reply-1.md [--dry-run]
+
+Reads the same reply-N.md the next review round takes: one section per
+finding, under a heading that carries the finding id, such as
+`## unbounded-retry-loop: FIXED`. A section runs to the next heading that
+names a finding of the round.
+
+A finding that publish-review posted as an inline comment gets its section as
+a reply in that comment's thread. When a finding has more than one thread, the
+latest one gets the reply. The other findings go in one pull request comment,
+each under its id.
+
+Posts as whoever `gh` is authenticated as, so every reply carries a header
+naming its real author. --dry-run still reads the pull request's comments, to
+show where each reply would go.
+"""
+
+import argparse
+import json
+import re
+import subprocess
+import sys
+
+# The finding id closes the first line of a comment that publish-review posts.
+# Change both scripts together.
+FINDING_ID = re.compile(r"`([^`]+)`\)_\s*$")
+
+
+def gh(args, payload=None):
+    proc = subprocess.run(
+        ["gh", *args],
+        input=json.dumps(payload) if payload is not None else None,
+        capture_output=True,
+        text=True,
+    )
+    return proc.returncode, proc.stdout, proc.stderr
+
+
+def sections(text, ids):
+    """Split the reply into {finding id: (status, body)}, in the reply's order.
+
+    The status is what the heading says besides the id, usually FIXED or
+    DISPUTED.
+    """
+    names = {i: re.compile(rf"(?<![\w-]){re.escape(i)}(?![\w-])") for i in ids}
+    found, current, fenced = {}, None, False
+    for line in text.splitlines():
+        if line.lstrip().startswith("```"):
+            fenced = not fenced
+        elif line.startswith("#") and not fenced:
+            named = [i for i in ids if names[i].search(line)]
+            if named:
+                # One id can end with another one; the longest match is the finding.
+                current = max(named, key=len)
+                rest = names[current].sub("", line.lstrip("#"), count=1)
+                found[current] = (rest.strip(" `:()[]-–—"), [])
+                continue
+        if current:
+            found[current][1].append(line)
+    return {i: (status, "\n".join(lines).strip()) for i, (status, lines) in found.items()}
+
+
+def threads(repo, pr):
+    """Map each finding id to its latest top-level review comment on the PR."""
+    code, out, err = gh(
+        [
+            "api",
+            "--paginate",
+            f"repos/{repo}/pulls/{pr}/comments",
+            "--jq",
+            ".[] | select(.in_reply_to_id == null) | [.id, .body] | @json",
+        ]
+    )
+    if code != 0:
+        sys.exit(f"could not list the review comments: {err.strip()}")
+    latest = {}
+    for row in out.splitlines():
+        comment_id, text = json.loads(row)
+        match = FINDING_ID.search(text.splitlines()[0]) if text else None
+        if match:
+            latest[match.group(1)] = max(comment_id, latest.get(match.group(1), 0))
+    return latest
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--pr", required=True)
+    ap.add_argument("--round-file", required=True, help="the round the reply answers")
+    ap.add_argument("--reply", required=True, help="reply-N.md, one section per finding id")
+    ap.add_argument("--repo", help="owner/name; defaults to the current repo")
+    ap.add_argument("--author", default="Claude Code", help="the agent named in the header")
+    ap.add_argument("--dry-run", action="store_true")
+    args = ap.parse_args()
+
+    with open(args.round_file) as fh:
+        review = json.load(fh)
+    with open(args.reply) as fh:
+        found = sections(fh.read(), [f["id"] for f in review["findings"]])
+
+    if not found:
+        sys.exit(f"no heading in {args.reply} names a finding of {args.round_file}")
+    silent = [f["id"] for f in review["findings"] if f["status"] != "withdrawn" and f["id"] not in found]
+    if silent:
+        print(f"no reply section for: {', '.join(silent)}", file=sys.stderr)
+
+    repo = args.repo
+    if not repo:
+        code, out, err = gh(["repo", "view", "--json", "nameWithOwner", "-q", ".nameWithOwner"])
+        if code != 0:
+            sys.exit(f"could not determine repo: {err.strip()}")
+        repo = out.strip()
+
+    header = f"**{args.author}.** Written by the coding agent of this pull request, not by a human."
+    thread = threads(repo, args.pr)
+
+    # (what the request answers, endpoint, body)
+    requests, loose = [], []
+    for finding_id, (status, text) in found.items():
+        if finding_id in thread:
+            parts = [header, f"**{status}**" if status else "", text]
+            endpoint = f"repos/{repo}/pulls/{args.pr}/comments/{thread[finding_id]}/replies"
+            requests.append((finding_id, endpoint, "\n\n".join(p for p in parts if p)))
+        else:
+            title = f"### `{finding_id}`" + (f": {status}" if status else "")
+            loose.append("\n\n".join(p for p in (title, text) if p))
+    if loose:
+        endpoint = f"repos/{repo}/issues/{args.pr}/comments"
+        requests.append(("the findings with no thread", endpoint, "\n\n".join([header, *loose])))
+
+    failed = []
+    for answers, endpoint, body in requests:
+        if args.dry_run:
+            print(f"POST {endpoint}")
+            print(json.dumps({"body": body}, indent=2))
+            continue
+        code, out, err = gh(["api", "--method", "POST", endpoint, "--input", "-"], {"body": body})
+        if code != 0:
+            print(f"failed to post the reply for {answers}: {err.strip()}", file=sys.stderr)
+            failed.append(answers)
+            continue
+        print(json.loads(out).get("html_url", "posted"))
+
+    if failed:
+        sys.exit(f"not posted: {', '.join(failed)}. The other replies are on the pull request.")
+
+
+if __name__ == "__main__":
+    main()

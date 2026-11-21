@@ -1,12 +1,20 @@
 #!/usr/bin/env python3
 """Post a Codex review round to a GitHub PR as a single review.
 
-    publish-review --pr 123 --round-file DIR/round-2.json [--disputes DIR/disputes.md] [--dry-run]
+    publish-review --pr 123 --round-file DIR/round-2.json [--new-only] [--disputes DIR/disputes.md] [--dry-run]
 
 Findings anchored to a file and line become inline comments; everything else
 goes in the review body. If GitHub rejects the inline anchors (the usual cause
 is a line that is not part of the diff), the whole review is re-posted as a
 body-only comment rather than lost.
+
+With --new-only, a finding upheld from an earlier round gets no second inline
+comment. The review body lists it, and its first thread stays the place where
+the author replies.
+
+Prints the review's URL, then one line per inline comment: the comment id, the
+finding id and file:line, tab-separated. publish-reply finds the comments by
+itself; the lines are for a reply posted by hand.
 
 Posts as whoever `gh` is authenticated as, so every review is labelled with its
 real author in the body. Nothing here should read as a human review.
@@ -14,11 +22,15 @@ real author in the body. Nothing here should read as a human review.
 
 import argparse
 import json
+import re
 import subprocess
 import sys
 
-SEVERITY_MARK = {"blocker": "🛑", "major": "🔶", "minor": "🔹", "nit": "💬"}
-HEADER = "🤖 **Codex review** — posted by an automated convergence loop, not a human reviewer."
+HEADER = "**Codex review.** Posted by an automated convergence loop, not by a human reviewer."
+
+# The finding id closes the first line of a finding's comment. publish-reply
+# matches comments to findings with the same pattern, so change both together.
+FINDING_ID = re.compile(r"`([^`]+)`\)_\s*$")
 
 
 def gh(args, payload=None):
@@ -31,12 +43,43 @@ def gh(args, payload=None):
     return proc.returncode, proc.stdout, proc.stderr
 
 
+def anchored(f):
+    return bool(f["file"] and f["line"])
+
+
 def finding_body(f):
-    mark = SEVERITY_MARK.get(f["severity"], "•")
-    parts = [f"{mark} **{f['title']}** _({f['severity']}, `{f['id']}`)_", "", f["detail"]]
+    parts = [f"**{f['title']}** _({f['severity']}, `{f['id']}`)_", "", f["detail"]]
     if f.get("suggested_fix"):
         parts += ["", f"**Suggested fix:** {f['suggested_fix']}"]
     return "\n".join(parts)
+
+
+def located_body(f):
+    """The finding with its location on top, for a finding listed in the body."""
+    if not anchored(f):
+        return finding_body(f)
+    return f"`{f['file']}:{f['line']}`\n\n{finding_body(f)}"
+
+
+def print_comment_ids(repo, pr, review_id, inline):
+    code, out, err = gh(
+        [
+            "api",
+            "--paginate",
+            f"repos/{repo}/pulls/{pr}/reviews/{review_id}/comments",
+            "--jq",
+            ".[] | [.id, .body] | @json",
+        ]
+    )
+    if code != 0:
+        print(f"review posted, but its comment ids could not be listed: {err.strip()}", file=sys.stderr)
+        return
+    where = {f["id"]: f"{f['file']}:{f['line']}" for f in inline}
+    for row in out.splitlines():
+        comment_id, text = json.loads(row)
+        match = FINDING_ID.search(text.splitlines()[0]) if text else None
+        finding_id = match.group(1) if match else "?"
+        print(f"{comment_id}\t{finding_id}\t{where.get(finding_id, '?')}")
 
 
 def main():
@@ -45,21 +88,33 @@ def main():
     ap.add_argument("--round-file", required=True)
     ap.add_argument("--disputes", help="markdown file of findings the author contests")
     ap.add_argument("--repo", help="owner/name; defaults to the current repo")
+    ap.add_argument(
+        "--new-only",
+        action="store_true",
+        help="inline comments for new findings only; upheld ones are listed in the body",
+    )
     ap.add_argument("--dry-run", action="store_true")
     args = ap.parse_args()
 
     with open(args.round_file) as fh:
         review = json.load(fh)
 
-    standing = [f for f in review["findings"] if f["status"] != "withdrawn"]
     withdrawn = [f for f in review["findings"] if f["status"] == "withdrawn"]
+    standing = [f for f in review["findings"] if f["status"] != "withdrawn"]
+    upheld = [f for f in standing if args.new_only and f["status"] == "upheld"]
+    fresh = [f for f in standing if not (args.new_only and f["status"] == "upheld")]
+    inline = [f for f in fresh if anchored(f)]
+    unanchored = [f for f in fresh if not anchored(f)]
 
     body = [HEADER, "", f"**Verdict:** `{review['verdict']}`", "", review["summary"]]
 
-    unanchored = [f for f in standing if not f["file"] or not f["line"]]
     if unanchored:
         body += ["", "### Findings not tied to a specific line", ""]
         body += [finding_body(f) + "\n" for f in unanchored]
+
+    if upheld:
+        body += ["", "### Upheld from an earlier round", ""]
+        body += [located_body(f) + "\n" for f in upheld]
 
     if withdrawn:
         body += ["", "### Withdrawn this round", ""]
@@ -69,13 +124,9 @@ def main():
         with open(args.disputes) as fh:
             disputed = fh.read().strip()
         if disputed:
-            body += ["", "### Contested by the author — needs a human call", "", disputed]
+            body += ["", "### Contested by the author: needs a human call", "", disputed]
 
-    comments = [
-        {"path": f["file"], "line": f["line"], "body": finding_body(f)}
-        for f in standing
-        if f["file"] and f["line"]
-    ]
+    comments = [{"path": f["file"], "line": f["line"], "body": finding_body(f)} for f in inline]
 
     payload = {"body": "\n".join(body), "event": "COMMENT"}
     if comments:
@@ -100,15 +151,17 @@ def main():
         print(f"inline anchors rejected, retrying without them: {err.strip()}", file=sys.stderr)
         payload.pop("comments")
         payload["body"] += "\n\n> Inline anchors were rejected by GitHub; findings are listed above."
-        for f in standing:
-            if f["file"] and f["line"]:
-                payload["body"] += f"\n\n**`{f['file']}:{f['line']}`** — {finding_body(f)}"
+        for f in inline:
+            payload["body"] += f"\n\n{located_body(f)}"
         code, out, err = gh(["api", "--method", "POST", endpoint, "--input", "-"], payload)
 
     if code != 0:
         sys.exit(f"failed to post review: {err.strip()}")
 
-    print(json.loads(out).get("html_url", "posted"))
+    posted = json.loads(out)
+    print(posted.get("html_url", "posted"))
+    if "comments" in payload and posted.get("id"):
+        print_comment_ids(repo, args.pr, posted["id"], inline)
 
 
 if __name__ == "__main__":

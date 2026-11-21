@@ -2,7 +2,7 @@
 # Run one round of Codex review, non-interactively, with a structured verdict.
 #
 #   codex-review --mode plan --input PLAN.md --round 1 --out DIR
-#   codex-review --mode code --base dev      --round 2 --out DIR --reply REBUTTAL.md
+#   codex-review --mode code --base origin/main --round 2 --out DIR --reply REBUTTAL.md
 #
 # Round 1 starts a fresh Codex session. Rounds 2+ resume it, so the reviewer
 # keeps its own context instead of re-deriving the problem every time.

@@ -10,7 +10,8 @@ blocking findings are gone or the disagreement needs a human. Replaces the
 manual cycle of pasting output into Codex and pasting findings back.
 
 Invoke as `/converge plan <file>` or `/converge code [base-branch]`.
-Base branch defaults to `dev`.
+The base branch defaults to the repo's main branch: the one its
+`AGENTS.md` names, else `git symbolic-ref refs/remotes/origin/HEAD`.
 
 ## Setup
 
@@ -43,18 +44,19 @@ There is no `$SCRATCHPAD` environment variable; do not reference one.
   --mode plan --input PLAN.md --round 1 --out "$OUT" --workdir "$PWD"
 ```
 
-For code, swap `--mode plan --input PLAN.md` for `--mode code --base dev`. The
+For code, swap `--mode plan --input PLAN.md` for `--mode code --base origin/main`. The
 script prints the path to `round-N.json`; read it.
 
 **Rounds 2+**
 
-Write your response to `$OUT/reply-N.md` first — one section per finding id,
-each either `FIXED` (what you changed) or `DISPUTED` (why the finding is
-wrong). Then:
+Write your response to `$OUT/reply-N.md` first — one section per finding,
+under a heading that carries the finding id and either `FIXED` (what you
+changed) or `DISPUTED` (why the finding is wrong), such as
+`## stale-cursor-on-retry: FIXED`. Then:
 
 ```bash
 ~/.claude/skills/converge/bin/codex-review \
-  --mode code --base dev --round 2 --out "$OUT" --reply "$OUT/reply-1.md"
+  --mode code --base origin/main --round 2 --out "$OUT" --reply "$OUT/reply-1.md"
 ```
 
 Rounds 2+ resume the same Codex session, so the reviewer keeps its own context
@@ -130,9 +132,38 @@ Findings with a file and line become inline comments; the rest go in the body.
 Contested findings get their own section so the user can rule on them with the
 code in front of them.
 
-**Always `--dry-run` first and get explicit approval before posting.** The
-review posts through `gh` as the user's own GitHub account, which is why the
-body carries a header marking it as automated — teammates must not read a Codex
-finding as a human review. Run the loop locally and publish the *outcome*;
-using PR round-trips as the inner loop means a push per round, and force-pushing
-between rounds strands inline comments on stale lines.
+The review posts through `gh` as the user's own GitHub account, which is why
+the body carries a header marking it as automated. Teammates must not read a
+Codex finding as a human review.
+
+Two modes, chosen by the repo's docs:
+
+- **Publish the outcome** (the default, and the only mode when the repo's
+  docs say nothing): run the loop locally, then publish the last round.
+  `--dry-run` first, and get explicit approval before posting.
+- **Publish every round** (when the repo's pull request doc says the review
+  runs on the pull request): after each round, publish it without a dry run
+  and without asking. Fix or dispute each finding, commit the fixes as new
+  commits and push them, then reply on the pull request: in the thread of
+  each inline comment, and in one comment for the findings of the review
+  body, named by id. A fixed finding gets the commit and what changed. A
+  disputed one gets the reason. Never amend or force-push between rounds:
+  it strands the inline comments on stale lines. The history is rewritten
+  once, after the approval.
+
+When publishing every round, pass `--new-only` to `publish-review` from round
+2 on. A finding upheld from an earlier round then keeps its one thread and is
+listed in the review body, instead of getting a second inline comment.
+
+`publish-reply` posts the replies from the same `reply-N.md` the next round
+takes:
+
+```bash
+~/.claude/skills/converge/bin/publish-reply \
+  --pr 123 --round-file "$OUT/round-1.json" --reply "$OUT/reply-1.md"
+```
+
+It finds each finding's thread by the id in the inline comment and replies
+there. Findings with no thread go in one pull request comment. For a reply
+posted by hand, `publish-review` prints the id of each inline comment it
+posts.
