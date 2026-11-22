@@ -56,6 +56,12 @@ claude_sandbox_writable_paths:
   # command can write every worktree here, including the hook configs that
   # git commit runs outside the sandbox.
   - ~/.agents/worktrees
+  # The clojure CLI copies its tools.edn into tools on every run and caches
+  # classpaths it computes outside a project in .cpcache. Babashka scripts call
+  # it to resolve their dependencies. Not all of ~/.clojure: deps.edn there adds
+  # aliases and Maven repositories to every clojure run, sandboxed or not.
+  - ~/.clojure/tools
+  - ~/.clojure/.cpcache
 
 # Directories where sandboxed commands may create and connect to Unix sockets.
 # Terraform starts each provider as a plugin process that listens on a Unix
