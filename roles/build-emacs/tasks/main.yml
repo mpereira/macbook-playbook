@@ -17,9 +17,18 @@
       - with-tree-sitter
       - with-xwidgets
 
-# NOTE: spotlight doesn't seem to pick up this symlink?
-# - name: Create a symbolic link
-#   ansible.builtin.file:
-#     src: /opt/homebrew/Cellar/emacs-head@29/29.0.90_1/Emacs.app/
-#     dest: /Applications/Emacs-29.app
-#     state: link
+# Spotlight lists apps only from real bundles, not symlinks, so copy the app.
+# The copy still loads its Lisp files from the Cellar, so it has to be copied
+# again after every upgrade; the task above upgrades first, so this run does
+# that. After a manual `brew upgrade`, run this role again.
+#
+# Its name is plain Emacs.app so that typing "emacs" in Spotlight finds it
+# first, and so it doesn't replace the emacsformacosx.com build, which is
+# installed as Emacs-<version>.app.
+- name: Copy Emacs.app to /Applications so Spotlight lists it
+  command: >
+    rsync -a --delete --itemize-changes
+    /opt/homebrew/opt/emacs-head@30/Emacs.app/
+    /Applications/Emacs.app/
+  register: build_emacs_app_copy
+  changed_when: build_emacs_app_copy.stdout | length > 0

@@ -1,6 +1,7 @@
 ---
-# The Emacs that Finder opens text files with. The build-emacs role installs it.
-emacs_as_default_text_editor_app: /opt/homebrew/opt/emacs-head@30/Emacs.app
+# The Emacs that Finder opens text files with. The build-emacs role copies it
+# there from Homebrew, and Spotlight opens the same copy.
+emacs_as_default_text_editor_app: /Applications/Emacs.app
 emacs_as_default_text_editor_bundle_id: org.gnu.Emacs
 
 # File types that Finder opens with Emacs. An entry that starts with a dot is a
