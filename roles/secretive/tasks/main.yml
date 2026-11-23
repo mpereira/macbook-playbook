@@ -59,6 +59,28 @@
       == (secretive_all_keys | map(attribute='hosts') | flatten | unique | length)
     fail_msg: An SSH alias is listed under more than one Secretive key.
 
+# A HostName goes into a Host line in ~/.ssh/config, where *, ? and ! are
+# patterns and a space starts another one.
+- name: Require each HostName to be a single host
+  ansible.builtin.assert:
+    that: item.value.hostname is match('^[A-Za-z0-9][A-Za-z0-9._-]*$')
+    fail_msg: Give '{{ item.key }}' in secretive_host_entries a single host name or IP address.
+  loop: "{{ secretive_host_entries | dict2items }}"
+  loop_control:
+    label: "{{ item.key }}"
+
+# ssh uses the first Host block that matches, so a second alias for the same
+# HostName in ~/.ssh/config would never apply to that HostName.
+- name: Require each HostName under one alias in ~/.ssh/config
+  vars:
+    secretive_config_hostnames: >-
+      {{ secretive_all_keys | rejectattr('ssh_config_file', 'defined')
+         | map(attribute='hosts') | flatten | select('in', secretive_host_entries)
+         | map('extract', secretive_host_entries) | map(attribute='hostname') | list }}
+  ansible.builtin.assert:
+    that: secretive_config_hostnames | length == secretive_config_hostnames | unique | length
+    fail_msg: Two aliases in ~/.ssh/config have the same HostName in secretive_host_entries.
+
 # Secretive comments each public key "<name with dashes>@secretive.<host>".
 - name: Select each named Secure Enclave identity
   ansible.builtin.set_fact:
@@ -111,6 +133,9 @@
       loop_control:
         label: "{{ item.name }}"
 
+    # A host with an entry also matches its HostName, so ssh to the bare IP
+    # address, as an Ansible inventory may do, uses the same key. Not in a key's
+    # own config file, which is read only with ssh -F and an alias.
     - name: Route selected SSH hosts through Secretive
       ansible.builtin.blockinfile:
         path: "{{ secretive_ssh_directory }}/config"
@@ -122,7 +147,8 @@
         block: |
           {% for key in secretive_found_keys | rejectattr('ssh_config_file', 'defined') %}
           {% for host in key.hosts %}
-          Host {{ host }}
+          Host {{ host }}{% if host in secretive_host_entries %} {{ secretive_host_entries[host].hostname }}{% endif %}
+
           {% if host in secretive_host_entries %}
               HostName {{ secretive_host_entries[host].hostname }}
               User {{ secretive_host_entries[host].user }}

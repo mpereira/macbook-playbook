@@ -5,8 +5,10 @@ secretive_agent_socket: "{{ home_directory }}/Library/Containers/com.maxgoedjen.
 # The Secretive keys whose SSH hosts this role routes through Secretive. name is
 # the key's name in Secretive. protection is how to create it there, shown when
 # the key doesn't exist yet. hosts are SSH aliases. A host with an entry in
-# secretive_host_entries also gets its HostName and User here; the others are
-# expected to have them elsewhere in ~/.ssh/config.
+# secretive_host_entries also gets its HostName and User here, and its Host
+# block in ~/.ssh/config also matches that HostName, so ssh to the bare IP
+# address uses the same key. The others are expected to have a HostName
+# elsewhere in ~/.ssh/config.
 #
 # A key with ssh_config_file gets its hosts written to that file instead of
 # ~/.ssh/config, for use with ssh -F. Each of its hosts needs an entry in
