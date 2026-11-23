@@ -2,3 +2,28 @@
 # The daviderestivo/emacs-head formula to install. /Applications/Emacs.app is
 # copied from it.
 build_emacs_formula: emacs-head@31
+
+# Build options, without the leading --. The formula lists them:
+# https://github.com/daviderestivo/homebrew-emacs-head/blob/master/Formula/emacs-head@31.rb
+#
+# Homebrew applies them only when it installs Emacs. To change them for an
+# installed Emacs, run `brew uninstall` on the formula and then run this role.
+#
+# Leave out the icon options (with-modern-icon-* and the others). The formula
+# downloads the icon during the build, and since Homebrew 7 its build sandbox
+# stops that, so the build fails with "Errno::EEXIST ... var/homebrew/locks".
+# Set build_emacs_icon instead.
+build_emacs_options:
+  - with-cocoa
+  - with-crash-debug
+  - with-imagemagick
+  - with-native-comp
+  - with-pdumper
+  - with-tree-sitter
+  - with-xwidgets
+
+# The app icon: the name of a .car file, without the extension, in the tap's
+# icons/macos-26+/ folder. Use one that the tap's README marks "macOS 26+
+# Ready" (only liquid-glass, so far). On macOS 26 and later the others show
+# smaller, inside a rounded square, even though they have a .car file.
+build_emacs_icon: liquid-glass

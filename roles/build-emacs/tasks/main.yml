@@ -6,16 +6,39 @@
   homebrew:
     name: "{{ build_emacs_formula }}"
     state: latest
-    # https://github.com/daviderestivo/homebrew-emacs-head/blob/master/Formula/{{ build_emacs_formula }}.rb
-    install_options:
-      - with-cocoa
-      - with-crash-debug
-      - with-imagemagick
-      - with-modern-icon-pen
-      - with-native-comp
-      - with-pdumper
-      - with-tree-sitter
-      - with-xwidgets
+    install_options: "{{ build_emacs_options }}"
+
+# Do what the formula's icon options do on macOS 26 and later (see the comment
+# on build_emacs_options): put the icon's Assets.car in the app and name it in
+# Info.plist. Change the Homebrew app, not the copy in /Applications, so that
+# the copy task below stays idempotent. An upgrade installs a new app, and the
+# next run of this role sets the icon again.
+- name: Set the Emacs.app icon
+  shell: |
+    set -eu
+    app=/opt/homebrew/opt/{{ build_emacs_formula }}/Emacs.app
+    car=/opt/homebrew/Library/Taps/daviderestivo/homebrew-emacs-head/icons/macos-26+/{{ build_emacs_icon }}.car
+    plist="$app/Contents/Info.plist"
+    changed=
+    if ! cmp -s "$car" "$app/Contents/Resources/Assets.car"; then
+      cp "$car" "$app/Contents/Resources/Assets.car"
+      changed=1
+    fi
+    if [ "$(plutil -extract CFBundleIconName raw "$plist" 2>/dev/null || true)" != "{{ build_emacs_icon }}" ]; then
+      plutil -replace CFBundleIconName -string "{{ build_emacs_icon }}" "$plist"
+      changed=1
+    fi
+    # Without CFBundleIconName, macOS uses this .icns file instead.
+    if plutil -extract CFBundleIconFile raw "$plist" >/dev/null 2>&1; then
+      plutil -remove CFBundleIconFile "$plist"
+      changed=1
+    fi
+    if [ -n "$changed" ]; then
+      touch "$app"
+      echo changed
+    fi
+  register: build_emacs_icon_set
+  changed_when: "'changed' in build_emacs_icon_set.stdout"
 
 # Spotlight lists apps only from real bundles, not symlinks, so copy the app.
 # The copy still loads its Lisp files from the Cellar, so it has to be copied
