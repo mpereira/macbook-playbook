@@ -4,9 +4,9 @@
 
 - name: Install Emacs
   homebrew:
-    name: emacs-head@30
+    name: "{{ build_emacs_formula }}"
     state: latest
-    # https://github.com/daviderestivo/homebrew-emacs-head/blob/master/Formula/emacs-head@30.rb
+    # https://github.com/daviderestivo/homebrew-emacs-head/blob/master/Formula/{{ build_emacs_formula }}.rb
     install_options:
       - with-cocoa
       - with-crash-debug
@@ -25,10 +25,27 @@
 # Its name is plain Emacs.app so that typing "emacs" in Spotlight finds it
 # first, and so it doesn't replace the emacsformacosx.com build, which is
 # installed as Emacs-<version>.app.
+#
+# The --exclude keeps --delete from removing the emacsclient that the next
+# task adds.
 - name: Copy Emacs.app to /Applications so Spotlight lists it
   command: >
     rsync -a --delete --itemize-changes
-    /opt/homebrew/opt/emacs-head@30/Emacs.app/
+    --exclude /Contents/MacOS/bin/
+    /opt/homebrew/opt/{{ build_emacs_formula }}/Emacs.app/
     /Applications/Emacs.app/
   register: build_emacs_app_copy
   changed_when: build_emacs_app_copy.stdout | length > 0
+
+# with-editor (Magit) needs an emacsclient with the same major version as the
+# running Emacs. It finds the Cellar's bin/ only when Emacs runs from the
+# Cellar, and /opt/homebrew/bin/emacsclient can belong to another emacs-head
+# version, so put the matching one in Contents/MacOS/bin/, where with-editor
+# also looks. emacsclient links only to libSystem, so it runs from anywhere.
+- name: Copy emacsclient into /Applications/Emacs.app for with-editor
+  command: >
+    rsync -a --itemize-changes --mkpath
+    /opt/homebrew/opt/{{ build_emacs_formula }}/bin/emacsclient
+    /Applications/Emacs.app/Contents/MacOS/bin/
+  register: build_emacs_emacsclient_copy
+  changed_when: build_emacs_emacsclient_copy.stdout | length > 0

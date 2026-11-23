@@ -1,0 +1,4 @@
+---
+# The daviderestivo/emacs-head formula to install. /Applications/Emacs.app is
+# copied from it.
+build_emacs_formula: emacs-head@31

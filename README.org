@@ -424,7 +424,7 @@ TODO:
 
 **** Text Editors
      - [[https://emacsformacosx.com/][Emacs 28.2]]
-     - [[https://github.com/daviderestivo/homebrew-emacs-head][Emacs 30]]
+     - [[https://github.com/daviderestivo/homebrew-emacs-head][Emacs 31]]
      - [[http://macvim-dev.github.io/macvim/][MacVim]]
      - [[https://github.com/neovim/neovim/wiki/Installing-Neovim][Neovim]]
      - [[https://www.jetbrains.com/rider/][Rider]]
