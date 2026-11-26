@@ -20,6 +20,14 @@
     path: "{{ home_directory }}/.claude"
     state: directory
 
+# The sandbox lets commands write inside the store's directory, so the
+# directory exists before the first sandboxed pnpm install.
+- name: Ensure Claude's pnpm store exists
+  file:
+    path: "{{ claude_pnpm_store_directory }}"
+    state: directory
+    mode: "0755"
+
 # Claude Code loads ~/.claude/CLAUDE.md into every session as the user's
 # instructions for all projects. Edit claude_user_instructions, not the
 # installed copy, which the next run overwrites.

@@ -56,6 +56,8 @@ claude_sandbox_writable_paths:
   # command can write every worktree here, including the hook configs that
   # git commit runs outside the sandbox.
   - ~/.agents/worktrees
+  # The pnpm store that claude_pnpm_store_directory names.
+  - "{{ claude_pnpm_store_directory }}"
   # The clojure CLI copies its tools.edn into tools on every run and caches
   # classpaths it computes outside a project in .cpcache. Babashka scripts call
   # it to resolve their dependencies. Not all of ~/.clojure: deps.edn there adds
@@ -136,6 +138,20 @@ claude_allowed_unsandboxed_commands:
 # Ansible loads, so it stays unwritable from the sandbox.
 claude_ansible_temporary_directory: /tmp/claude/ansible
 
+# The pnpm store for every pnpm that Claude runs, sandboxed or not, through
+# npm_config_store_dir in env. pnpm's own store, ~/Library/pnpm/store, isn't
+# writable from the sandbox, so without this a sandboxed install creates a
+# .pnpm-store of its own at the top of the worktree and downloads every package
+# again. Not pnpm's own store: pnpm puts a package in a project as a copy from
+# the store (an APFS clone), so a package changed in the store reaches every
+# install that follows, and the installs in a terminal would get what a
+# sandboxed command put there. Installs from this store reach only Claude's
+# checkouts, which sandboxed commands can already write. pnpm clones only
+# within one volume, so keep it on the volume that holds the checkouts. The
+# path must be absolute: with a ~/ path, pnpm checks that it can link into
+# ~/Library/pnpm and falls back to the worktree.
+claude_pnpm_store_directory: "{{ home_directory }}/.agents/pnpm-store"
+
 claude_managed_settings:
   permissions:
     # WebFetch(domain:*) lets sandboxed commands reach any host. The sandbox
@@ -148,6 +164,11 @@ claude_managed_settings:
   env:
     ANSIBLE_LOCAL_TEMP: "{{ claude_ansible_temporary_directory }}/local"
     ANSIBLE_REMOTE_TEMP: "{{ claude_ansible_temporary_directory }}/remote"
+    npm_config_store_dir: "{{ claude_pnpm_store_directory }}"
+    # A node_modules that came from another store makes pnpm ask before it
+    # removes and reinstalls it. Claude runs pnpm without a terminal, where pnpm
+    # stops with ERR_PNPM_UNEXPECTED_STORE instead of asking.
+    npm_config_confirm_modules_purge: "false"
   sandbox:
     enabled: true
     # Refuse to start instead of running commands unsandboxed.

@@ -702,6 +702,15 @@ TODO:
        and Cargo). Claude can't retry a blocked command outside the sandbox,
        and Claude Code refuses to start if the sandbox is unavailable.
 
+     Every pnpm that Claude runs, sandboxed or not, uses its own store,
+     =~/.agents/pnpm-store= (=claude_pnpm_store_directory=), instead of
+     =~/Library/pnpm/store=. pnpm clones packages from the store into each
+     project, so a package changed in a store reaches every install from it.
+     A sandboxed command can change Claude's store, but not the store that
+     installs in a terminal use. Without its own store, each sandboxed install
+     downloads all packages into a =.pnpm-store= of its own at the top of the
+     worktree.
+
      Claude can't read the paths in =claude_read_protected_paths= (=~/.ssh=
      by default), through a =Read= deny rule and the sandbox's =denyRead=.
      Sandboxed commands can reach any host, so a private key they could read
