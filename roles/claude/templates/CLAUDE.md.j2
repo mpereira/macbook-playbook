@@ -12,7 +12,8 @@ A call that adds anything to one of these commands stays in the sandbox and
 fails, usually with "Operation not permitted". Don't add:
 
 - `cd <directory> &&` in front. The shell already starts in the working
-  directory.
+  directory. To run one in another checkout, such as a worktree, run
+  `cd <directory>` in a Bash call of its own first.
 - An environment variable or wrapper in front, such as `VAR=value` or
   `timeout 20`.
 - A pipe, redirect or other command after it, such as `| tail`, `2>&1`,

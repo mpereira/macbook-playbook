@@ -95,6 +95,13 @@ claude_sandbox_excluded_commands:
   # These write .git/config, which the sandbox always protects.
   - git worktree add *
   - git branch --set-upstream-to*
+  # A worktree's index is in .git/worktrees, which the sandbox lets a session
+  # write only for the worktree the desktop app made for it. In a worktree
+  # made with git worktree add, or in another session's, git add fails, and
+  # git commit can't add a new file by itself. git add runs no hooks, and the
+  # filters and fsmonitor it could run come from git config, which sandboxed
+  # commands can't write.
+  - git add *
   # The sandbox blocks process listing.
   - ps
   - ps *

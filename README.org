@@ -721,6 +721,8 @@ TODO:
      in =claude_sandbox_excluded_commands= run outside the sandbox with full
      access: =git= network commands, because SSH remotes can't connect from
      inside it, =git commit=, because lefthook needs a pseudo-terminal,
+     =git add=, because the sandbox lets a session write the index only of
+     the worktree the desktop app made for it,
      =docker=, because the sandbox blocks the Docker socket, =codex exec=,
      because macOS won't start Codex's own sandbox inside it (the =chatgpt=
      role links ChatGPT's bundled Codex CLI to =~/.local/bin/codex=), and a few others
