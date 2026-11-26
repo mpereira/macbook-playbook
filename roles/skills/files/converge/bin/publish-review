@@ -18,6 +18,12 @@ itself; the lines are for a reply posted by hand.
 
 Posts as whoever `gh` is authenticated as, so every review is labelled with its
 real author in the body. Nothing here should read as a human review.
+
+After it posts, it sets the label approved-by-codex to match the round: on
+when the verdict is `approve`, off for any other verdict. The label creates
+itself in a repository that does not have it yet. The label says what the last
+published round concluded, so a pull request reviewed again loses it until a
+round approves again. --no-label leaves the labels alone.
 """
 
 import argparse
@@ -27,6 +33,10 @@ import subprocess
 import sys
 
 HEADER = "**Codex review.** Posted by an automated convergence loop, not by a human reviewer."
+
+APPROVAL_LABEL = "approved-by-codex"
+APPROVAL_LABEL_COLOR = "1D76DB"
+APPROVAL_LABEL_DESCRIPTION = "The last Codex review round of this pull request approved it"
 
 # The finding id closes the first line of a finding's comment. publish-reply
 # matches comments to findings with the same pattern, so change both together.
@@ -82,6 +92,39 @@ def print_comment_ids(repo, pr, review_id, inline):
         print(f"{comment_id}\t{finding_id}\t{where.get(finding_id, '?')}")
 
 
+def ensure_label(repo):
+    """Create the approval label when the repository does not have it."""
+    code, _, err = gh(["api", f"repos/{repo}/labels/{APPROVAL_LABEL}"])
+    if code == 0:
+        return None
+    if "404" not in err:
+        return f"could not read the label: {err.strip()}"
+    label = {"name": APPROVAL_LABEL, "color": APPROVAL_LABEL_COLOR, "description": APPROVAL_LABEL_DESCRIPTION}
+    code, _, err = gh(["api", "--method", "POST", f"repos/{repo}/labels", "--input", "-"], label)
+    # 422: another run created it in between.
+    if code != 0 and "422" not in err:
+        return f"could not create the label: {err.strip()}"
+    return None
+
+
+def set_approval_label(repo, pr, approved):
+    """Put the approval label on the pull request or take it off. Returns an error or None."""
+    if approved:
+        error = ensure_label(repo)
+        if error:
+            return error
+        code, _, err = gh(
+            ["api", "--method", "POST", f"repos/{repo}/issues/{pr}/labels", "--input", "-"],
+            {"labels": [APPROVAL_LABEL]},
+        )
+        return f"could not add the label: {err.strip()}" if code != 0 else None
+    code, _, err = gh(["api", "--method", "DELETE", f"repos/{repo}/issues/{pr}/labels/{APPROVAL_LABEL}"])
+    # 404: the pull request did not carry the label, or the repository has none.
+    if code != 0 and "404" not in err:
+        return f"could not remove the label: {err.strip()}"
+    return None
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--pr", required=True)
@@ -92,6 +135,11 @@ def main():
         "--new-only",
         action="store_true",
         help="inline comments for new findings only; upheld ones are listed in the body",
+    )
+    ap.add_argument(
+        "--no-label",
+        action="store_true",
+        help=f"leave the label {APPROVAL_LABEL} as it is",
     )
     ap.add_argument("--dry-run", action="store_true")
     args = ap.parse_args()
@@ -141,9 +189,13 @@ def main():
 
     endpoint = f"repos/{repo}/pulls/{args.pr}/reviews"
 
+    approved = review["verdict"] == "approve"
+
     if args.dry_run:
         print(f"POST {endpoint}")
         print(json.dumps(payload, indent=2))
+        if not args.no_label:
+            print(f"{'add' if approved else 'remove'} label {APPROVAL_LABEL}")
         return
 
     code, out, err = gh(["api", "--method", "POST", endpoint, "--input", "-"], payload)
@@ -162,6 +214,15 @@ def main():
     print(posted.get("html_url", "posted"))
     if "comments" in payload and posted.get("id"):
         print_comment_ids(repo, args.pr, posted["id"], inline)
+
+    if not args.no_label:
+        error = set_approval_label(repo, args.pr, approved)
+        if error:
+            action = "add" if approved else "remove"
+            sys.exit(
+                f"the review is posted, so do not post it again. {error}. "
+                f"To set the label by hand: gh pr edit {args.pr} --repo {repo} --{action}-label {APPROVAL_LABEL}"
+            )
 
 
 if __name__ == "__main__":
