@@ -136,6 +136,16 @@ The review posts through `gh` as the user's own GitHub account, which is why
 the body carries a header marking it as automated. Teammates must not read a
 Codex finding as a human review.
 
+The label `approved-by-codex` records Codex's approval on the pull request.
+`publish-review` adds it when the round's verdict is `approve` and removes it
+when a later round's verdict is anything else, so the label always matches the
+last published round. It creates the label in a repository that does not have
+it yet. A round that ends the loop without an `approve` verdict, because no
+blocker or major finding stands, does not get the label. When the label call
+fails after the review is posted, the script exits with an error that says so
+and gives the `gh pr edit` command that sets the label: run that command and do
+not post the review again. `--no-label` leaves the labels alone.
+
 Two modes, chosen by the repo's docs:
 
 - **Publish the outcome** (the default, and the only mode when the repo's
